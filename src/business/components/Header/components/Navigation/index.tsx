@@ -1,13 +1,13 @@
 "use client";
 
 import { NAVIGATION_MENU_ITEMS } from "@/business/constants/navigation";
-import { cn } from "@/lib/utils";
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/shared/components/NavigationMenu";
+import { cn } from "@/shared/utils/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -15,7 +15,7 @@ function Navigation() {
   const pathname = usePathname();
 
   return (
-    <NavigationMenu>
+    <NavigationMenu className="max-w-none grow basis-auto justify-start">
       <NavigationMenuList className="hidden flex-wrap gap-x-3 gap-y-2 md:flex">
         {NAVIGATION_MENU_ITEMS.map((item) => {
           const isActive = pathname === item.href;

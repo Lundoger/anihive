@@ -125,9 +125,9 @@
 @theme {
   --color-black: #0c0c0c;
   --color-white: #fff;
-  --color-primary-accent-dark: #481e14;
-  --color-primary-accent: #9b3922;
-  --color-primary-accent-light: #f2613f;
+  --color-primary-accent-dark: #792421;
+  --color-primary-accent: #c9312c;
+  --color-primary-accent-light: #ff3c37;
 }
 
 @layer base {
