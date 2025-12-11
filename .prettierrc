@@ -1,0 +1,19 @@
+{
+  "tabWidth": 2,
+  "endOfLine": "auto",
+  "useTabs": false,
+  "singleQuote": false,
+  "plugins": [
+    "@trivago/prettier-plugin-sort-imports",
+    "prettier-plugin-tailwindcss"
+  ],
+  "importOrder": [
+    "<THIRD_PARTY_MODULES>",
+    "^~\\/app(\\/.*)?$",
+    "^~\\/modules(\\/.*)?$",
+    "^~\\/business(\\/.*)?$",
+    "^~\\/shared(\\/.*)?$",
+    "^[./]"
+  ],
+  "importOrderSortSpecifiers": true
+}
