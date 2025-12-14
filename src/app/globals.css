@@ -41,12 +41,13 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
 }
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
@@ -76,6 +77,8 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
 }
 
 .dark {
@@ -116,6 +119,7 @@
   --breakpoint-xs: 420px;
   --breakpoint-sm: 576px;
   --breakpoint-md: 768px;
+  --breakpoint-lgd: 992px;
   --breakpoint-lg: 1024px;
   --breakpoint-xl: 1280px;
   --breakpoint-2xl: 1536px;
@@ -123,7 +127,8 @@
 }
 
 @theme {
-  --color-black: #0c0c0c;
+  --color-black: rgb(18, 18, 18);
+  --color-gray: #9e9e9e;
   --color-white: #fff;
   --color-primary-accent-dark: #792421;
   --color-primary-accent: #c9312c;
@@ -145,6 +150,12 @@
   }
   .custom-container {
     @apply 3xl:px-[80px] mx-auto w-full max-w-[1920px] px-[16px] lg:px-[24px] xl:px-[40px];
+  }
+  .desc {
+    @apply text-sm opacity-70;
+  }
+  .title {
+    @apply lgd:text-2xl text-xl font-bold capitalize;
   }
 }
 
@@ -182,4 +193,14 @@ body.lock {
 
 body {
   @apply bg-black text-white;
+}
+
+/* Fix browser autofill background (Chrome/Safari) for our shared Input */
+input[data-slot="input"]:-webkit-autofill,
+input[data-slot="input"]:-webkit-autofill:hover,
+input[data-slot="input"]:-webkit-autofill:focus,
+input[data-slot="input"]:-webkit-autofill:active {
+  -webkit-text-fill-color: var(--color-white);
+  caret-color: var(--color-white);
+  box-shadow: 0 0 0px 1000px var(--color-black) inset;
 }
