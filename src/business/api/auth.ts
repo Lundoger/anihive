@@ -1,7 +1,6 @@
 "use server";
 // import { revalidatePath } from "next/cache";
 import { createClient } from "@/business/utils/supabase/server";
-import { redirect } from "next/navigation";
 
 type SignInParams = {
   email: string;
@@ -23,7 +22,7 @@ export const signUp = async ({ email, password, username }: SignUpParams) => {
     return { error: error.message };
   }
 
-  redirect("/");
+  return { error: null };
 };
 
 export const signIn = async ({ email, password }: SignInParams) => {
@@ -37,8 +36,7 @@ export const signIn = async ({ email, password }: SignInParams) => {
   if (error) {
     return { error: error.message };
   }
-
-  redirect("/");
+  return { error: null };
 };
 
 export const signOut = async () => {
@@ -50,5 +48,5 @@ export const signOut = async () => {
     return { error: error.message };
   }
 
-  redirect("/login");
+  return { error: null };
 };

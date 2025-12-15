@@ -12,6 +12,7 @@ import { Input } from "@/shared/components/Input";
 import { Spinner } from "@/shared/components/Spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { KeyRound, Mail } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -29,6 +30,7 @@ type LoginValues = z.infer<typeof loginSchema>;
 
 export function LoginForm() {
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const form = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
@@ -46,7 +48,12 @@ export function LoginForm() {
           toast.error("Login failed", {
             description: error,
           });
+          return;
         }
+
+        toast.success("Login successful");
+        router.replace("/");
+        router.refresh();
       })();
     });
   }
