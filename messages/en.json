@@ -1,0 +1,11 @@
+{
+	"login": {
+		"title": "Login to your account",
+		"description": "Enter your email and password to login to your account.",
+		"email": "Email",
+		"password": "Password",
+		"login": "Login",
+		"register": "Don't have an account? Register",
+		"forgotPassword": "Reset password"
+	}
+}
