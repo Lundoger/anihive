@@ -2,12 +2,7 @@ import Logo from "@/shared/components/Logo";
 import NavUser from "./components/NavUser";
 import Navigation from "./components/Navigation";
 
-export default async function Header() {
-  // const supabase = await createClient();
-
-  // const {
-  //   data: { user },
-  // } = await supabase.auth.getUser();
+export default function Header() {
   return (
     <header className="fixed top-0 left-0 z-50 w-full">
       <div className="custom-container flex h-[72px] items-center justify-between gap-x-5">

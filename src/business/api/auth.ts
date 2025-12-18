@@ -25,7 +25,7 @@ export const signUp = async ({ email, password, username }: SignUpParams) => {
   return { error: null };
 };
 
-export const signIn = async ({ email, password }: SignInParams) => {
+export const serverSignIn = async ({ email, password }: SignInParams) => {
   const supabase = await createClient();
 
   const { error } = await supabase.auth.signInWithPassword({
@@ -39,7 +39,7 @@ export const signIn = async ({ email, password }: SignInParams) => {
   return { error: null };
 };
 
-export const signOut = async () => {
+export const serverSignOut = async () => {
   const supabase = await createClient();
 
   const { error } = await supabase.auth.signOut();

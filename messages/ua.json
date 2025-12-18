@@ -7,5 +7,15 @@
 		"login": "Увійти",
 		"register": "Немає облікового запису? Зареєструватися",
 		"forgotPassword": "Забули пароль? Скинути пароль"
+	},
+	"registration": {
+		"title": "Створити обліковий запис",
+		"description": "Введіть ваш email, username та пароль для створення облікового запису.",
+		"email": "Email",
+		"password": "Пароль",
+		"confirmPassword": "Підтвердити пароль",
+		"username": "Username",
+		"register": "Вже маєте обліковий запис? Увійти",
+		"forgotPassword": "Забули пароль? Скинути пароль"
 	}
 }

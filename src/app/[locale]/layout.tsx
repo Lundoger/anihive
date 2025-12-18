@@ -1,3 +1,4 @@
+import { AuthProvider } from "@/business/components/AuthProvider";
 import { routing } from "@/i18n/routing";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
@@ -5,7 +6,7 @@ import { hasLocale } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { setRequestLocale } from "next-intl/server";
 import { Inter } from "next/font/google";
-import { notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 import { Toaster } from "sonner";
 import "./globals.css";
 
@@ -31,6 +32,8 @@ type Props = {
 
 export default async function RootLayout({ children, params }: Props) {
   const { locale } = await params;
+  if (!hasLocale(routing.locales, locale))
+    redirect(`/${routing.defaultLocale}`);
 
   // Enable static rendering
   setRequestLocale(locale);
@@ -39,10 +42,15 @@ export default async function RootLayout({ children, params }: Props) {
 
   return (
     <html lang={locale}>
-      <body className={`${inter.variable} antialiased`}>
+      <body
+        className={`${inter.variable} antialiased`}
+        suppressHydrationWarning
+      >
         <NextIntlClientProvider messages={messages}>
-          <div className="wrapper">{children}</div>
-          <Toaster richColors position="top-right" />
+          <AuthProvider>
+            <div className="wrapper">{children}</div>
+            <Toaster richColors position="bottom-right" />
+          </AuthProvider>
         </NextIntlClientProvider>
       </body>
     </html>

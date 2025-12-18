@@ -12,32 +12,6 @@ function copyCookies(from: NextResponse, to: NextResponse) {
 }
 
 export async function proxy(request: NextRequest) {
-  // const pathname = request.nextUrl.pathname;
-
-  // const authPages = ["/login", "/registration", "/forgot-password"];
-  // const isAuthPage = authPages.includes(pathname);
-
-  // const response = NextResponse.next({
-  //   request: {
-  //     headers: request.headers,
-  //   },
-  // });
-
-  // const supabase = await createClient();
-
-  // const {
-  //   data: { user },
-  // } = await supabase.auth.getUser();
-
-  // // if (!user && !isAuthPage) {
-  // //   return NextResponse.redirect(new URL("/login", request.url));
-  // // }
-
-  // if (user && isAuthPage) {
-  //   return NextResponse.redirect(new URL("/", request.url));
-  // }
-
-  // return response;
   let response = handleI18nRouting(request);
 
   const { user } = await updateSession(request, response);
@@ -61,6 +35,7 @@ export async function proxy(request: NextRequest) {
   if (user && isAuthPage) {
     const redirectRes = NextResponse.redirect(
       new URL(`/${locale}`, request.url),
+      // new URL("/", request.url),
     );
     copyCookies(response, redirectRes);
     return redirectRes;

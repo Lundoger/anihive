@@ -7,5 +7,15 @@
 		"login": "Login",
 		"register": "Don't have an account? Register",
 		"forgotPassword": "Reset password"
+	},
+	"registration": {
+		"title": "Create an account",
+		"description": "Enter your email, username and password to create an account.",
+		"email": "Email",
+		"password": "Password",
+		"confirmPassword": "Confirm password",
+		"username": "Username",
+		"register": "Already have an account? Login",
+		"forgotPassword": "Reset password"
 	}
 }

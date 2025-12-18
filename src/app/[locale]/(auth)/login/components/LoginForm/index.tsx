@@ -1,6 +1,8 @@
 "use client";
 
-import { signIn } from "@/business/api/auth";
+import { serverSignIn } from "@/business/api/auth";
+import { useAuthStore } from "@/business/stores/auth";
+import { getBrowserClient } from "@/business/utils/supabase/client";
 import { Button } from "@/shared/components/Button";
 import {
   Field,
@@ -29,8 +31,11 @@ const loginSchema = z.object({
 type LoginValues = z.infer<typeof loginSchema>;
 
 export function LoginForm() {
+  const supabase = getBrowserClient();
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const setAuth = useAuthStore((s) => s.setAuth);
+  const setInitialized = useAuthStore((s) => s.setInitialized);
 
   const form = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
@@ -43,7 +48,7 @@ export function LoginForm() {
   function onSubmit(values: LoginValues) {
     startTransition(() => {
       void (async () => {
-        const { error } = await signIn(values);
+        const { error } = await serverSignIn(values);
         if (error) {
           toast.error("Login failed", {
             description: error,
@@ -52,6 +57,11 @@ export function LoginForm() {
         }
 
         toast.success("Login successful");
+
+        const { data } = await supabase.auth.getSession();
+        setAuth(data.session ?? null);
+        setInitialized(true);
+
         router.replace("/");
         router.refresh();
       })();
