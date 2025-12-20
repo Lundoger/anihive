@@ -19,9 +19,9 @@ export default async function LoginPage({ params }: Props) {
         <div className="flex flex-col items-center gap-3">
           <h1 className="title">{t("title")}</h1>
           <p className="text-center text-sm opacity-50">
-            Enter your email and password to login to your account.
+            {t("description")}
             <br />
-            You can also login with your social accounts
+            {t("socialDescription")}
           </p>
         </div>
       </div>
@@ -31,19 +31,16 @@ export default async function LoginPage({ params }: Props) {
           href="/registration"
           className="desc basic-transition hover:text-primary-accent-light"
         >
-          Don&apos;t have an account? Register
+          {t("register")}
         </Link>
         {/* <Link
           href="/forgot-password"
           className="desc basic-transition hover:text-primary-accent-light"
         >
-          Reset password
+          {t("forgotPassword")}
         </Link> */}
       </div>
-      <p className="mx-auto text-center text-xs opacity-30">
-        We use cookies to make the site more comfortable for you. By continuing
-        to view, you agree to the use of cookies
-      </p>
+      <p className="mx-auto text-center text-xs opacity-30">{t("cookies")}</p>
     </div>
   );
 }

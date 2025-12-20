@@ -29,13 +29,17 @@ export async function proxy(request: NextRequest) {
   const pathnameNoLocale =
     "/" + (hasLocale ? rest : [maybeLocale, ...rest]).filter(Boolean).join("/");
   const locale = hasLocale ? maybeLocale : routing.defaultLocale;
+  console.log("locale", locale);
+  console.log("hasLocale", hasLocale);
+  console.log("maybeLocale", maybeLocale);
+  console.log("routing.defaultLocale", routing.defaultLocale);
+  console.log("url.pathname", url.pathname);
 
   const isAuthPage = authPages.includes(pathnameNoLocale);
 
   if (user && isAuthPage) {
     const redirectRes = NextResponse.redirect(
       new URL(`/${locale}`, request.url),
-      // new URL("/", request.url),
     );
     copyCookies(response, redirectRes);
     return redirectRes;
@@ -45,5 +49,8 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|img).*)"],
+  // Exclude Next internals + static assets + ".well-known" (e.g. Chrome DevTools automatic workspaces probe)
+  matcher: [
+    "/((?!\\.well-known)(?!.*\\/\\.well-known)(?!api|_next/static|_next/image|favicon.ico|img).*)",
+  ],
 };

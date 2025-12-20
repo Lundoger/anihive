@@ -19,9 +19,9 @@ export default async function RegistrationPage({ params }: Props) {
         <div className="flex flex-col items-center gap-3">
           <h1 className="title">{t("title")}</h1>
           <p className="text-center text-sm opacity-50">
-            Enter your email, username and password to create an account.
+            {t("description")}
             <br />
-            You can also create an account with your social accounts
+            {t("socialDescription")}
           </p>
         </div>
       </div>
@@ -31,19 +31,16 @@ export default async function RegistrationPage({ params }: Props) {
           href="/login"
           className="desc basic-transition hover:text-primary-accent-light"
         >
-          Already have an account? Login
+          {t("register")}
         </Link>
         {/* <Link
           href="/forgot-password"
           className="desc basic-transition hover:text-primary-accent-light"
         >
-          Reset password
+          {t("forgotPassword")}
         </Link> */}
       </div>
-      <p className="mx-auto text-center text-xs opacity-30">
-        We use cookies to make the site more comfortable for you. By continuing
-        to view, you agree to the use of cookies
-      </p>
+      <p className="mx-auto text-center text-xs opacity-30">{t("cookies")}</p>
     </div>
   );
 }

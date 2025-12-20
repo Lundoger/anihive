@@ -2,15 +2,12 @@
 // import { revalidatePath } from "next/cache";
 import { createClient } from "@/business/utils/supabase/server";
 
-type SignInParams = {
+type SignParams = {
   email: string;
   password: string;
 };
-type SignUpParams = SignInParams & {
-  username: string;
-};
 
-export const signUp = async ({ email, password, username }: SignUpParams) => {
+export const signUp = async ({ email, password }: SignParams) => {
   const supabase = await createClient();
 
   const { error } = await supabase.auth.signUp({
@@ -25,7 +22,7 @@ export const signUp = async ({ email, password, username }: SignUpParams) => {
   return { error: null };
 };
 
-export const serverSignIn = async ({ email, password }: SignInParams) => {
+export const serverSignIn = async ({ email, password }: SignParams) => {
   const supabase = await createClient();
 
   const { error } = await supabase.auth.signInWithPassword({

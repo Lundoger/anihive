@@ -2,20 +2,53 @@
 	"login": {
 		"title": "Login to your account",
 		"description": "Enter your email and password to login to your account.",
-		"email": "Email",
-		"password": "Password",
-		"login": "Login",
+		"socialDescription": "You can also login with your social accounts",
 		"register": "Don't have an account? Register",
-		"forgotPassword": "Reset password"
+		"forgotPassword": "Reset password",
+		"cookies": "We use cookies to make the site more comfortable for you. By continuing to view, you agree to the use of cookies",
+		"form": {
+			"email": "Email",
+			"password": "Password",
+			"login": "Login",
+			"errors": {
+				"emailRequired": "Email is required",
+				"emailInvalid": "Please enter a valid email address",
+				"passwordRequired": "Password is required"
+			},
+			"toast": {
+				"loginFailed": "Failed to login to your account",
+				"loginSuccessful": "Successfully logged in"
+			}
+		}
 	},
 	"registration": {
 		"title": "Create an account",
 		"description": "Enter your email, username and password to create an account.",
-		"email": "Email",
-		"password": "Password",
-		"confirmPassword": "Confirm password",
-		"username": "Username",
+		"socialDescription": "You can also create an account with your social accounts",
 		"register": "Already have an account? Login",
-		"forgotPassword": "Reset password"
+		"forgotPassword": "Reset password",
+		"cookies": "We use cookies to make the site more comfortable for you. By continuing to view, you agree to the use of cookies",
+		"form": {
+			"email": "Email",
+			"password": "Password",
+			"confirmPassword": "Confirm password",
+			"username": "Username",
+			"register": "Create an account",
+			"errors": {
+				"emailRequired": "Email is required",
+				"emailInvalid": "Please enter a valid email address",
+				"passwordRequired": "Password is required",
+				"confirmPasswordRequired": "Confirm password is required",
+				"usernameRequired": "Username is required",
+				"usernameMin": "Username must be at least 3 characters long",
+				"passwordMin": "Password must be at least 8 characters long",
+				"passwordSpecial": "Password must include at least one special character",
+				"passwordMatch": "Passwords do not match"
+			},
+			"toast": {
+				"registrationFailed": "Registration failed",
+				"registrationSuccessful": "Registration successful"
+			}
+		}
 	}
 }

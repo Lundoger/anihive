@@ -12,48 +12,49 @@ import { Input } from "@/shared/components/Input";
 import { Spinner } from "@/shared/components/Spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { KeyRound, Mail, RotateCcwKey, UserRound } from "lucide-react";
-import { useTransition } from "react";
+import { useTranslations } from "next-intl";
+import { useMemo, useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-const registrationSchema = z
-  .object({
-    email: z
-      .string()
-      .min(1, { message: "Email is required" })
-      .email({ message: "Please enter a valid email address" }),
-    password: z
-      .string()
-      .min(1, { message: "Password is required" })
-      .min(8, { message: "Password must be at least 8 characters long" })
-      .regex(/[^\p{L}\p{N}\s]/u, {
-        message: "Password must include at least one special character",
-      }),
-    confirmPassword: z
-      .string()
-      .min(1, { message: "Confirm password is required" }),
-    username: z
-      .string()
-      .min(3, { message: "Username must be at least 3 characters long" }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
+type Translator = ReturnType<typeof useTranslations>;
+function createRegistrationSchema(t: Translator) {
+  return z
+    .object({
+      email: z
+        .string()
+        .min(1, { message: t("errors.emailRequired") })
+        .email({ message: t("errors.emailInvalid") }),
+      password: z
+        .string()
+        .min(1, { message: t("errors.passwordRequired") })
+        .min(8, { message: t("errors.passwordMin") })
+        .regex(/[^\p{L}\p{N}\s]/u, {
+          message: t("errors.passwordSpecial"),
+        }),
+      confirmPassword: z
+        .string()
+        .min(1, { message: t("errors.confirmPasswordRequired") }),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: t("errors.passwordMatch"),
+      path: ["confirmPassword"],
+    });
+}
 
-type RegistrationValues = z.infer<typeof registrationSchema>;
+type RegistrationValues = z.infer<ReturnType<typeof createRegistrationSchema>>;
 
 export function RegistrationForm() {
   const [isPending, startTransition] = useTransition();
-
+  const t = useTranslations("registration.form");
+  const registrationSchema = useMemo(() => createRegistrationSchema(t), [t]);
   const form = useForm<RegistrationValues>({
     resolver: zodResolver(registrationSchema),
     defaultValues: {
       email: "",
       password: "",
       confirmPassword: "",
-      username: "",
     },
   });
 
@@ -62,7 +63,7 @@ export function RegistrationForm() {
       void (async () => {
         const { error } = await signUp(values);
         if (error) {
-          toast.error("Registration failed", {
+          toast.error(t("toast.registrationFailed"), {
             description: error,
           });
         }
@@ -84,7 +85,9 @@ export function RegistrationForm() {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <div className="relative">
-                <FieldLabel htmlFor="registration-email">Email</FieldLabel>
+                <FieldLabel htmlFor="registration-email">
+                  {t("email")}
+                </FieldLabel>
                 <Input
                   {...field}
                   id="registration-email"
@@ -100,36 +103,13 @@ export function RegistrationForm() {
         />
 
         <Controller
-          name="username"
-          control={form.control}
-          render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid}>
-              <div className="relative">
-                <FieldLabel htmlFor="registration-username">
-                  Username
-                </FieldLabel>
-                <Input
-                  {...field}
-                  id="registration-username"
-                  type="text"
-                  autoComplete="username"
-                  aria-invalid={fieldState.invalid}
-                  prefixIcon={<UserRound />}
-                />
-              </div>
-              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-            </Field>
-          )}
-        />
-
-        <Controller
           name="password"
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <div className="relative">
                 <FieldLabel htmlFor="registration-password">
-                  Password
+                  {t("password")}
                 </FieldLabel>
                 <Input
                   {...field}
@@ -151,7 +131,7 @@ export function RegistrationForm() {
             <Field data-invalid={fieldState.invalid}>
               <div className="relative">
                 <FieldLabel htmlFor="registration-confirm-password">
-                  Confirm Password
+                  {t("confirmPassword")}
                 </FieldLabel>
                 <Input
                   {...field}
@@ -169,7 +149,7 @@ export function RegistrationForm() {
       </FieldGroup>
 
       <Button type="submit" className="w-full" size="lg" disabled={isPending}>
-        {isPending ? <Spinner /> : "Create an account"}
+        {isPending ? <Spinner /> : t("register")}
       </Button>
     </form>
   );

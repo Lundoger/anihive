@@ -14,23 +14,30 @@ import { Input } from "@/shared/components/Input";
 import { Spinner } from "@/shared/components/Spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { KeyRound, Mail } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
+import { useMemo, useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-const loginSchema = z.object({
-  email: z
-    .string()
-    .min(1, { message: "Email is required" })
-    .email({ message: "Please enter a valid email address" }),
-  password: z.string().min(1, { message: "Password is required" }),
-});
+type Translator = ReturnType<typeof useTranslations>;
 
-type LoginValues = z.infer<typeof loginSchema>;
+function createLoginSchema(t: Translator) {
+  return z.object({
+    email: z
+      .string()
+      .min(1, { message: t("errors.emailRequired") })
+      .email({ message: t("errors.emailInvalid") }),
+    password: z.string().min(1, { message: t("errors.passwordRequired") }),
+  });
+}
+
+type LoginValues = z.infer<ReturnType<typeof createLoginSchema>>;
 
 export function LoginForm() {
+  const t = useTranslations("login.form");
+  const loginSchema = useMemo(() => createLoginSchema(t), [t]);
   const supabase = getBrowserClient();
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -50,13 +57,13 @@ export function LoginForm() {
       void (async () => {
         const { error } = await serverSignIn(values);
         if (error) {
-          toast.error("Login failed", {
+          toast.error(t("toast.loginFailed"), {
             description: error,
           });
           return;
         }
 
-        toast.success("Login successful");
+        toast.success(t("toast.loginSuccessful"));
 
         const { data } = await supabase.auth.getSession();
         setAuth(data.session ?? null);
@@ -82,7 +89,7 @@ export function LoginForm() {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <div className="relative">
-                <FieldLabel htmlFor="login-email">Email</FieldLabel>
+                <FieldLabel htmlFor="login-email">{t("email")}</FieldLabel>
                 <Input
                   {...field}
                   id="login-email"
@@ -103,7 +110,9 @@ export function LoginForm() {
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <div className="relative">
-                <FieldLabel htmlFor="login-password">Password</FieldLabel>
+                <FieldLabel htmlFor="login-password">
+                  {t("password")}
+                </FieldLabel>
                 <Input
                   {...field}
                   id="login-password"
@@ -120,7 +129,7 @@ export function LoginForm() {
       </FieldGroup>
 
       <Button type="submit" className="w-full" size="lg" disabled={isPending}>
-        {isPending ? <Spinner /> : "Login"}
+        {isPending ? <Spinner /> : t("login")}
       </Button>
     </form>
   );
