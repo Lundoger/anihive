@@ -1,6 +1,5 @@
 import { getBrowserClient } from "@/business/utils/supabase/client";
 import type { Session, User } from "@supabase/supabase-js";
-import { redirect } from "next/navigation";
 import { toast } from "sonner";
 import { create } from "zustand";
 
@@ -11,7 +10,7 @@ type AuthState = {
 
   setAuth: (session: Session | null) => void;
   setInitialized: (v: boolean) => void;
-  signOut: () => Promise<void>;
+  signOut: () => Promise<{ error: string | null }>;
 };
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -26,9 +25,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     const { error } = await supabase.auth.signOut();
     if (error) {
       toast.error("Sign out failed", { description: error.message });
-      return;
+      return { error: error.message };
     }
+    set({ session: null, user: null });
     toast.success("Signed out successfully");
-    redirect("/login");
+    return { error: null };
   },
 }));

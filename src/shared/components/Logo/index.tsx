@@ -1,6 +1,7 @@
 import { cn } from "@/shared/utils/utils";
 import { cva } from "class-variance-authority";
 import Link from "next/link";
+import { memo } from "react";
 
 type LogoProps = {
   variant?: "default" | "transparent";
@@ -30,11 +31,7 @@ const logoVariants = cva(
   },
 );
 
-export default function Logo({
-  variant = "default",
-  size = "default",
-  className,
-}: LogoProps) {
+function Logo({ variant = "default", size = "default", className }: LogoProps) {
   return (
     <Link href="/" className={cn(logoVariants({ variant, size }), className)}>
       <svg
@@ -65,3 +62,5 @@ export default function Logo({
     </Link>
   );
 }
+
+export default memo(Logo);

@@ -19,16 +19,21 @@ import { Skeleton } from "@/shared/components/Skeleton";
 import { cn } from "@/shared/utils/utils";
 import { UserRound } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useRef, useTransition } from "react";
 
 export default function NavUser() {
   const { initialized, signOut, user } = useAuthStore();
   const lastInteraction = useRef<"pointer" | "keyboard">("pointer");
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const handleSignOut = () => {
     startTransition(async () => {
-      await signOut();
+      const { error } = await signOut();
+      if (error) return;
+      router.replace("/login");
+      router.refresh();
     });
   };
 
