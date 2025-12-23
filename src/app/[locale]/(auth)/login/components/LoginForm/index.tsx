@@ -41,7 +41,7 @@ export function LoginForm() {
   const supabase = getBrowserClient();
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
-  const setAuth = useAuthStore((s) => s.setAuth);
+  const setSession = useAuthStore((s) => s.setSession);
   const setInitialized = useAuthStore((s) => s.setInitialized);
 
   const form = useForm<LoginValues>({
@@ -53,25 +53,23 @@ export function LoginForm() {
   });
 
   function onSubmit(values: LoginValues) {
-    startTransition(() => {
-      void (async () => {
-        const { error } = await serverSignIn(values);
-        if (error) {
-          toast.error(t("toast.loginFailed"), {
-            description: error,
-          });
-          return;
-        }
+    startTransition(async () => {
+      const { error } = await serverSignIn(values);
+      if (error) {
+        toast.error(t("toast.loginFailed"), {
+          description: error,
+        });
+        return;
+      }
 
-        toast.success(t("toast.loginSuccessful"));
+      toast.success(t("toast.loginSuccessful"));
 
-        const { data } = await supabase.auth.getSession();
-        setAuth(data.session ?? null);
-        setInitialized(true);
+      const { data } = await supabase.auth.getSession();
+      setSession(data.session ?? null);
+      setInitialized(true);
 
-        router.replace("/");
-        router.refresh();
-      })();
+      router.replace("/");
+      router.refresh();
     });
   }
 

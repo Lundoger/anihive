@@ -50,5 +50,23 @@
 				"registrationSuccessful": "Registration successful"
 			}
 		}
+	},
+	"verifyEmail": {
+		"title": "Verify your email",
+		"description": "Enter the code from the email to verify your account.",
+		"socialDescription": "Check your inbox and spam folder",
+		"login": "Already have an account? Login",
+		"cookies": "We use cookies to make the site more comfortable for you. By continuing to view, you agree to the use of cookies",
+		"form": {
+			"token": "Verification code",
+			"verify": "Verify",
+			"errors": {
+				"tokenRequired": "Verification code is required"
+			},
+			"toast": {
+				"verifyFailed": "Failed to verify email",
+				"verifySuccessful": "Email verified successfully"
+			}
+		}
 	}
 }

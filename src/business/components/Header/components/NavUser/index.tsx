@@ -21,9 +21,11 @@ import { UserRound } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useTransition } from "react";
+import { toast } from "sonner";
 
 export default function NavUser() {
-  const { initialized, signOut, user } = useAuthStore();
+  const { initialized, signOut, user, profile } = useAuthStore();
+
   const lastInteraction = useRef<"pointer" | "keyboard">("pointer");
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -31,7 +33,10 @@ export default function NavUser() {
   const handleSignOut = () => {
     startTransition(async () => {
       const { error } = await signOut();
-      if (error) return;
+      if (error) {
+        toast.error(error);
+        return;
+      }
       router.replace("/login");
       router.refresh();
     });
@@ -39,7 +44,7 @@ export default function NavUser() {
 
   return (
     <>
-      {initialized && !isPending ? (
+      {initialized && Boolean(profile) && !isPending ? (
         <>
           {Boolean(user) ? (
             <DropdownMenu>
