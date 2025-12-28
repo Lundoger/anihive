@@ -33,12 +33,12 @@ export default async function LoginPage({ params }: Props) {
         >
           {t("register")}
         </Link>
-        {/* <Link
+        <Link
           href="/forgot-password"
           className="desc basic-transition hover:text-primary-accent-light"
         >
           {t("forgotPassword")}
-        </Link> */}
+        </Link>
       </div>
       <p className="mx-auto text-center text-xs opacity-30">{t("cookies")}</p>
     </div>

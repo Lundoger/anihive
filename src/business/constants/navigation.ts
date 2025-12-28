@@ -6,7 +6,7 @@ export type NavigationMenuItem = {
 export const NAVIGATION_MENU_ITEMS: NavigationMenuItem[] = [
   {
     title: "Top Anime",
-    href: "/top-anime",
+    href: "/login",
   },
   {
     title: "Top Manga",
@@ -24,4 +24,11 @@ export const NAVIGATION_MENU_ITEMS: NavigationMenuItem[] = [
     title: "Genres",
     href: "/genres",
   },
+];
+
+export const AUTH_PAGES: string[] = [
+  "/login",
+  "/registration",
+  "/forgot-password",
+  "/verify-email",
 ];

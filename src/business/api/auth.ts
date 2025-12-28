@@ -1,6 +1,5 @@
 "use server";
 // import { revalidatePath } from "next/cache";
-import { getBrowserClient } from "@/business/utils/supabase/client";
 import { createClient } from "@/business/utils/supabase/server";
 
 type SignParams = {

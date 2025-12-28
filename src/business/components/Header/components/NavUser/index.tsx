@@ -20,7 +20,7 @@ import { cn } from "@/shared/utils/utils";
 import { UserRound } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useRef, useTransition } from "react";
+import { useLayoutEffect, useRef, useTransition } from "react";
 import { toast } from "sonner";
 
 export default function NavUser() {
@@ -29,6 +29,12 @@ export default function NavUser() {
   const lastInteraction = useRef<"pointer" | "keyboard">("pointer");
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+
+  // useLayoutEffect(() => {
+  //   if (initialized && !profile) {
+  //     handleSignOut();
+  //   }
+  // }, [initialized]);
 
   const handleSignOut = () => {
     startTransition(async () => {
@@ -42,11 +48,16 @@ export default function NavUser() {
     });
   };
 
+  console.log("initialized", initialized);
+  console.log("profile", profile);
+  console.log("isPending", isPending);
+  console.log("user", user);
+
   return (
     <>
-      {initialized && Boolean(profile) && !isPending ? (
+      {initialized && !isPending ? (
         <>
-          {Boolean(user) ? (
+          {Boolean(user) && Boolean(profile) ? (
             <DropdownMenu>
               <DropdownMenuTrigger
                 asChild
@@ -111,6 +122,13 @@ export default function NavUser() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+          ) : Boolean(user) && !Boolean(profile) ? (
+            <Button
+              variant="transparent"
+              className="rounded-lg p-1 hover:bg-transparent"
+            >
+              <Skeleton className="size-10 rounded-lg" />
+            </Button>
           ) : (
             <Link href="/login" className="rounded-lg p-1">
               <Avatar className="size-10 rounded-lg">
@@ -122,7 +140,10 @@ export default function NavUser() {
           )}
         </>
       ) : (
-        <Button variant="transparent" className="rounded-lg p-1">
+        <Button
+          variant="transparent"
+          className="rounded-lg p-1 hover:bg-transparent"
+        >
           <Skeleton className="size-10 rounded-lg" />
         </Button>
       )}

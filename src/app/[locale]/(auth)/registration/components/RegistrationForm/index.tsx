@@ -11,8 +11,9 @@ import {
 import { Input } from "@/shared/components/Input";
 import { Spinner } from "@/shared/components/Spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { KeyRound, Mail, RotateCcwKey, UserRound } from "lucide-react";
+import { KeyRound, Mail, RotateCcwKey } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import { useMemo, useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -49,6 +50,7 @@ export function RegistrationForm() {
   const [isPending, startTransition] = useTransition();
   const t = useTranslations("registration.form");
   const registrationSchema = useMemo(() => createRegistrationSchema(t), [t]);
+  const router = useRouter();
   const form = useForm<RegistrationValues>({
     resolver: zodResolver(registrationSchema),
     defaultValues: {
@@ -59,15 +61,18 @@ export function RegistrationForm() {
   });
 
   function onSubmit(values: RegistrationValues) {
-    startTransition(() => {
-      void (async () => {
-        const { error } = await signUp(values);
-        if (error) {
-          toast.error(t("toast.registrationFailed"), {
-            description: error,
-          });
-        }
-      })();
+    startTransition(async () => {
+      const { error } = await signUp(values);
+      if (error) {
+        toast.error(t("toast.registrationFailed"), {
+          description: error,
+        });
+        return;
+      }
+
+      toast.success(t("toast.registrationPending"));
+      sessionStorage.setItem("pending_verify_email", values.email);
+      router.push("/verify-email");
     });
   }
 

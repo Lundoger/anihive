@@ -1,3 +1,4 @@
+import { AUTH_PAGES } from "@/business/constants/navigation";
 import { updateSession } from "@/business/utils/supabase/proxy";
 import createMiddleware from "next-intl/middleware";
 import { type NextRequest, NextResponse } from "next/server";
@@ -16,8 +17,6 @@ export async function proxy(request: NextRequest) {
 
   const { user } = await updateSession(request, response);
 
-  const authPages = ["/login", "/registration", "/forgot-password"];
-
   const url = new URL(
     response.headers.get("x-middleware-rewrite") ??
       response.headers.get("location") ??
@@ -29,18 +28,16 @@ export async function proxy(request: NextRequest) {
   const pathnameNoLocale =
     "/" + (hasLocale ? rest : [maybeLocale, ...rest]).filter(Boolean).join("/");
   const locale = hasLocale ? maybeLocale : routing.defaultLocale;
-  console.log("locale", locale);
-  console.log("hasLocale", hasLocale);
-  console.log("maybeLocale", maybeLocale);
-  console.log("routing.defaultLocale", routing.defaultLocale);
-  console.log("url.pathname", url.pathname);
+  // console.log("locale", locale);
+  // console.log("hasLocale", hasLocale);
+  // console.log("maybeLocale", maybeLocale);
+  // console.log("routing.defaultLocale", routing.defaultLocale);
+  // console.log("url.pathname", url.pathname);
 
-  const isAuthPage = authPages.includes(pathnameNoLocale);
+  const isAuthPage = AUTH_PAGES.includes(pathnameNoLocale);
 
   if (user && isAuthPage) {
-    const redirectRes = NextResponse.redirect(
-      new URL(`/${locale}`, request.url),
-    );
+    const redirectRes = NextResponse.redirect(new URL(`/`, request.url));
     copyCookies(response, redirectRes);
     return redirectRes;
   }

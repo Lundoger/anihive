@@ -7,7 +7,7 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
-export default async function LoginPage({ params }: Props) {
+export default async function VerifyEmailPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
@@ -32,6 +32,12 @@ export default async function LoginPage({ params }: Props) {
           className="desc basic-transition hover:text-primary-accent-light"
         >
           {t("login")}
+        </Link>
+        <Link
+          href="/forgot-password"
+          className="desc basic-transition hover:text-primary-accent-light"
+        >
+          {t("forgotPassword")}
         </Link>
       </div>
       <p className="mx-auto text-center text-xs opacity-30">{t("cookies")}</p>

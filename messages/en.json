@@ -4,7 +4,7 @@
 		"description": "Enter your email and password to login to your account.",
 		"socialDescription": "You can also login with your social accounts",
 		"register": "Don't have an account? Register",
-		"forgotPassword": "Reset password",
+		"forgotPassword": "Password recovery",
 		"cookies": "We use cookies to make the site more comfortable for you. By continuing to view, you agree to the use of cookies",
 		"form": {
 			"email": "Email",
@@ -47,6 +47,7 @@
 			},
 			"toast": {
 				"registrationFailed": "Registration failed",
+				"registrationPending": "Verify your email to complete registration",
 				"registrationSuccessful": "Registration successful"
 			}
 		}
@@ -56,16 +57,66 @@
 		"description": "Enter the code from the email to verify your account.",
 		"socialDescription": "Check your inbox and spam folder",
 		"login": "Already have an account? Login",
+		"forgotPassword": "Password recovery",
 		"cookies": "We use cookies to make the site more comfortable for you. By continuing to view, you agree to the use of cookies",
 		"form": {
 			"token": "Verification code",
 			"verify": "Verify",
+			"resend": "Resend code",
 			"errors": {
-				"tokenRequired": "Verification code is required"
+				"tokenRequired": "Verification code is required",
+				"missingEmail": "Missing email. Please go back to sign up and try again."
 			},
 			"toast": {
 				"verifyFailed": "Failed to verify email",
-				"verifySuccessful": "Email verified successfully"
+				"verifySuccessful": "Email verified successfully",
+				"resendSuccessful": "Code resent successfully"
+			}
+		}
+	},
+	"forgotPassword": {
+		"title": "Password recovery",
+		"description": "You can create a new password for your account.",
+		"subDescription": "Enter your email, on which you registered your account, we will send you a letter with further instructions",
+		"login": "Already have an account? Login",
+		"cookies": "We use cookies to make the site more comfortable for you. By continuing to view, you agree to the use of cookies",
+		"form": {
+			"email": "Email",
+			"send": "Send recovery email",
+			"errors": {
+				"emailRequired": "Email is required",
+				"emailInvalid": "Please enter a valid email address"
+			},
+			"toast": {
+				"emailSent": "Email sent successfully"
+			}
+		}
+	},
+	"resetPassword": {
+		"title": "Reset your password",
+		"description": "You can create a new password for your account.",
+		"subDescription": "Check your email and find the letter with the code to reset your password",
+		"login": "Already have an account? Login",
+		"cookies": "We use cookies to make the site more comfortable for you. By continuing to view, you agree to the use of cookies",
+		"form": {
+			"token": "Code from the letter",
+			"newPassword": "New password",
+			"confirmPassword": "Confirm password",
+			"reset": "Save new password",
+			"resendCode": "Resend code",
+			"errors": {
+				"tokenRequired": "Code from the letter is required",
+				"confirmPasswordRequired": "Confirm password is required",
+				"passwordRequired": "New password is required",
+				"passwordMin": "Password must be at least 8 characters long",
+				"passwordSpecial": "Password must include at least one special character",
+				"passwordMatch": "Passwords do not match",
+				"missingEmail": "Missing email. Please go back to password recovery and try again."
+			},
+			"toast": {
+				"resetSuccessful": "Password saved successfully",
+				"resetFailed": "Password saving failed",
+				"resendSuccessful": "Code resent successfully"
 			}
 		}
 	}

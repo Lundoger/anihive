@@ -1,17 +1,17 @@
 import Logo from "@/shared/components/Logo";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import Link from "next/link";
-import { RegistrationForm } from "./components/RegistrationForm";
+import { ForgorPasswordForm } from "./components/ForgorPasswordForm";
 
 type Props = {
   params: Promise<{ locale: string }>;
 };
 
-export default async function RegistrationPage({ params }: Props) {
+export default async function ForgotPasswordPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const t = await getTranslations("registration");
+  const t = await getTranslations("forgotPassword");
   return (
     <div className="flex basis-full flex-col justify-center gap-6">
       <div className="flex flex-col items-center gap-6">
@@ -21,17 +21,17 @@ export default async function RegistrationPage({ params }: Props) {
           <p className="text-center text-sm opacity-50">
             {t("description")}
             <br />
-            {t("socialDescription")}
+            {t("subDescription")}
           </p>
         </div>
       </div>
-      <RegistrationForm />
+      <ForgorPasswordForm />
       <div className="flex flex-col items-center gap-2 text-center">
         <Link
           href="/login"
           className="desc basic-transition hover:text-primary-accent-light"
         >
-          {t("register")}
+          {t("login")}
         </Link>
       </div>
       <p className="mx-auto text-center text-xs opacity-30">{t("cookies")}</p>
