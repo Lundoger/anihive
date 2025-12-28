@@ -6,8 +6,9 @@ import * as React from "react";
 const linkVariants = cva("basic-transition inline-flex items-center relative", {
   variants: {
     variant: {
-      default: "py-[2px] before:absolute before:bottom-0 before:left-0 before:w-full before:h-0 before:bg-primary-accent-light before:transition-all before:duration-200 before:ease-linear hover:before:h-[2px]",
-      secondary: "desc hover:text-primary-accent-light",
+      default: "desc hover:text-primary-accent-light",
+      secondary:
+        "py-[2px] before:absolute before:bottom-0 before:left-0 before:w-full before:h-0 before:bg-primary-accent-light before:transition-all before:duration-200 before:ease-linear hover:before:h-[2px]",
       underline:
         "pb-[2px] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0 after:bg-primary-accent-light after:transition-all after:duration-200 after:ease-linear hover:after:h-[2px]",
       subtle: "text-sm opacity-70 hover:opacity-100",
