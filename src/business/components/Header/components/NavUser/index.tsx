@@ -18,12 +18,14 @@ import {
 import { AppLink } from "@/shared/components/Link";
 import { Skeleton } from "@/shared/components/Skeleton";
 import { cn } from "@/shared/utils/utils";
-import { UserRound } from "lucide-react";
+import { Key, LogOut, Settings, UserRound } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useRef, useTransition } from "react";
 import { toast } from "sonner";
 
 export default function NavUser() {
+  const t = useTranslations("");
   const { initialized, signOut, user, profile } = useAuthStore();
 
   const lastInteraction = useRef<"pointer" | "keyboard">("pointer");
@@ -72,7 +74,7 @@ export default function NavUser() {
                       className="rounded-lg object-cover"
                     />
                     <AvatarFallback className="rounded-lg uppercase">
-                      {user?.email?.charAt(0) ?? "U"}
+                      {user?.email?.charAt(0) || "U"}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
@@ -88,27 +90,72 @@ export default function NavUser() {
                   }
                 }}
               >
-                <DropdownMenuGroup>
-                  <DropdownMenuItem>
-                    {user?.email ?? "No email"}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>Settings</DropdownMenuItem>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                  <DropdownMenuItem>Team</DropdownMenuItem>
-                  <DropdownMenuItem>New Team</DropdownMenuItem>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  variant="destructive"
-                  onSelect={(e) => {
-                    e.preventDefault();
-                    handleSignOut();
-                  }}
-                >
-                  Log out
+                <DropdownMenuItem className="basic-transition hover:bg-transparent!">
+                  <div className="flex w-full items-center gap-2 overflow-hidden">
+                    <Avatar className="size-10 rounded-lg">
+                      <AvatarImage
+                        src={profile?.avatar ?? ""}
+                        alt={profile?.username ?? "user avatar"}
+                      />
+                      <AvatarFallback className="rounded-lg uppercase">
+                        {user?.email?.charAt(0) || "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex min-w-0 flex-1 flex-col gap-1">
+                      {profile?.username && (
+                        <p className="truncate text-sm font-medium text-white">
+                          {profile?.username}
+                        </p>
+                      )}
+                      <span className="block truncate text-xs font-light opacity-70">
+                        {user?.email}
+                      </span>
+                    </div>
+                  </div>
                 </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem
+                    className="basic-transition capitalize"
+                    onSelect={(e) => {
+                      e.preventDefault();
+                      router.push("/forgot-password");
+                    }}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Settings className="size-4" />
+                      settings
+                    </div>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="basic-transition capitalize"
+                    onSelect={(e) => {
+                      e.preventDefault();
+                      router.push("/forgot-password");
+                    }}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Key className="size-4" />
+                      reset password
+                    </div>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem
+                    variant="destructive"
+                    className="basic-transition capitalize"
+                    onSelect={(e) => {
+                      e.preventDefault();
+                      handleSignOut();
+                    }}
+                  >
+                    <div className="flex items-center gap-2">
+                      <LogOut className="text-destructive size-4" />
+                      Log out
+                    </div>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : Boolean(user) && !Boolean(profile) ? (

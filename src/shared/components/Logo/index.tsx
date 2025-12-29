@@ -10,7 +10,7 @@ type LogoProps = {
 };
 
 const logoVariants = cva(
-  "bg-primary-accent-light flex basic-transition items-center justify-center rounded-[8px] text-3xl font-bold select-none md:text-4xl",
+  "bg-primary-accent-light flex basic-transition items-center justify-center rounded-[16px] text-3xl font-bold select-none md:text-4xl p-0.75",
   {
     variants: {
       variant: {
