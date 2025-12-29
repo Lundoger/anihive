@@ -1,6 +1,7 @@
+import { AppLink } from "@/shared/components/Link";
 import Logo from "@/shared/components/Logo";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import Link from "next/link";
+import { Suspense } from "react";
 import { VerigyEmailForm } from "./components/VerigyEmailForm";
 
 type Props = {
@@ -25,20 +26,16 @@ export default async function VerifyEmailPage({ params }: Props) {
           </p>
         </div>
       </div>
-      <VerigyEmailForm />
+      <Suspense fallback={null}>
+        <VerigyEmailForm />
+      </Suspense>
       <div className="flex flex-col items-center gap-2 text-center">
-        <Link
-          href="/login"
-          className="desc basic-transition hover:text-primary-accent-light"
-        >
+        <AppLink href="/login" variant="default">
           {t("login")}
-        </Link>
-        <Link
-          href="/forgot-password"
-          className="desc basic-transition hover:text-primary-accent-light"
-        >
+        </AppLink>
+        <AppLink href="/forgot-password" variant="default">
           {t("forgotPassword")}
-        </Link>
+        </AppLink>
       </div>
       <p className="mx-auto text-center text-xs opacity-30">{t("cookies")}</p>
     </div>

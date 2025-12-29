@@ -1,18 +1,17 @@
 import { AppLink } from "@/shared/components/Link";
 import Logo from "@/shared/components/Logo";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import Link from "next/link";
-import { ResetPasswordForm } from "./components/ResetPasswordForm";
+import { ForgorPasswordForm } from "./components/ForgorPasswordForm";
 
 type Props = {
   params: Promise<{ locale: string }>;
 };
 
-export default async function ResetPasswordPage({ params }: Props) {
+export default async function ForgotPasswordPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const t = await getTranslations("resetPassword");
+  const t = await getTranslations("forgotPassword");
   return (
     <div className="flex basis-full flex-col justify-center gap-6">
       <div className="flex flex-col items-center gap-6">
@@ -26,9 +25,9 @@ export default async function ResetPasswordPage({ params }: Props) {
           </p>
         </div>
       </div>
-      <ResetPasswordForm />
+      <ForgorPasswordForm />
       <div className="flex flex-col items-center gap-2 text-center">
-        <AppLink href="/login" variant="underline">
+        <AppLink href="/login" variant="default">
           {t("login")}
         </AppLink>
       </div>

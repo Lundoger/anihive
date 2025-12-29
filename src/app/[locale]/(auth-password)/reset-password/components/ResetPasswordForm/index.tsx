@@ -220,15 +220,6 @@ export function ResetPasswordForm() {
         <Button type="submit" className="w-full" size="lg" disabled={isPending}>
           {isPending ? <Spinner /> : t("reset")}
         </Button>
-        <Button
-          type="button"
-          className="w-full"
-          size="lg"
-          variant="secondary"
-          disabled={isPending}
-        >
-          {isPending ? <Spinner /> : t("resendCode")}
-        </Button>
       </div>
     </form>
   );

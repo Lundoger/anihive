@@ -5,30 +5,29 @@ export type NavigationMenuItem = {
 
 export const NAVIGATION_MENU_ITEMS: NavigationMenuItem[] = [
   {
-    title: "Top Anime",
+    title: "login",
     href: "/login",
   },
   {
-    title: "Top Manga",
-    href: "/top-manga",
+    title: "registration",
+    href: "/registration",
   },
   {
-    title: "Top Manhua",
-    href: "/top-manhua",
+    title: "verify-email",
+    href: "/verify-email",
   },
   {
-    title: "Characters",
-    href: "/characters",
+    title: "forgot-password",
+    href: "/forgot-password",
   },
   {
-    title: "Genres",
-    href: "/genres",
+    title: "reset-password",
+    href: "/reset-password",
   },
 ];
 
-export const AUTH_PAGES: string[] = [
+export const PROTECTED_AUTH_PAGES: string[] = [
   "/login",
   "/registration",
-  "/forgot-password",
   "/verify-email",
 ];

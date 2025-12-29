@@ -1,6 +1,6 @@
+import { AppLink } from "@/shared/components/Link";
 import Logo from "@/shared/components/Logo";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import Link from "next/link";
 import { LoginForm } from "./components/LoginForm";
 
 type Props = {
@@ -27,18 +27,12 @@ export default async function LoginPage({ params }: Props) {
       </div>
       <LoginForm />
       <div className="flex flex-col items-center gap-2 text-center">
-        <Link
-          href="/registration"
-          className="desc basic-transition hover:text-primary-accent-light"
-        >
+        <AppLink href="/registration" variant="default">
           {t("register")}
-        </Link>
-        <Link
-          href="/forgot-password"
-          className="desc basic-transition hover:text-primary-accent-light"
-        >
+        </AppLink>
+        <AppLink href="/forgot-password" variant="default">
           {t("forgotPassword")}
-        </Link>
+        </AppLink>
       </div>
       <p className="mx-auto text-center text-xs opacity-30">{t("cookies")}</p>
     </div>

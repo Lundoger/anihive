@@ -15,12 +15,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/shared/components/DropdownMenu";
+import { AppLink } from "@/shared/components/Link";
 import { Skeleton } from "@/shared/components/Skeleton";
 import { cn } from "@/shared/utils/utils";
 import { UserRound } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useLayoutEffect, useRef, useTransition } from "react";
+import { useRef, useTransition } from "react";
 import { toast } from "sonner";
 
 export default function NavUser() {
@@ -29,12 +29,6 @@ export default function NavUser() {
   const lastInteraction = useRef<"pointer" | "keyboard">("pointer");
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
-
-  // useLayoutEffect(() => {
-  //   if (initialized && !profile) {
-  //     handleSignOut();
-  //   }
-  // }, [initialized]);
 
   const handleSignOut = () => {
     startTransition(async () => {
@@ -47,11 +41,6 @@ export default function NavUser() {
       router.refresh();
     });
   };
-
-  console.log("initialized", initialized);
-  console.log("profile", profile);
-  console.log("isPending", isPending);
-  console.log("user", user);
 
   return (
     <>
@@ -130,13 +119,17 @@ export default function NavUser() {
               <Skeleton className="size-10 rounded-lg" />
             </Button>
           ) : (
-            <Link href="/login" className="rounded-lg p-1">
+            <AppLink
+              href="/login"
+              variant="transparent"
+              className="rounded-lg p-1"
+            >
               <Avatar className="size-10 rounded-lg">
                 <AvatarFallback className="rounded-lg uppercase">
                   <UserRound className="size-4" />
                 </AvatarFallback>
               </Avatar>
-            </Link>
+            </AppLink>
           )}
         </>
       ) : (

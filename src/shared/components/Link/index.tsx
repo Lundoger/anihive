@@ -8,10 +8,10 @@ const linkVariants = cva("basic-transition inline-flex items-center relative", {
     variant: {
       default: "desc hover:text-primary-accent-light",
       secondary:
-        "py-[2px] before:absolute before:bottom-0 before:left-0 before:w-full before:h-0 before:bg-primary-accent-light before:transition-all before:duration-200 before:ease-linear hover:before:h-[2px]",
+        "isolate overflow-hidden px-[2px] opacity-50 before:pointer-events-none before:content-[''] before:absolute before:inset-0 before:-z-10 before:bg-white/10 before:origin-bottom before:scale-y-0 before:transform-gpu before:transition-transform before:duration-200 before:ease-linear hover:before:scale-y-100",
       underline:
-        "pb-[2px] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0 after:bg-primary-accent-light after:transition-all after:duration-200 after:ease-linear hover:after:h-[2px]",
-      subtle: "text-sm opacity-70 hover:opacity-100",
+        "pb-[2px] after:pointer-events-none after:content-[''] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-white after:origin-left after:scale-x-0 after:transform-gpu after:transition-transform after:duration-200 after:ease-linear hover:after:scale-x-100",
+      transparent: "",
       nav: "text-sm font-medium hover:text-primary-accent-light",
     },
   },

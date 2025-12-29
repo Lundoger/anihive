@@ -97,13 +97,13 @@
 		"description": "You can create a new password for your account.",
 		"subDescription": "Check your email and find the letter with the code to reset your password",
 		"login": "Already have an account? Login",
+		"forgotPassword": "Send the code again",
 		"cookies": "We use cookies to make the site more comfortable for you. By continuing to view, you agree to the use of cookies",
 		"form": {
 			"token": "Code from the letter",
 			"newPassword": "New password",
 			"confirmPassword": "Confirm password",
 			"reset": "Save new password",
-			"resendCode": "Resend code",
 			"errors": {
 				"tokenRequired": "Code from the letter is required",
 				"confirmPasswordRequired": "Confirm password is required",

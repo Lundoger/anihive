@@ -94,6 +94,10 @@ export function VerigyEmailForm() {
   };
 
   const handleResendCode = () => {
+    if (!email) {
+      toast.error(t("errors.missingEmail"));
+      return;
+    }
     startTransition(async () => {
       const { error } = await supabase.auth.resend({
         type: "signup",

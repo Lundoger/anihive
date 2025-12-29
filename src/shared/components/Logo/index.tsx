@@ -1,6 +1,6 @@
+import { AppLink } from "@/shared/components/Link";
 import { cn } from "@/shared/utils/utils";
 import { cva } from "class-variance-authority";
-import Link from "next/link";
 import { memo } from "react";
 
 type LogoProps = {
@@ -33,7 +33,11 @@ const logoVariants = cva(
 
 function Logo({ variant = "default", size = "default", className }: LogoProps) {
   return (
-    <Link href="/" className={cn(logoVariants({ variant, size }), className)}>
+    <AppLink
+      href="/"
+      variant="transparent"
+      className={cn(logoVariants({ variant, size }), className)}
+    >
       <svg
         viewBox="0 0 28 28"
         fill="none"
@@ -59,7 +63,7 @@ function Logo({ variant = "default", size = "default", className }: LogoProps) {
           fill="#FEFDFE"
         />
       </svg>
-    </Link>
+    </AppLink>
   );
 }
 

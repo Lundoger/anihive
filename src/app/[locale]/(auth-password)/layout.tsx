@@ -7,7 +7,7 @@ type Props = {
 
 export default async function AuthLayout({ children }: Props) {
   return (
-    <main className="flex h-screen min-h-[500px] overflow-hidden">
+    <main className="flex h-screen min-h-[500px] flex-row-reverse overflow-hidden">
       <div className="lgd:block relative hidden size-full basis-1/2">
         <AuthImage />
       </div>
