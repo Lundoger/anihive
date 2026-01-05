@@ -9,9 +9,5 @@ export default async function SettingsPage({ params }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations("settings");
-  return (
-    <div className="flex basis-full flex-col justify-center gap-6">
-      settings
-    </div>
-  );
+  return <div className="custom-container">settings</div>;
 }

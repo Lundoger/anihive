@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuthStore } from "@/business/stores/auth";
-import { useRouter } from "@/i18n/navigation";
+import { usePathname, useRouter } from "@/i18n/navigation";
 import {
   Avatar,
   AvatarFallback,
@@ -31,6 +31,9 @@ export default function NavUser() {
   const lastInteraction = useRef<"pointer" | "keyboard">("pointer");
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const pathname = usePathname();
+  const isSettingsPage =
+    pathname === "/settings" || pathname.startsWith("/settings/");
 
   const handleSignOut = () => {
     startTransition(async () => {
@@ -114,16 +117,26 @@ export default function NavUser() {
                   </div>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuGroup>
+                <DropdownMenuGroup className="flex flex-col gap-1 py-1">
                   <DropdownMenuItem
-                    className="basic-transition capitalize"
+                    className={cn(
+                      "basic-transition capitalize",
+                      isSettingsPage &&
+                        "bg-primary-accent-light/15 text-primary-accent pointer-events-none",
+                    )}
+                    aria-current={isSettingsPage ? "page" : undefined}
                     onSelect={(e) => {
                       e.preventDefault();
                       router.push("/settings");
                     }}
                   >
                     <div className="flex items-center gap-2">
-                      <Settings className="size-4" />
+                      <Settings
+                        className={cn(
+                          "size-4",
+                          isSettingsPage && "text-primary-accent",
+                        )}
+                      />
                       settings
                     </div>
                   </DropdownMenuItem>

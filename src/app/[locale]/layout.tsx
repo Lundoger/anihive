@@ -1,4 +1,5 @@
 import { AuthProvider } from "@/business/components/AuthProvider";
+import { TopLoader } from "@/business/components/TopLoader";
 import { routing } from "@/i18n/routing";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
@@ -45,6 +46,7 @@ export default async function RootLayout({ children, params }: Props) {
         className={`${inter.variable} antialiased`}
         suppressHydrationWarning
       >
+        <TopLoader />
         <NextIntlClientProvider messages={messages}>
           <AuthProvider>
             <div className="wrapper">{children}</div>

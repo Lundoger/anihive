@@ -1,10 +1,15 @@
 import Header from "@/business/components/Header";
+import { setRequestLocale } from "next-intl/server";
 
 type Props = {
   children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 };
 
-export default function MainLayout({ children }: Props) {
+export default async function MainLayout({ children, params }: Props) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
   return (
     <>
       <Header />

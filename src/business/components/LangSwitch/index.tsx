@@ -37,7 +37,7 @@ export function LangSwitch() {
   return (
     <Select value={locale} onValueChange={handleValueChange}>
       <SelectTrigger
-        className="w-[70px] uppercase"
+        className="w-[70px] uppercase transition-opacity duration-100 ease-linear"
         aria-busy={isPending}
         disabled={isPending}
       >
