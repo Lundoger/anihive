@@ -1,6 +1,6 @@
+import { Link } from "@/i18n/navigation";
 import { cn } from "@/shared/utils/utils";
 import { type VariantProps, cva } from "class-variance-authority";
-import Link from "next/link";
 import * as React from "react";
 
 const linkVariants = cva("basic-transition inline-flex items-center relative", {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuthStore } from "@/business/stores/auth";
+import { useRouter } from "@/i18n/navigation";
 import {
   Avatar,
   AvatarFallback,
@@ -20,7 +21,6 @@ import { Skeleton } from "@/shared/components/Skeleton";
 import { cn } from "@/shared/utils/utils";
 import { Key, LogOut, Settings, UserRound } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
 import { useRef, useTransition } from "react";
 import { toast } from "sonner";
 
@@ -119,7 +119,7 @@ export default function NavUser() {
                     className="basic-transition capitalize"
                     onSelect={(e) => {
                       e.preventDefault();
-                      router.push("/forgot-password");
+                      router.push("/settings");
                     }}
                   >
                     <div className="flex items-center gap-2">

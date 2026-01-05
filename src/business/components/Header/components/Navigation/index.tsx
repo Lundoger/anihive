@@ -1,6 +1,8 @@
 "use client";
 
 import { NAVIGATION_MENU_ITEMS } from "@/business/constants/navigation";
+import { Link } from "@/i18n/navigation";
+import { usePathname } from "@/i18n/navigation";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -8,8 +10,6 @@ import {
   NavigationMenuList,
 } from "@/shared/components/NavigationMenu";
 import { cn } from "@/shared/utils/utils";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 function Navigation() {
   const pathname = usePathname();

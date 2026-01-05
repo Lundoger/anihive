@@ -1,6 +1,7 @@
 "use client";
 
 import { signUp } from "@/business/api/auth";
+import { useRouter } from "@/i18n/navigation";
 import { Button } from "@/shared/components/Button";
 import {
   Field,
@@ -13,7 +14,6 @@ import { Spinner } from "@/shared/components/Spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { KeyRound, Mail, RotateCcwKey } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
 import { useMemo, useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";

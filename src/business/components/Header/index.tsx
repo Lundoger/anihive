@@ -1,3 +1,4 @@
+import { LangSwitch } from "@/business/components/LangSwitch";
 import Logo from "@/shared/components/Logo";
 import NavUser from "./components/NavUser";
 import Navigation from "./components/Navigation";
@@ -9,6 +10,7 @@ export default function Header() {
         <Logo />
         <Navigation />
         <div className="flex items-center gap-4">
+          <LangSwitch />
           <NavUser />
         </div>
       </div>

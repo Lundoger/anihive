@@ -27,10 +27,6 @@ export async function proxy(request: NextRequest) {
   const hasLocale = routing.locales.includes(maybeLocale as any);
   const pathnameNoLocale =
     "/" + (hasLocale ? rest : [maybeLocale, ...rest]).filter(Boolean).join("/");
-  // console.log("hasLocale", hasLocale);
-  // console.log("maybeLocale", maybeLocale);
-  // console.log("routing.defaultLocale", routing.defaultLocale);
-  // console.log("url.pathname", url.pathname);
 
   const isAuthPage = PROTECTED_AUTH_PAGES.includes(pathnameNoLocale);
 
