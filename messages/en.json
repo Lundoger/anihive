@@ -127,7 +127,28 @@
 				"site": "Site"
 			},
 			"content": {
-				"account": "Make changes to your account here.",
+				"account": {
+					"nickname": {
+						"title": "Nickname",
+						"description": "Change your nickname. This nickname will be displayed in your profile and will be visible to other users.",
+						"form": {
+							"label": "Nickname",
+							"placeholder": "Nickname",
+							"submit": "Update",
+							"errors": {
+								"required": "Nickname is required",
+								"min": "Nickname must be at least 3 characters",
+								"max": "Nickname must be at most 20 characters",
+								"format": "Use only letters, numbers and underscore"
+							},
+							"toast": {
+								"success": "Nickname updated",
+								"failed": "Failed to update nickname",
+								"noChanges": "New nickname must be different from the current one"
+							}
+						}
+					}
+				},
 				"site": "We're working on this page."
 			}
 		}

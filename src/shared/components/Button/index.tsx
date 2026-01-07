@@ -14,8 +14,7 @@ const buttonVariants = cva(
           "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:
           "border text-accent bg-transparent shadow-xs hover:bg-accent hover:text-accent-foreground",
-        secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        secondary: "bg-white/10 text-secondary-foreground hover:bg-white/5",
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         transparent: "bg-transparent p-0 h-fit w-fit hover:bg-accent/50",
@@ -37,22 +36,87 @@ const buttonVariants = cva(
   },
 );
 
+type ButtonProps = React.ComponentProps<"button"> &
+  VariantProps<typeof buttonVariants> & {
+    asChild?: boolean;
+    /** Enables the ripple overlay on press. Enabled by default. */
+    ripple?: boolean;
+    /** Ripple color (CSS color). Defaults to a white translucent ripple. */
+    rippleColor?: string;
+    /** Ripple animation duration in ms. */
+    rippleDurationMs?: number;
+  };
+
 function Button({
   className,
   variant,
   size,
   asChild = false,
+  ripple = false,
+  rippleColor = "rgba(255,255,255,0.35)",
+  rippleDurationMs = 600,
+  onPointerDown,
   ...props
-}: React.ComponentProps<"button"> &
-  VariantProps<typeof buttonVariants> & {
-    asChild?: boolean;
-  }) {
+}: ButtonProps) {
   const Comp = asChild ? Slot : "button";
+
+  const handlePointerDown: React.PointerEventHandler<HTMLButtonElement> = (
+    e,
+  ) => {
+    onPointerDown?.(e);
+    if (!ripple) return;
+    if (props.disabled) return;
+
+    const target = e.currentTarget;
+
+    // Some elements (e.g. <input>) can't have children; also avoid when rendered via Slot into non-container.
+    if (!(target instanceof HTMLElement)) return;
+
+    const rect = target.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const sizePx = Math.ceil(Math.max(rect.width, rect.height) * 2);
+
+    const rippleEl = document.createElement("span");
+    rippleEl.dataset.ripple = "true";
+
+    rippleEl.style.position = "absolute";
+    rippleEl.style.left = `${x}px`;
+    rippleEl.style.top = `${y}px`;
+    rippleEl.style.width = `${sizePx}px`;
+    rippleEl.style.height = `${sizePx}px`;
+    rippleEl.style.borderRadius = "9999px";
+    rippleEl.style.transform = "translate(-50%, -50%) scale(0)";
+    rippleEl.style.opacity = "0.6";
+    rippleEl.style.backgroundColor = rippleColor;
+    rippleEl.style.pointerEvents = "none";
+    rippleEl.style.willChange = "transform,opacity";
+    rippleEl.style.zIndex = "0";
+
+    target.appendChild(rippleEl);
+
+    const animation = rippleEl.animate(
+      [
+        { transform: "translate(-50%, -50%) scale(0)", opacity: 0.6 },
+        { transform: "translate(-50%, -50%) scale(1)", opacity: 0 },
+      ],
+      { duration: rippleDurationMs, easing: "ease-out", fill: "forwards" },
+    );
+
+    animation.addEventListener("finish", () => {
+      rippleEl.remove();
+    });
+  };
 
   return (
     <Comp
       data-slot="button"
-      className={cn(buttonVariants({ variant, size, className }))}
+      onPointerDown={handlePointerDown}
+      className={cn(
+        buttonVariants({ variant, size, className }),
+        ripple &&
+          "relative isolate overflow-hidden [&>*:not([data-ripple=true])]:relative [&>*:not([data-ripple=true])]:z-10",
+      )}
       {...props}
     />
   );
