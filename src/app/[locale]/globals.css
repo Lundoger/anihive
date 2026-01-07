@@ -146,6 +146,8 @@
 
 @theme {
   --color-black: rgb(18, 18, 18);
+  --color-dark-black: rgb(0, 0, 0);
+  --color-light-black: rgb(33, 33, 33);
   --color-gray: #9e9e9e;
   --color-white: #fff;
   --color-primary-accent-dark: #792421;

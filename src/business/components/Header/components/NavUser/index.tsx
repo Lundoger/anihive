@@ -125,32 +125,30 @@ export default function NavUser() {
                         "bg-primary-accent-light/15 text-primary-accent pointer-events-none",
                     )}
                     aria-current={isSettingsPage ? "page" : undefined}
-                    onSelect={(e) => {
-                      e.preventDefault();
-                      router.push("/settings");
-                    }}
+                    asChild
                   >
-                    <div className="flex items-center gap-2">
-                      <Settings
-                        className={cn(
-                          "size-4",
-                          isSettingsPage && "text-primary-accent",
-                        )}
-                      />
-                      settings
-                    </div>
+                    <AppLink href="/settings" variant="transparent">
+                      <div className="flex items-center gap-2">
+                        <Settings
+                          className={cn(
+                            "size-4",
+                            isSettingsPage && "text-primary-accent",
+                          )}
+                        />
+                        settings
+                      </div>
+                    </AppLink>
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     className="basic-transition capitalize"
-                    onSelect={(e) => {
-                      e.preventDefault();
-                      router.push("/forgot-password");
-                    }}
+                    asChild
                   >
-                    <div className="flex items-center gap-2">
-                      <Key className="size-4" />
-                      reset password
-                    </div>
+                    <AppLink href="/forgot-password" variant="transparent">
+                      <div className="flex items-center gap-2">
+                        <Key className="size-4" />
+                        reset password
+                      </div>
+                    </AppLink>
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
@@ -159,7 +157,6 @@ export default function NavUser() {
                     variant="destructive"
                     className="basic-transition capitalize"
                     onSelect={(e) => {
-                      e.preventDefault();
                       handleSignOut();
                     }}
                   >

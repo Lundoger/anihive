@@ -17,7 +17,7 @@ export default async function ForgotPasswordPage({ params }: Props) {
       <div className="flex flex-col items-center gap-6">
         <Logo size="lg" variant="transparent" />
         <div className="flex flex-col items-center gap-3">
-          <h1 className="title">{t("title")}</h1>
+          <h1 className="title text-center">{t("title")}</h1>
           <p className="text-center text-sm opacity-50">
             {t("description")}
             <br />

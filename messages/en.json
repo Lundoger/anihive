@@ -119,5 +119,17 @@
 				"resendSuccessful": "Code resent successfully"
 			}
 		}
+	},
+	"settings": {
+		"tabs": {
+			"triggers": {
+				"account": "Account",
+				"site": "Site"
+			},
+			"content": {
+				"account": "Make changes to your account here.",
+				"site": "We're working on this page."
+			}
+		}
 	}
 }
