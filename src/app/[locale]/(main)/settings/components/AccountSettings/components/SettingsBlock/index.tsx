@@ -1,5 +1,5 @@
 import { cn } from "@/shared/utils/utils";
-import type { ReactNode } from "react";
+import { type ReactNode, memo } from "react";
 
 type Props = {
   title: string;
@@ -8,6 +8,40 @@ type Props = {
   className?: string;
   contentClassName?: string;
 };
+
+const Description = memo(
+  function Description({ description }: { description: ReactNode }) {
+    if (typeof description !== "string") {
+      return description;
+    }
+
+    const parts = description
+      .split(".")
+      .map((s) => s.trim())
+      .filter(Boolean);
+
+    if (parts.length <= 1) {
+      return (
+        <p className="text-gray text-xs font-medium">
+          {description.trim().endsWith(".")
+            ? description.trim()
+            : `${description.trim()}.`}
+        </p>
+      );
+    }
+
+    return (
+      <>
+        {parts.map((part, idx) => (
+          <p key={idx} className="text-gray text-xs font-medium">
+            {part}.
+          </p>
+        ))}
+      </>
+    );
+  },
+  (prev, next) => prev.description === next.description,
+);
 
 export default function SettingsBlock({
   title,
@@ -25,10 +59,8 @@ export default function SettingsBlock({
       )}
     >
       <div className="flex flex-col gap-0.5 leading-0">
-        <h2 className="text-base font-bold">{title}</h2>
-        {description && (
-          <p className="text-gray text-xs font-medium">{description}</p>
-        )}
+        <h3 className="text-base font-bold">{title}</h3>
+        {description && <Description description={description} />}
       </div>
 
       <div className={cn("flex flex-col gap-4", contentClassName)}>

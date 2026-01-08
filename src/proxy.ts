@@ -35,6 +35,11 @@ export async function proxy(request: NextRequest) {
     copyCookies(response, redirectRes);
     return redirectRes;
   }
+  // else if (!user && isProtectedPage) {
+  //   const redirectRes = NextResponse.redirect(new URL(`/login`, request.url));
+  //   copyCookies(response, redirectRes);
+  //   return redirectRes;
+  // }
 
   return response;
 }

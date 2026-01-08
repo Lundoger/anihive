@@ -128,6 +128,10 @@
 			},
 			"content": {
 				"account": {
+					"profileTitle": "Profile settings",
+					"profileDescription": "In this section you can change your profile information. Mostly it affect the public information about you.",
+					"accountTitle": "Account settings",
+					"accountDescription": "In this section you can change your account information. Be careful, as some changes may be irreversible.",
 					"nickname": {
 						"title": "Nickname",
 						"description": "Change your nickname. This nickname will be displayed in your profile and will be visible to other users.",
@@ -145,6 +149,56 @@
 								"success": "Nickname updated",
 								"failed": "Failed to update nickname",
 								"noChanges": "New nickname must be different from the current one"
+							}
+						}
+					},
+					"email": {
+						"title": "Email",
+						"description": "Change your email. This email won't be visible to other users and will be used to login to your account.",
+						"form": {
+							"label": "Email",
+							"placeholders": {
+								"email": "Enter your email",
+								"token": "Enter the token from the email"
+							},
+							"submit": "Check the token and update",
+							"sendToken": "Send token to email",
+							"errors": {
+								"required": "Email is required",
+								"invalid": "Please enter a valid email address",
+								"tokenRequired": "Token is required"
+							},
+							"toast": {
+								"success": "Email updated successfully",
+								"failed": "Failed to update email",
+								"tokenSent": "Token sent to email",
+								"tokenExpired": "Token has expired",
+								"sameEmail": "New email must be different from the current one"
+							}
+						}
+					},
+					"password": {
+						"title": "Password",
+						"description": "Change your password. Be careful changing your password. If you didn’t have a password, leave the “Current password” field empty.",
+						"form": {
+							"placeholders": {
+								"current": "Enter your current password",
+								"new": "Enter your new password",
+								"confirm": "Confirm your new password"
+							},
+							"submit": "Update password",
+							"errors": {
+								"passwordRequired": "Current password is required",
+								"newPasswordRequired": "New password is required",
+								"confirmPasswordRequired": "Confirm password is required",
+								"newPasswordMin": "New password must be at least 8 characters long",
+								"newPasswordSpecial": "New password must include at least one special character",
+								"passwordMatch": "Passwords do not match"
+							},
+							"toast": {
+								"success": "Password updated successfully",
+								"failed": "Failed to update password",
+								"noChanges": "New password must be different from the current one"
 							}
 						}
 					}
