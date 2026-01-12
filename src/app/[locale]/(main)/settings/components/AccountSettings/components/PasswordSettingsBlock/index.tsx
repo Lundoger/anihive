@@ -54,7 +54,39 @@ export default function EmailSettingsBlock() {
     mode: "onChange",
   });
 
-  async function onSubmit(values: PasswordValues) {}
+  async function onSubmit(values: PasswordValues) {
+    if (!user?.email) {
+      toast.error("Not authenticated");
+      return;
+    }
+
+    if (values.newPassword === values.password) {
+      toast.warning(t("form.toast.noChanges"));
+      return;
+    }
+
+    const { error: reauthError } = await supabase.auth.signInWithPassword({
+      email: user.email,
+      password: values.password,
+    });
+
+    if (reauthError) {
+      toast.error(t("form.toast.reauthFailed"));
+      return;
+    }
+
+    const { error: updateError } = await supabase.auth.updateUser({
+      password: values.newPassword,
+    });
+
+    if (updateError) {
+      toast.error(updateError.message);
+      return;
+    }
+
+    toast.success(t("form.toast.success"));
+    form.reset({ password: "", newPassword: "", confirmNewPassword: "" });
+  }
 
   const isSubmitting = form.formState.isSubmitting;
 

@@ -198,7 +198,27 @@
 							"toast": {
 								"success": "Password updated successfully",
 								"failed": "Failed to update password",
-								"noChanges": "New password must be different from the current one"
+								"noChanges": "New password must be different from the current one",
+								"reauthFailed": "Current password is incorrect"
+							}
+						}
+					},
+					"avatar": {
+						"title": "Avatar",
+						"description": "Update your avatar. It will be visible to other users.",
+						"form": {
+							"pick": "Choose image",
+							"remove": "Remove",
+							"errors": {
+								"required": "Please choose an image",
+								"type": "Only image files are allowed",
+								"size": "Image must be smaller than 5MB"
+							},
+							"toast": {
+								"uploadSuccess": "Avatar updated",
+								"uploadFailed": "Failed to update avatar",
+								"removeSuccess": "Avatar removed",
+								"removeFailed": "Failed to remove avatar"
 							}
 						}
 					}
