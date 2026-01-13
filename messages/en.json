@@ -152,6 +152,24 @@
 							}
 						}
 					},
+					"avatar": {
+						"title": "Avatar",
+						"description": "Update your avatar. This avatar will be displayed in your profile and will be visible to other users.",
+						"form": {
+							"pick": "Choose image",
+							"remove": "Remove",
+							"submit": "Update",
+							"errors": {
+								"required": "Please choose an image",
+								"type": "Only image files are allowed",
+								"size": "Image must be smaller than 5MB"
+							},
+							"toast": {
+								"success": "Avatar updated",
+								"failed": "Failed to update avatar"
+							}
+						}
+					},
 					"email": {
 						"title": "Email",
 						"description": "Change your email. This email won't be visible to other users and will be used to login to your account.",
@@ -200,25 +218,6 @@
 								"failed": "Failed to update password",
 								"noChanges": "New password must be different from the current one",
 								"reauthFailed": "Current password is incorrect"
-							}
-						}
-					},
-					"avatar": {
-						"title": "Avatar",
-						"description": "Update your avatar. It will be visible to other users.",
-						"form": {
-							"pick": "Choose image",
-							"remove": "Remove",
-							"errors": {
-								"required": "Please choose an image",
-								"type": "Only image files are allowed",
-								"size": "Image must be smaller than 5MB"
-							},
-							"toast": {
-								"uploadSuccess": "Avatar updated",
-								"uploadFailed": "Failed to update avatar",
-								"removeSuccess": "Avatar removed",
-								"removeFailed": "Failed to remove avatar"
 							}
 						}
 					}

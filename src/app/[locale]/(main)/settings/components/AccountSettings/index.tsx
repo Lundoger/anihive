@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { memo } from "react";
+import AvatarSettingsBlock from "./components/AvatarSettingsBlock";
 import EmailSettingsBlock from "./components/EmailSettingsBlock";
 import NicknameSettingsBlock from "./components/NicknameSettingsBlock";
 import PasswordSettingsBlock from "./components/PasswordSettingsBlock";
@@ -42,7 +43,10 @@ export default async function AccountSettings() {
           <h2 className="text-xl font-bold">{t("profileTitle")}</h2>
           <SectionDescription text={t("profileDescription")} />
         </div>
-        <NicknameSettingsBlock />
+        <div className="flex flex-col gap-4">
+          <NicknameSettingsBlock />
+          <AvatarSettingsBlock />
+        </div>
       </div>
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-0.5 pl-4 leading-0">
