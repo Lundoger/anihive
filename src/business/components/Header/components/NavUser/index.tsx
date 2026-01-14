@@ -1,6 +1,8 @@
 "use client";
 
 import { useAuthStore } from "@/business/stores/auth";
+import { buildAvatarUrl } from "@/business/utils/avatar";
+import { getBrowserClient } from "@/business/utils/supabase/client";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import {
   Avatar,
@@ -21,12 +23,29 @@ import { Skeleton } from "@/shared/components/Skeleton";
 import { cn } from "@/shared/utils/utils";
 import { Key, LogOut, Settings, UserRound } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useRef, useTransition } from "react";
+import { useMemo, useRef, useTransition } from "react";
 import { toast } from "sonner";
 
 export default function NavUser() {
   const t = useTranslations("");
   const { initialized, signOut, user, profile } = useAuthStore();
+
+  const supabase = getBrowserClient();
+  const avatarUrl = useMemo(() => {
+    return buildAvatarUrl(
+      supabase,
+      profile?.avatar,
+      profile?.avatar_updated_at,
+    );
+  }, [profile?.avatar, profile?.avatar_updated_at]);
+
+  const avatarFallback = useMemo(() => {
+    return (
+      profile?.username?.charAt(0) ||
+      user?.email?.charAt(0) ||
+      "U"
+    ).toUpperCase();
+  }, [profile?.username, user?.email]);
 
   const lastInteraction = useRef<"pointer" | "keyboard">("pointer");
   const [isPending, startTransition] = useTransition();
@@ -72,12 +91,15 @@ export default function NavUser() {
                 >
                   <Avatar className="size-10 rounded-lg">
                     <AvatarImage
-                      src="https://shikimori.one/uploads/poster/characters/141354/main-253fd5d4beb3245037a0e70757e9932f.webp"
+                      src={avatarUrl || undefined}
                       alt={`${user?.email ?? "user"} avatar`}
                       className="rounded-lg object-cover"
                     />
-                    <AvatarFallback className="rounded-lg uppercase">
-                      {user?.email?.charAt(0) || "U"}
+                    <AvatarFallback
+                      className="rounded-lg uppercase"
+                      delayMs={0}
+                    >
+                      {avatarFallback}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
@@ -97,11 +119,15 @@ export default function NavUser() {
                   <div className="flex w-full items-center gap-2 overflow-hidden">
                     <Avatar className="size-10 rounded-lg">
                       <AvatarImage
-                        src={profile?.avatar ?? ""}
-                        alt={profile?.username ?? "user avatar"}
+                        src={avatarUrl || undefined}
+                        alt={`${user?.email ?? "user"} avatar`}
+                        className="rounded-lg object-cover"
                       />
-                      <AvatarFallback className="rounded-lg uppercase">
-                        {user?.email?.charAt(0) || "U"}
+                      <AvatarFallback
+                        className="rounded-lg uppercase"
+                        delayMs={0}
+                      >
+                        {avatarFallback}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex min-w-0 flex-1 flex-col gap-1">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuthStore } from "@/business/stores/auth";
+import { buildAvatarUrl } from "@/business/utils/avatar";
 import { getBrowserClient } from "@/business/utils/supabase/client";
 import {
   Avatar,
@@ -9,10 +10,11 @@ import {
 } from "@/shared/components/Avatar";
 import { Button } from "@/shared/components/Button";
 import { Field, FieldError } from "@/shared/components/Field";
+import { Skeleton } from "@/shared/components/Skeleton";
 import { Spinner } from "@/shared/components/Spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -40,17 +42,20 @@ type AvatarValues = z.infer<ReturnType<typeof createAvatarSchema>>;
 export default function AvatarSettingsBlock() {
   const t = useTranslations("settings.tabs.content.account.avatar");
   const schema = useMemo(() => createAvatarSchema(t), [t]);
+  const [isPending, startTransition] = useTransition();
 
-  const { userId, email, username, avatarUrl } = useAuthStore(
-    useShallow((s) => ({
-      userId: s.user?.id ?? null,
-      email: s.user?.email ?? null,
-      username: s.profile?.username ?? null,
-      avatarUrl: s.profile?.avatar ?? "",
-    })),
-  );
+  const { userId, email, username, avatarPath, avatarUpdatedAt, initialized } =
+    useAuthStore(
+      useShallow((s) => ({
+        userId: s.user?.id ?? null,
+        email: s.user?.email ?? null,
+        username: s.profile?.username ?? null,
+        avatarPath: s.profile?.avatar ?? null,
+        avatarUpdatedAt: s.profile?.avatar_updated_at ?? null,
+        initialized: s.initialized,
+      })),
+    );
   const setProfile = useAuthStore((s) => s.setProfile);
-
   const supabase = getBrowserClient();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -65,6 +70,10 @@ export default function AvatarSettingsBlock() {
     if (!file) return null;
     return URL.createObjectURL(file);
   }, [file]);
+
+  const currentAvatarUrl = useMemo(() => {
+    return buildAvatarUrl(supabase, avatarPath, avatarUpdatedAt);
+  }, [avatarPath, avatarUpdatedAt]);
 
   useEffect(() => {
     if (!previewUrl) return;
@@ -86,11 +95,44 @@ export default function AvatarSettingsBlock() {
     }
   }
 
-  async function deleteAvatar() {
+  function deleteAvatar() {
     if (!userId) {
       toast.error("Not authenticated");
       return;
     }
+
+    if (!avatarPath) return;
+
+    startTransition(async () => {
+      try {
+        const { error: removeError } = await supabase.storage
+          .from("avatars")
+          .remove([avatarPath]);
+
+        if (removeError) {
+          toast.error(removeError.message);
+          return;
+        }
+
+        const { data: updatedProfile, error: profileError } = await supabase
+          .from("profiles")
+          .update({ avatar: null })
+          .eq("id", userId)
+          .select("*")
+          .single();
+
+        if (profileError) {
+          toast.error(profileError.message);
+          return;
+        }
+
+        clearSelectedFile();
+        setProfile(updatedProfile);
+        toast.success("Avatar removed");
+      } catch (e: any) {
+        toast.error(e?.message ?? "Remove failed");
+      }
+    });
   }
 
   async function onSubmit(values: AvatarValues) {
@@ -102,6 +144,16 @@ export default function AvatarSettingsBlock() {
     try {
       const file = values.file;
       const ext = file.name.split(".").pop()?.toLowerCase() || "png";
+
+      await supabase.storage
+        .from("avatars")
+        .remove([
+          `${userId}/avatar.png`,
+          `${userId}/avatar.jpg`,
+          `${userId}/avatar.jpeg`,
+          `${userId}/avatar.webp`,
+        ]);
+
       const path = `${userId}/avatar.${ext}`;
 
       const { error: uploadError } = await supabase.storage
@@ -117,13 +169,10 @@ export default function AvatarSettingsBlock() {
         return;
       }
 
-      const { data } = supabase.storage.from("avatars").getPublicUrl(path);
-
-      const versionedUrl = `${data.publicUrl}?v=${Date.now()}`;
-
+      const now = new Date().toISOString();
       const { data: updatedProfile, error: profileError } = await supabase
         .from("profiles")
-        .update({ avatar: versionedUrl })
+        .update({ avatar: path, avatar_updated_at: now })
         .eq("id", userId)
         .select("*")
         .single();
@@ -172,16 +221,23 @@ export default function AvatarSettingsBlock() {
               />
 
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                <Avatar className="size-24 rounded-2xl">
-                  <AvatarImage
-                    src={previewUrl ?? avatarUrl ?? ""}
-                    alt={`${username ?? email ?? "user"} avatar`}
-                    className="rounded-2xl object-cover"
-                  />
-                  <AvatarFallback className="rounded-2xl text-2xl font-semibold uppercase">
-                    {fallbackLetter}
-                  </AvatarFallback>
-                </Avatar>
+                {initialized && !isPending ? (
+                  <Avatar className="size-24 rounded-2xl">
+                    {previewUrl || currentAvatarUrl ? (
+                      <AvatarImage
+                        src={previewUrl || currentAvatarUrl || undefined}
+                        alt={`${username ?? email ?? "user"} avatar`}
+                        className="rounded-2xl object-cover"
+                      />
+                    ) : (
+                      <AvatarFallback className="rounded-2xl text-2xl font-semibold uppercase">
+                        {fallbackLetter}
+                      </AvatarFallback>
+                    )}
+                  </Avatar>
+                ) : (
+                  <Skeleton className="size-24 rounded-2xl" />
+                )}
 
                 <div className="flex flex-col gap-3">
                   <Button
@@ -200,7 +256,7 @@ export default function AvatarSettingsBlock() {
                     size="lg"
                     className="h-12 w-full rounded-xl text-sm sm:w-fit"
                     onClick={deleteAvatar}
-                    disabled={!avatarUrl}
+                    disabled={!avatarPath}
                     ripple
                   >
                     {t("form.remove")}
@@ -223,16 +279,9 @@ export default function AvatarSettingsBlock() {
             className="relative h-12 w-full min-w-[220px] rounded-xl text-sm sm:w-fit"
             disabled={isSubmitting || !file}
             ripple
-            aria-busy={isSubmitting}
+            aria-busy={isSubmitting || isPending}
           >
-            <span className={isSubmitting ? "opacity-0" : "opacity-100"}>
-              {t("form.submit")}
-            </span>
-            {isSubmitting ? (
-              <span className="absolute inset-0 grid place-items-center">
-                <Spinner />
-              </span>
-            ) : null}
+            {isSubmitting ? <Spinner /> : t("form.submit")}
           </Button>
         </div>
       </form>

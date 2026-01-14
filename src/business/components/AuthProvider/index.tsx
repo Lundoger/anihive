@@ -16,36 +16,42 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const reqId = useRef(0);
   const lastUserIdRef = useRef<string | null>(null);
+  const bootstrappedRef = useRef(false);
 
-  const fetchProfile = async (userId: string) => {
+  const fetchProfile = async (userId: string): Promise<boolean> => {
     const myReq = ++reqId.current;
 
     setProfileError(null);
 
     const { data, error } = await supabase
       .from("profiles")
-      .select("id, username, avatar")
+      .select("id, username, avatar, avatar_updated_at")
       .eq("id", userId)
       .maybeSingle<Profile>();
 
-    if (myReq !== reqId.current) return;
+    if (myReq !== reqId.current) return false;
 
     if (error) {
       setProfile(null);
       setProfileError(error.message);
-      return;
+      return true;
     }
 
     if (!data) {
       setProfile(null);
-      return;
+      return true;
     }
 
     setProfile(data);
+    return true;
   };
 
   useEffect(() => {
     void (async () => {
+      // Don't mark the app "initialized" until we have attempted to load the profile
+      // at least once after bootstrapping the auth session.
+      if (!bootstrappedRef.current) return;
+
       const userId = session?.user?.id ?? null;
 
       if (!userId) {
@@ -53,6 +59,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         reqId.current++;
         setProfile(null);
         setProfileError(null);
+        setInitialized(true);
         return;
       }
 
@@ -60,10 +67,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const hasProfileForUser = profile?.id === userId;
       const isSameUser = lastUserIdRef.current === userId;
 
-      if (isSameUser && hasProfileForUser) return;
+      if (isSameUser && hasProfileForUser) {
+        setInitialized(true);
+        return;
+      }
 
+      setInitialized(false);
       lastUserIdRef.current = userId;
-      await fetchProfile(userId);
+      const applied = await fetchProfile(userId);
+      // Only flip initialized back to true if this request wasn't superseded.
+      if (applied) setInitialized(true);
     })();
   }, [session, setProfile, setProfileError]);
 
@@ -74,8 +87,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { data } = await supabase.auth.getSession();
       if (!alive) return;
 
+      bootstrappedRef.current = true;
       setSession(data.session ?? null);
-      if (alive) setInitialized(true);
     };
 
     bootstrap();
@@ -84,8 +97,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       async (event, session) => {
         if (!alive) return;
 
+        bootstrappedRef.current = true;
         setSession(session ?? null);
-        if (alive) setInitialized(true);
       },
     );
 
@@ -93,7 +106,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       alive = false;
       sub.subscription.unsubscribe();
     };
-  }, [supabase, setSession, setProfile, setProfileError, setInitialized]);
+  }, [supabase, setSession]);
 
   return children;
 }
