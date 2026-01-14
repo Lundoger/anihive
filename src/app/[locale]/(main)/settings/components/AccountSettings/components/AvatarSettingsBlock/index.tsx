@@ -223,13 +223,12 @@ export default function AvatarSettingsBlock() {
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                 {initialized && !isPending ? (
                   <Avatar className="size-24 rounded-2xl">
-                    {previewUrl || currentAvatarUrl ? (
-                      <AvatarImage
-                        src={previewUrl || currentAvatarUrl || undefined}
-                        alt={`${username ?? email ?? "user"} avatar`}
-                        className="rounded-2xl object-cover"
-                      />
-                    ) : (
+                    <AvatarImage
+                      src={previewUrl || currentAvatarUrl || undefined}
+                      alt={`${username ?? email ?? "user"} avatar`}
+                      className="rounded-2xl object-cover"
+                    />
+                    {Boolean(!previewUrl && !currentAvatarUrl) && (
                       <AvatarFallback className="rounded-2xl text-2xl font-semibold uppercase">
                         {fallbackLetter}
                       </AvatarFallback>

@@ -95,12 +95,14 @@ export default function NavUser() {
                       alt={`${user?.email ?? "user"} avatar`}
                       className="rounded-lg object-cover"
                     />
-                    <AvatarFallback
-                      className="rounded-lg uppercase"
-                      delayMs={0}
-                    >
-                      {avatarFallback}
-                    </AvatarFallback>
+                    {Boolean(!avatarUrl) && (
+                      <AvatarFallback
+                        className="rounded-lg uppercase"
+                        delayMs={0}
+                      >
+                        {avatarFallback}
+                      </AvatarFallback>
+                    )}
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
@@ -123,12 +125,14 @@ export default function NavUser() {
                         alt={`${user?.email ?? "user"} avatar`}
                         className="rounded-lg object-cover"
                       />
-                      <AvatarFallback
-                        className="rounded-lg uppercase"
-                        delayMs={0}
-                      >
-                        {avatarFallback}
-                      </AvatarFallback>
+                      {Boolean(!avatarUrl) && (
+                        <AvatarFallback
+                          className="rounded-lg uppercase"
+                          delayMs={0}
+                        >
+                          {avatarFallback}
+                        </AvatarFallback>
+                      )}
                     </Avatar>
                     <div className="flex min-w-0 flex-1 flex-col gap-1">
                       {profile?.username && (
