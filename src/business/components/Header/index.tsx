@@ -12,7 +12,7 @@ export default function Header() {
   const isHomePage = pathname === "/";
 
   return (
-    <header className="fixed top-0 left-0 z-50 w-full bg-[rgba(0,0,0,1)] backdrop-blur-sm">
+    <header className="fixed top-0 left-0 z-50 w-full bg-black pr-(--removed-body-scroll-bar-size,0px) backdrop-blur-sm">
       <div className="custom-container flex h-[72px] items-center justify-between gap-x-5">
         <Logo
           className={cn(

@@ -165,8 +165,10 @@
 								"size": "Image must be smaller than 5MB"
 							},
 							"toast": {
-								"success": "Avatar updated",
-								"failed": "Failed to update avatar"
+								"successUpdate": "Avatar updated",
+								"failedUpdate": "Failed to update avatar",
+								"successRemove": "Avatar removed",
+								"failedRemove": "Failed to remove avatar"
 							}
 						}
 					},
@@ -223,6 +225,26 @@
 					}
 				},
 				"site": "We're working on this page."
+			}
+		}
+	},
+	"main": {
+		"header": {
+			"navigation": {
+				"releases": "Releases",
+				"schedule": "Schedule",
+				"animeCatalog": "Anime",
+				"mangaCatalog": "Manga"
+			},
+			"tooltips": {
+				"random anime": "Random anime",
+				"random manga": "Random manga",
+				"search": "Search"
+			},
+			"navUser": {
+				"logout": "Logout",
+				"settings": "Settings",
+				"resetPassword": "Reset password"
 			}
 		}
 	}

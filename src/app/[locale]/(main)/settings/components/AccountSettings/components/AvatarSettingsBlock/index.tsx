@@ -128,9 +128,9 @@ export default function AvatarSettingsBlock() {
 
         clearSelectedFile();
         setProfile(updatedProfile);
-        toast.success("Avatar removed");
+        toast.success(t("form.toast.successRemove"));
       } catch (e: any) {
-        toast.error(e?.message ?? "Remove failed");
+        toast.error(e?.message ?? t("form.toast.failedRemove"));
       }
     });
   }
@@ -184,10 +184,10 @@ export default function AvatarSettingsBlock() {
 
       setProfile(updatedProfile);
 
-      toast.success("Avatar updated");
+      toast.success(t("form.toast.successUpdate"));
       clearSelectedFile();
     } catch (e: any) {
-      toast.error(e?.message ?? "Upload failed");
+      toast.error(e?.message ?? t("form.toast.uploadFailed"));
     }
   }
 
