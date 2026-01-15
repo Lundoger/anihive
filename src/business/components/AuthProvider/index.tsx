@@ -78,7 +78,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Only flip initialized back to true if this request wasn't superseded.
       if (applied) setInitialized(true);
     })();
-  }, [session, setProfile, setProfileError]);
+  }, [session, setInitialized, setProfile, setProfileError]);
 
   useEffect(() => {
     let alive = true;
@@ -87,8 +87,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { data } = await supabase.auth.getSession();
       if (!alive) return;
 
+      const nextSession = data.session ?? null;
       bootstrappedRef.current = true;
-      setSession(data.session ?? null);
+      setSession(nextSession);
+
+      // If the user is not authenticated, `setSession(null)` may not trigger a rerender
+      // (e.g. initial store state is already null). Ensure we still mark the app initialized.
+      if (!nextSession?.user?.id) {
+        lastUserIdRef.current = null;
+        reqId.current++;
+        setProfile(null);
+        setProfileError(null);
+        setInitialized(true);
+      }
     };
 
     bootstrap();
@@ -98,7 +109,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (!alive) return;
 
         bootstrappedRef.current = true;
-        setSession(session ?? null);
+        const nextSession = session ?? null;
+        setSession(nextSession);
+
+        // Same edge case as bootstrap: keep guests initialized even if session stays null.
+        if (!nextSession?.user?.id) {
+          lastUserIdRef.current = null;
+          reqId.current++;
+          setProfile(null);
+          setProfileError(null);
+          setInitialized(true);
+        }
       },
     );
 
@@ -106,7 +127,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       alive = false;
       sub.subscription.unsubscribe();
     };
-  }, [supabase, setSession]);
+  }, [supabase, setInitialized, setProfile, setProfileError, setSession]);
 
   return children;
 }
