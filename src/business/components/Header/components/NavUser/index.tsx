@@ -66,6 +66,9 @@ export default function NavUser() {
     });
   };
 
+  console.log("isPending", isPending);
+  console.log("initialized", initialized);
+
   return (
     <>
       {initialized && !isPending ? (

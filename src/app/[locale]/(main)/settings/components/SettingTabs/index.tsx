@@ -18,7 +18,7 @@ export default async function SettingTabs() {
           <UserRound className="size-5" />
           <span>{t("triggers.account")}</span>
         </TabsTrigger>
-        <TabsTrigger value="site" disabled>
+        <TabsTrigger value="site">
           <Globe className="size-5" />
           <span>{t("triggers.site")}</span>
         </TabsTrigger>
