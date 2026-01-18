@@ -1,252 +1,252 @@
 {
-	"login": {
-		"title": "Login to your account",
-		"description": "Enter your email and password to login to your account.",
-		"socialDescription": "You can also login with your social accounts",
-		"register": "Don't have an account? Register",
-		"forgotPassword": "Password recovery",
-		"cookies": "We use cookies to make the site more comfortable for you. By continuing to view, you agree to the use of cookies",
-		"form": {
-			"email": "Email",
-			"password": "Password",
-			"login": "Login",
-			"errors": {
-				"emailRequired": "Email is required",
-				"emailInvalid": "Please enter a valid email address",
-				"passwordRequired": "Password is required"
-			},
-			"toast": {
-				"loginFailed": "Failed to login to your account",
-				"loginSuccessful": "Successfully logged in"
-			}
-		}
-	},
-	"registration": {
-		"title": "Create an account",
-		"description": "Enter your email, username and password to create an account.",
-		"socialDescription": "You can also create an account with your social accounts",
-		"register": "Already have an account? Login",
-		"forgotPassword": "Reset password",
-		"cookies": "We use cookies to make the site more comfortable for you. By continuing to view, you agree to the use of cookies",
-		"form": {
-			"email": "Email",
-			"password": "Password",
-			"confirmPassword": "Confirm password",
-			"username": "Username",
-			"register": "Create an account",
-			"errors": {
-				"emailRequired": "Email is required",
-				"emailInvalid": "Please enter a valid email address",
-				"passwordRequired": "Password is required",
-				"confirmPasswordRequired": "Confirm password is required",
-				"usernameRequired": "Username is required",
-				"usernameMin": "Username must be at least 3 characters long",
-				"passwordMin": "Password must be at least 8 characters long",
-				"passwordSpecial": "Password must include at least one special character",
-				"passwordMatch": "Passwords do not match"
-			},
-			"toast": {
-				"registrationFailed": "Registration failed",
-				"registrationPending": "Verify your email to complete registration",
-				"registrationSuccessful": "Registration successful"
-			}
-		}
-	},
-	"verifyEmail": {
-		"title": "Verify your email",
-		"description": "Enter the code from the email to verify your account.",
-		"socialDescription": "Check your inbox and spam folder",
-		"login": "Already have an account? Login",
-		"forgotPassword": "Password recovery",
-		"cookies": "We use cookies to make the site more comfortable for you. By continuing to view, you agree to the use of cookies",
-		"form": {
-			"token": "Verification code",
-			"verify": "Verify",
-			"resend": "Resend code",
-			"errors": {
-				"tokenRequired": "Verification code is required",
-				"missingEmail": "Missing email. Please go back to sign up and try again."
-			},
-			"toast": {
-				"verifyFailed": "Failed to verify email",
-				"verifySuccessful": "Email verified successfully",
-				"resendSuccessful": "Code resent successfully"
-			}
-		}
-	},
-	"forgotPassword": {
-		"title": "Password recovery",
-		"description": "You can create a new password for your account.",
-		"subDescription": "Enter your email, on which you registered your account, we will send you a letter with further instructions",
-		"login": "Already have an account? Login",
-		"cookies": "We use cookies to make the site more comfortable for you. By continuing to view, you agree to the use of cookies",
-		"form": {
-			"email": "Email",
-			"send": "Send recovery email",
-			"errors": {
-				"emailRequired": "Email is required",
-				"emailInvalid": "Please enter a valid email address"
-			},
-			"toast": {
-				"emailSent": "Email sent successfully"
-			}
-		}
-	},
-	"resetPassword": {
-		"title": "Reset your password",
-		"description": "You can create a new password for your account.",
-		"subDescription": "Check your email and find the letter with the code to reset your password",
-		"login": "Already have an account? Login",
-		"forgotPassword": "Send the code again",
-		"cookies": "We use cookies to make the site more comfortable for you. By continuing to view, you agree to the use of cookies",
-		"form": {
-			"token": "Code from the letter",
-			"newPassword": "New password",
-			"confirmPassword": "Confirm password",
-			"reset": "Save new password",
-			"errors": {
-				"tokenRequired": "Code from the letter is required",
-				"confirmPasswordRequired": "Confirm password is required",
-				"passwordRequired": "New password is required",
-				"passwordMin": "Password must be at least 8 characters long",
-				"passwordSpecial": "Password must include at least one special character",
-				"passwordMatch": "Passwords do not match",
-				"missingEmail": "Missing email. Please go back to password recovery and try again."
-			},
-			"toast": {
-				"resetSuccessful": "Password saved successfully",
-				"resetFailed": "Password saving failed",
-				"resendSuccessful": "Code resent successfully"
-			}
-		}
-	},
-	"settings": {
-		"tabs": {
-			"triggers": {
-				"account": "Account",
-				"site": "Site"
-			},
-			"content": {
-				"account": {
-					"profileTitle": "Profile settings",
-					"profileDescription": "In this section you can change your profile information. Mostly it affect the public information about you.",
-					"accountTitle": "Account settings",
-					"accountDescription": "In this section you can change your account information. Be careful, as some changes may be irreversible.",
-					"nickname": {
-						"title": "Nickname",
-						"description": "Change your nickname. This nickname will be displayed in your profile and will be visible to other users.",
-						"form": {
-							"label": "Nickname",
-							"placeholder": "Nickname",
-							"submit": "Update",
-							"errors": {
-								"required": "Nickname is required",
-								"min": "Nickname must be at least 3 characters",
-								"max": "Nickname must be at most 20 characters",
-								"format": "Use only letters, numbers and underscore"
-							},
-							"toast": {
-								"success": "Nickname updated",
-								"failed": "Failed to update nickname",
-								"noChanges": "New nickname must be different from the current one"
-							}
-						}
-					},
-					"avatar": {
-						"title": "Avatar",
-						"description": "Update your avatar. This avatar will be displayed in your profile and will be visible to other users.",
-						"form": {
-							"pick": "Choose image",
-							"remove": "Remove",
-							"submit": "Update",
-							"errors": {
-								"required": "Please choose an image",
-								"type": "Only image files are allowed",
-								"size": "Image must be smaller than 5MB"
-							},
-							"toast": {
-								"successUpdate": "Avatar updated",
-								"failedUpdate": "Failed to update avatar",
-								"successRemove": "Avatar removed",
-								"failedRemove": "Failed to remove avatar"
-							}
-						}
-					},
-					"email": {
-						"title": "Email",
-						"description": "Change your email. This email won't be visible to other users and will be used to login to your account.",
-						"form": {
-							"label": "Email",
-							"placeholders": {
-								"email": "Enter your email",
-								"token": "Enter the token from the email"
-							},
-							"submit": "Check the token and update",
-							"sendToken": "Send token to email",
-							"errors": {
-								"required": "Email is required",
-								"invalid": "Please enter a valid email address",
-								"tokenRequired": "Token is required"
-							},
-							"toast": {
-								"success": "Email updated successfully",
-								"failed": "Failed to update email",
-								"tokenSent": "Token sent to email",
-								"tokenExpired": "Token has expired",
-								"sameEmail": "New email must be different from the current one"
-							}
-						}
-					},
-					"password": {
-						"title": "Password",
-						"description": "Change your password. Be careful changing your password. If you didn’t have a password, leave the “Current password” field empty.",
-						"form": {
-							"placeholders": {
-								"current": "Enter your current password",
-								"new": "Enter your new password",
-								"confirm": "Confirm your new password"
-							},
-							"submit": "Update password",
-							"errors": {
-								"passwordRequired": "Current password is required",
-								"newPasswordRequired": "New password is required",
-								"confirmPasswordRequired": "Confirm password is required",
-								"newPasswordMin": "New password must be at least 8 characters long",
-								"newPasswordSpecial": "New password must include at least one special character",
-								"passwordMatch": "Passwords do not match"
-							},
-							"toast": {
-								"success": "Password updated successfully",
-								"failed": "Failed to update password",
-								"noChanges": "New password must be different from the current one",
-								"reauthFailed": "Current password is incorrect"
-							}
-						}
-					}
-				},
-				"site": "We're working on this page."
-			}
-		}
-	},
-	"main": {
-		"header": {
-			"navigation": {
-				"releases": "Releases",
-				"schedule": "Schedule",
-				"animeCatalog": "Anime",
-				"mangaCatalog": "Manga",
-				"home": "Home"
-			},
-			"tooltips": {
-				"randomAnime": "Random anime",
-				"randomManga": "Random manga",
-				"search": "Search"
-			},
-			"navUser": {
-				"logout": "Logout",
-				"settings": "Settings",
-				"resetPassword": "Reset password"
-			}
-		}
-	}
+  "login": {
+    "title": "Login to your account",
+    "description": "Enter your email and password to login to your account.",
+    "socialDescription": "You can also login with your social accounts",
+    "register": "Don't have an account? Register",
+    "forgotPassword": "Password recovery",
+    "cookies": "We use cookies to make the site more comfortable for you. By continuing to view, you agree to the use of cookies",
+    "form": {
+      "email": "Email",
+      "password": "Password",
+      "login": "Login",
+      "errors": {
+        "emailRequired": "Email is required",
+        "emailInvalid": "Please enter a valid email address",
+        "passwordRequired": "Password is required"
+      },
+      "toast": {
+        "loginFailed": "Failed to login to your account",
+        "loginSuccessful": "Successfully logged in"
+      }
+    }
+  },
+  "registration": {
+    "title": "Create an account",
+    "description": "Enter your email, username and password to create an account.",
+    "socialDescription": "You can also create an account with your social accounts",
+    "register": "Already have an account? Login",
+    "forgotPassword": "Reset password",
+    "cookies": "We use cookies to make the site more comfortable for you. By continuing to view, you agree to the use of cookies",
+    "form": {
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "username": "Username",
+      "register": "Create an account",
+      "errors": {
+        "emailRequired": "Email is required",
+        "emailInvalid": "Please enter a valid email address",
+        "passwordRequired": "Password is required",
+        "confirmPasswordRequired": "Confirm password is required",
+        "usernameRequired": "Username is required",
+        "usernameMin": "Username must be at least 3 characters long",
+        "passwordMin": "Password must be at least 8 characters long",
+        "passwordSpecial": "Password must include at least one special character",
+        "passwordMatch": "Passwords do not match"
+      },
+      "toast": {
+        "registrationFailed": "Registration failed",
+        "registrationPending": "Verify your email to complete registration",
+        "registrationSuccessful": "Registration successful"
+      }
+    }
+  },
+  "verifyEmail": {
+    "title": "Verify your email",
+    "description": "Enter the code from the email to verify your account.",
+    "socialDescription": "Check your inbox and spam folder",
+    "login": "Already have an account? Login",
+    "forgotPassword": "Password recovery",
+    "cookies": "We use cookies to make the site more comfortable for you. By continuing to view, you agree to the use of cookies",
+    "form": {
+      "token": "Verification code",
+      "verify": "Verify",
+      "resend": "Resend code",
+      "errors": {
+        "tokenRequired": "Verification code is required",
+        "missingEmail": "Missing email. Please go back to sign up and try again."
+      },
+      "toast": {
+        "verifyFailed": "Failed to verify email",
+        "verifySuccessful": "Email verified successfully",
+        "resendSuccessful": "Code resent successfully"
+      }
+    }
+  },
+  "forgotPassword": {
+    "title": "Password recovery",
+    "description": "You can create a new password for your account.",
+    "subDescription": "Enter your email, on which you registered your account, we will send you a letter with further instructions",
+    "login": "Already have an account? Login",
+    "cookies": "We use cookies to make the site more comfortable for you. By continuing to view, you agree to the use of cookies",
+    "form": {
+      "email": "Email",
+      "send": "Send recovery email",
+      "errors": {
+        "emailRequired": "Email is required",
+        "emailInvalid": "Please enter a valid email address"
+      },
+      "toast": {
+        "emailSent": "Email sent successfully"
+      }
+    }
+  },
+  "resetPassword": {
+    "title": "Reset your password",
+    "description": "You can create a new password for your account.",
+    "subDescription": "Check your email and find the letter with the code to reset your password",
+    "login": "Already have an account? Login",
+    "forgotPassword": "Send the code again",
+    "cookies": "We use cookies to make the site more comfortable for you. By continuing to view, you agree to the use of cookies",
+    "form": {
+      "token": "Code from the letter",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm password",
+      "reset": "Save new password",
+      "errors": {
+        "tokenRequired": "Code from the letter is required",
+        "confirmPasswordRequired": "Confirm password is required",
+        "passwordRequired": "New password is required",
+        "passwordMin": "Password must be at least 8 characters long",
+        "passwordSpecial": "Password must include at least one special character",
+        "passwordMatch": "Passwords do not match",
+        "missingEmail": "Missing email. Please go back to password recovery and try again."
+      },
+      "toast": {
+        "resetSuccessful": "Password saved successfully",
+        "resetFailed": "Password saving failed",
+        "resendSuccessful": "Code resent successfully"
+      }
+    }
+  },
+  "settings": {
+    "tabs": {
+      "triggers": {
+        "account": "Account",
+        "site": "Site"
+      },
+      "content": {
+        "account": {
+          "profileTitle": "Profile settings",
+          "profileDescription": "In this section you can change your profile information. Mostly it affect the public information about you.",
+          "accountTitle": "Account settings",
+          "accountDescription": "In this section you can change your account information. Be careful, as some changes may be irreversible.",
+          "nickname": {
+            "title": "Nickname",
+            "description": "Change your nickname. This nickname will be displayed in your profile and will be visible to other users.",
+            "form": {
+              "label": "Nickname",
+              "placeholder": "Nickname",
+              "submit": "Update",
+              "errors": {
+                "required": "Nickname is required",
+                "min": "Nickname must be at least 3 characters",
+                "max": "Nickname must be at most 20 characters",
+                "format": "Use only letters, numbers and underscore"
+              },
+              "toast": {
+                "success": "Nickname updated",
+                "failed": "Failed to update nickname",
+                "noChanges": "New nickname must be different from the current one"
+              }
+            }
+          },
+          "avatar": {
+            "title": "Avatar",
+            "description": "Update your avatar. This avatar will be displayed in your profile and will be visible to other users.",
+            "form": {
+              "pick": "Choose image",
+              "remove": "Remove",
+              "submit": "Update",
+              "errors": {
+                "required": "Please choose an image",
+                "type": "Only image files are allowed",
+                "size": "Image must be smaller than 5MB"
+              },
+              "toast": {
+                "successUpdate": "Avatar updated",
+                "failedUpdate": "Failed to update avatar",
+                "successRemove": "Avatar removed",
+                "failedRemove": "Failed to remove avatar"
+              }
+            }
+          },
+          "email": {
+            "title": "Email",
+            "description": "Change your email. This email won't be visible to other users and will be used to login to your account.",
+            "form": {
+              "label": "Email",
+              "placeholders": {
+                "email": "Enter your email",
+                "token": "Enter the token from the email"
+              },
+              "submit": "Check the token and update",
+              "sendToken": "Send token to email",
+              "errors": {
+                "required": "Email is required",
+                "invalid": "Please enter a valid email address",
+                "tokenRequired": "Token is required"
+              },
+              "toast": {
+                "success": "Email updated successfully",
+                "failed": "Failed to update email",
+                "tokenSent": "Token sent to email",
+                "tokenExpired": "Token has expired",
+                "sameEmail": "New email must be different from the current one"
+              }
+            }
+          },
+          "password": {
+            "title": "Password",
+            "description": "Change your password. Be careful changing your password. If you didn’t have a password, leave the “Current password” field empty.",
+            "form": {
+              "placeholders": {
+                "current": "Enter your current password",
+                "new": "Enter your new password",
+                "confirm": "Confirm your new password"
+              },
+              "submit": "Update password",
+              "errors": {
+                "passwordRequired": "Current password is required",
+                "newPasswordRequired": "New password is required",
+                "confirmPasswordRequired": "Confirm password is required",
+                "newPasswordMin": "New password must be at least 8 characters long",
+                "newPasswordSpecial": "New password must include at least one special character",
+                "passwordMatch": "Passwords do not match"
+              },
+              "toast": {
+                "success": "Password updated successfully",
+                "failed": "Failed to update password",
+                "noChanges": "New password must be different from the current one",
+                "reauthFailed": "Current password is incorrect"
+              }
+            }
+          }
+        },
+        "site": "We're working on this page."
+      }
+    }
+  },
+  "main": {
+    "header": {
+      "navigation": {
+        "releases": "Releases",
+        "schedule": "Schedule",
+        "animeCatalog": "Anime",
+        "mangaCatalog": "Manga",
+        "home": "Home"
+      },
+      "tooltips": {
+        "randomAnime": "Random anime",
+        "randomManga": "Random manga",
+        "search": "Search"
+      },
+      "navUser": {
+        "logout": "Logout",
+        "settings": "Settings",
+        "resetPassword": "Reset password"
+      }
+    }
+  }
 }
