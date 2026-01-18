@@ -10,7 +10,7 @@ import {
 export type NavigationMenuItem = {
 	title: string;
 	href: string;
-	icon?: LucideIcon;
+	icon: LucideIcon;
 };
 
 export type FooterNavigationSectionId = "quickLinks" | "browse" | "community";
@@ -18,19 +18,11 @@ export type FooterNavigationSectionId = "quickLinks" | "browse" | "community";
 export type FooterNavigationLink = {
 	id: string;
 	href: string;
-	/**
-	 * Translation key relative to `main.footer`.
-	 * Example: `navigation.quickLinks.links.topAnime`
-	 */
 	titleKey: string;
 };
 
 export type FooterNavigationSection = {
 	id: FooterNavigationSectionId;
-	/**
-	 * Translation key relative to `main.footer`.
-	 * Example: `navigation.quickLinks.title`
-	 */
 	titleKey: string;
 	links: FooterNavigationLink[];
 };
