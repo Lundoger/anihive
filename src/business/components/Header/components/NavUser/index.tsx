@@ -27,7 +27,7 @@ import { useMemo, useRef, useTransition } from "react";
 import { toast } from "sonner";
 
 export default function NavUser() {
-  const t = useTranslations("");
+  const t = useTranslations("main.header.navUser");
   const { initialized, signOut, user, profile } = useAuthStore();
 
   const supabase = getBrowserClient();
@@ -65,9 +65,6 @@ export default function NavUser() {
       router.refresh();
     });
   };
-
-  console.log("isPending", isPending);
-  console.log("initialized", initialized);
 
   return (
     <>
@@ -168,7 +165,7 @@ export default function NavUser() {
                             isSettingsPage && "text-primary-accent",
                           )}
                         />
-                        settings
+                        {t("settings")}
                       </div>
                     </AppLink>
                   </DropdownMenuItem>
@@ -179,7 +176,7 @@ export default function NavUser() {
                     <AppLink href="/forgot-password" variant="transparent">
                       <div className="flex items-center gap-2">
                         <Key className="size-4" />
-                        reset password
+                        {t("resetPassword")}
                       </div>
                     </AppLink>
                   </DropdownMenuItem>
@@ -195,7 +192,7 @@ export default function NavUser() {
                   >
                     <div className="flex items-center gap-2">
                       <LogOut className="text-destructive size-4" />
-                      Log out
+                      {t("logout")}
                     </div>
                   </DropdownMenuItem>
                 </DropdownMenuGroup>

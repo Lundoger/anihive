@@ -19,6 +19,7 @@ export default function AuthImage() {
 
   useEffect(() => {
     const next = pickRandom();
+    setLoaded(false);
     setSrc(next);
   }, []);
 
@@ -31,7 +32,7 @@ export default function AuthImage() {
       fill
       sizes="100%"
       quality={75}
-      onLoadingComplete={() => setLoaded(true)}
+      onLoad={() => setLoaded(true)}
       className={cn(
         "object-cover transition-opacity duration-700 ease-out",
         loaded ? "opacity-70" : "opacity-0",

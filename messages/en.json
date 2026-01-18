@@ -234,11 +234,12 @@
 				"releases": "Releases",
 				"schedule": "Schedule",
 				"animeCatalog": "Anime",
-				"mangaCatalog": "Manga"
+				"mangaCatalog": "Manga",
+				"home": "Home"
 			},
 			"tooltips": {
-				"random anime": "Random anime",
-				"random manga": "Random manga",
+				"randomAnime": "Random anime",
+				"randomManga": "Random manga",
 				"search": "Search"
 			},
 			"navUser": {

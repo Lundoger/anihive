@@ -1,3 +1,4 @@
+import Footer from "@/business/components/Footer";
 import Header from "@/business/components/Header";
 import MobileMenu from "@/business/components/MobileMenu";
 import { setRequestLocale } from "next-intl/server";
@@ -15,7 +16,8 @@ export default async function MainLayout({ children, params }: Props) {
     <>
       <Header />
       <MobileMenu />
-      <main className="xs:my-[72px] mt-[72px] mb-[56px]">{children}</main>
+      <main className="mt-[72px]">{children}</main>
+      <Footer />
     </>
   );
 }

@@ -10,9 +10,11 @@ import {
   NavigationMenuList,
 } from "@/shared/components/NavigationMenu";
 import { cn } from "@/shared/utils/utils";
+import { useTranslations } from "next-intl";
 
 export default function MobileMenu() {
   const pathname = usePathname();
+  const t = useTranslations("main.header.navigation");
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-50 bg-black pr-(--removed-body-scroll-bar-size,0px) backdrop-blur-sm md:hidden">
@@ -32,7 +34,7 @@ export default function MobileMenu() {
                     "group relative inline-flex w-full items-center justify-center p-2 text-sm font-medium",
                     "before:bg-primary-accent-light before:absolute before:inset-x-0 before:bottom-0 before:h-[2px] before:scale-x-0 before:transition-transform",
                     "hover:[&>svg]:text-primary-accent-light",
-                    "focus:text-primary-accent-light focus:outline-hidden focus:before:scale-x-100",
+                    "focus:text-primary-accent-light focus:outline-hidden",
                     "disabled:pointer-events-none disabled:opacity-50",
                     "hover:[&>svg]:text-primary-accent-light hover:text-primary-accent-light",
                     "data-active:[&>svg]:text-primary-accent-light data-active:text-primary-accent-light data-active:before:scale-x-100 data-[state=open]:before:scale-x-100 data-active:hover:[&>svg]:scale-115",
@@ -49,7 +51,7 @@ export default function MobileMenu() {
                       aria-hidden="true"
                     />
                     <span className="xs:block hidden text-xs leading-none font-normal">
-                      {item.title}
+                      {t(item.title)}
                     </span>
                   </Link>
                 </NavigationMenuLink>

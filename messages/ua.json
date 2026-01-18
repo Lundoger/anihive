@@ -234,11 +234,12 @@
 				"releases": "Релізи",
 				"schedule": "Розклад",
 				"animeCatalog": "Аніме",
-				"mangaCatalog": "Манга"
+				"mangaCatalog": "Манга",
+				"home": "Головна"
 			},
 			"tooltips": {
-				"random anime": "Рандомний аніме тайтл",
-				"random manga": "Рандомна манга",
+				"randomAnime": "Рандомний аніме тайтл",
+				"randomManga": "Рандомна манга",
 				"search": "Пошук"
 			},
 			"navUser": {

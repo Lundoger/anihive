@@ -10,9 +10,11 @@ import {
   NavigationMenuList,
 } from "@/shared/components/NavigationMenu";
 import { cn } from "@/shared/utils/utils";
+import { useTranslations } from "next-intl";
 
 function Navigation() {
   const pathname = usePathname();
+  const t = useTranslations("main.header.navigation");
 
   return (
     <NavigationMenu className="max-w-none grow basis-auto justify-start">
@@ -34,7 +36,7 @@ function Navigation() {
                 asChild
                 active={isActive}
               >
-                <Link href={item.href}>{item.title}</Link>
+                <Link href={item.href}>{t(item.title)}</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
           );

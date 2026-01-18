@@ -21,60 +21,50 @@ export type NavigationMenuItem = {
 
 export const NAVIGATION_MENU_ITEMS: NavigationMenuItem[] = [
   {
-    title: "login",
-    href: "/login",
-    icon: LogIn,
+    title: "animeCatalog",
+    href: "/anime-catalog",
+    icon: Tv,
   },
   {
-    title: "registration",
-    href: "/registration",
-    icon: UserPlus,
+    title: "mangaCatalog",
+    href: "/manga-catalog",
+    icon: Book,
   },
   {
-    title: "verify-email",
-    href: "/verify-email",
-    icon: Mail,
+    title: "schedule",
+    href: "/schedule",
+    icon: Calendar,
   },
   {
-    title: "forgot-password",
-    href: "/forgot-password",
-    icon: KeyRound,
-  },
-  {
-    title: "reset-password",
-    href: "/reset-password",
-    icon: RotateCcw,
-  },
-  {
-    title: "settings",
-    href: "/settings",
-    icon: Settings,
+    title: "releases",
+    href: "/releases",
+    icon: CalendarDays,
   },
 ];
 
 export const NAVIGATION_MOBILE_MENU_ITEMS: NavigationMenuItem[] = [
   {
-    title: "anime",
+    title: "animeCatalog",
     href: "/anime-catalog",
     icon: Tv,
   },
   {
-    title: "manga",
+    title: "mangaCatalog",
     href: "/manga-catalog",
     icon: Book,
   },
   {
-    title: "Home",
+    title: "home",
     href: "/",
     icon: Home,
   },
   {
-    title: "Schedule",
+    title: "schedule",
     href: "/schedule",
     icon: Calendar,
   },
   {
-    title: "Releases",
+    title: "releases",
     href: "/releases",
     icon: CalendarDays,
   },
