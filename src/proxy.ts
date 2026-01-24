@@ -1,4 +1,4 @@
-import { AUTH_ONLY_PAGES, PROTECTED_PAGES } from "@/business/constants/navigation";
+import { AUTH_ONLY_PAGES, PROTECTED_PAGES } from "@/shared/constants/api";
 import { updateSession } from "@/business/utils/supabase/proxy";
 import createMiddleware from "next-intl/middleware";
 import { type NextRequest, NextResponse } from "next/server";

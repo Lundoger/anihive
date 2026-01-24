@@ -5,72 +5,72 @@ import { toast } from "sonner";
 import { create } from "zustand";
 
 type AuthState = {
-  initialized: boolean;
+	initialized: boolean;
 
-  // Auth
-  session: Session | null;
-  user: User | null;
+	// Auth
+	session: Session | null;
+	user: User | null;
 
-  // Profile
-  profile: Profile | null;
-  profileError: string | null;
+	// Profile
+	profile: Profile | null;
+	profileError: string | null;
 
-  // Actions
-  setSession: (session: Session | null) => void;
-  setInitialized: (v: boolean) => void;
+	// Actions
+	setSession: (session: Session | null) => void;
+	setInitialized: (v: boolean) => void;
 
-  setProfile: (p: Profile | null) => void;
-  setProfileError: (e: string | null) => void;
+	setProfile: (p: Profile | null) => void;
+	setProfileError: (e: string | null) => void;
 
-  reset: () => void;
-  signOut: () => Promise<{ error: string | null }>;
+	reset: () => void;
+	signOut: () => Promise<{ error: string | null }>;
 };
 
 export const useAuthStore = create<AuthState>((set) => ({
-  initialized: false,
+	initialized: false,
 
-  session: null,
-  user: null,
+	session: null,
+	user: null,
 
-  profile: null,
-  profileError: null,
+	profile: null,
+	profileError: null,
 
-  setSession: (session) =>
-    set({
-      session,
-      user: session?.user ?? null,
-    }),
+	setSession: (session) =>
+		set({
+			session,
+			user: session?.user ?? null,
+		}),
 
-  setInitialized: (v) => set({ initialized: v }),
+	setInitialized: (v) => set({ initialized: v }),
 
-  setProfile: (p) => set({ profile: p }),
-  setProfileError: (e) => set({ profileError: e }),
+	setProfile: (p) => set({ profile: p }),
+	setProfileError: (e) => set({ profileError: e }),
 
-  reset: () =>
-    set({
-      initialized: false,
-      session: null,
-      user: null,
-      profile: null,
-      profileError: null,
-    }),
+	reset: () =>
+		set({
+			initialized: false,
+			session: null,
+			user: null,
+			profile: null,
+			profileError: null,
+		}),
 
-  signOut: async () => {
-    const { error } = await serverSignOut();
+	signOut: async () => {
+		const { error } = await serverSignOut();
 
-    if (error) {
-      toast.error("Sign out failed", { description: error });
-      return { error };
-    }
+		if (error) {
+			toast.error("Sign out failed", { description: error });
+			return { error };
+		}
 
-    set({
-      session: null,
-      user: null,
-      profile: null,
-      profileError: null,
-    });
+		set({
+			session: null,
+			user: null,
+			profile: null,
+			profileError: null,
+		});
 
-    toast.success("Signed out successfully");
-    return { error: null };
-  },
+		toast.success("Signed out successfully");
+		return { error: null };
+	},
 }));
