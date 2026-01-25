@@ -44,7 +44,7 @@ export const CACHE_CONFIG: Record<"SHORT" | "MEDIUM" | "LONG", CacheConfig> = {
 export const DEFAULT_LIMITS: Record<string, number> = {
 	ANIME_LIST: parseInt(process.env.DEFAULT_ANIME_LIMIT || "20"),
 	MANGA_LIST: parseInt(process.env.DEFAULT_MANGA_LIMIT || "20"),
-	UPCOMING: parseInt(process.env.DEFAULT_UPCOMING_LIMIT || "9"),
+	UPCOMING: parseInt(process.env.DEFAULT_UPCOMING_LIMIT || "12"),
 	SEARCH: parseInt(process.env.DEFAULT_SEARCH_LIMIT || "20"),
 };
 

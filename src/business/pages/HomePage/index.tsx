@@ -1,4 +1,4 @@
-import Hero from "./Hero";
+import Hero, { HeroAnime } from "./Hero";
 import { getSeasons } from "@/business/api/getSeason";
 import { DEFAULT_LIMITS } from "@/shared/constants/api";
 import { Anime } from "@/business/types/anime";
@@ -18,11 +18,11 @@ export default async function HomePage() {
 			trailerUrl: anime.trailer?.embed_url,
 			...anime
 		};
-	});
+	}).filter((anime: HeroAnime) => Boolean(anime.trailerUrl)) ?? [];
 
 	return (
 		<div className="">
-			<h1 className="sr-only">AniHive Home Page</h1>
+			<h1 id="home-page" className="sr-only">AniHive Home Page</h1>
 			<Hero data={upcomingAnime} />
 		</div>
 	);

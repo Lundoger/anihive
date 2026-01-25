@@ -4,41 +4,41 @@ import { cn } from "@/shared/utils/utils";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
-const images = Array.from({ length: 21 }, (_, index) => {
-  const number = String(index + 1).padStart(2, "0");
-  return `/img/${number}.jpg`;
+const images = Array.from({ length: 25 }, (_, index) => {
+	const number = String(index + 1).padStart(2, "0");
+	return `/img/${number}.jpg`;
 });
 
 function pickRandom() {
-  return images[Math.floor(Math.random() * images.length)];
+	return images[Math.floor(Math.random() * images.length)];
 }
 
 export default function AuthImage() {
-  const [src, setSrc] = useState<string | null>(null);
-  const [loaded, setLoaded] = useState(false);
+	const [src, setSrc] = useState<string | null>(null);
+	const [loaded, setLoaded] = useState(false);
 
-  useEffect(() => {
-    const next = pickRandom();
-    setLoaded(false);
-    setSrc(next);
-  }, []);
+	useEffect(() => {
+		const next = pickRandom();
+		setLoaded(false);
+		setSrc(next);
+	}, []);
 
-  if (!src) return null;
+	if (!src) return null;
 
-  return (
-    <Image
-      src={src}
-      alt="Auth Image"
-      fill
-      sizes="100%"
-      quality={75}
-      onLoad={() => setLoaded(true)}
-      className={cn(
-        "object-cover transition-opacity duration-700 ease-out",
-        loaded ? "opacity-70" : "opacity-0",
-      )}
-    />
-  );
+	return (
+		<Image
+			src={src}
+			alt="Auth Image"
+			fill
+			sizes="100%"
+			quality={75}
+			onLoad={() => setLoaded(true)}
+			className={cn(
+				"object-cover transition-opacity duration-700 ease-out",
+				loaded ? "opacity-70" : "opacity-0",
+			)}
+		/>
+	);
 }
 
 // server image

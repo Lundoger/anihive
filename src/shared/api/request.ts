@@ -91,6 +91,7 @@ export async function fetchList<T>(
 
 	let page = startPage;
 	let all: T[] = [];
+	const seenIds = new Set<number | string>();
 	let attempts = 0;
 	const maxAttempts = 3;
 
@@ -106,13 +107,29 @@ export async function fetchList<T>(
 		const response = await withRateLimit(() => fetchJson<ApiResponse<T[]>>(url, cacheConfig));
 		const items = (response.data ?? []) as T[];
 
+		// Jikan/MAL can occasionally return duplicates. If items look like MAL entries
+		// (have a `mal_id`), filter duplicates by that id.
+		const filteredItems: T[] = [];
+		for (const item of items) {
+			const maybeObj = item as unknown as { mal_id?: number | string };
+			const id = maybeObj?.mal_id;
+			if (id === undefined || id === null) {
+				filteredItems.push(item);
+				continue;
+			}
+
+			if (seenIds.has(id)) continue;
+			seenIds.add(id);
+			filteredItems.push(item);
+		}
+
 		if (!firstPagination) firstPagination = response.pagination ?? null;
 		lastPagination = response.pagination ?? lastPagination;
 
-		all.push(...items);
+		all.push(...filteredItems);
 
 		const hasNext = Boolean(response.pagination?.has_next_page);
-		if (all.length < target && items.length > 0 && hasNext) {
+		if (all.length < target && filteredItems.length > 0 && hasNext) {
 			page++;
 			attempts++;
 			continue;

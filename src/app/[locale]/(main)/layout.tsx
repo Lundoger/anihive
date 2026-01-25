@@ -16,7 +16,7 @@ export default async function MainLayout({ children, params }: Props) {
 		<>
 			<Header />
 			<MobileMenu />
-			<main>{children}</main>
+			<main className="mt-[72px]">{children}</main>
 			<Footer />
 		</>
 	);

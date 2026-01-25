@@ -11,7 +11,7 @@ import {
 import { cn } from "@/shared/utils/utils";
 import { BookOpen, Film, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import NavUser from "./components/NavUser";
 import Navigation from "./components/Navigation";
 
@@ -19,29 +19,12 @@ export default function Header() {
 	const pathname = usePathname();
 	const isHomePage = pathname === "/";
 	const t = useTranslations("main.header.tooltips");
-	const [isScrolled, setIsScrolled] = useState(false);
-
-	useEffect(() => {
-		if (!isHomePage) {
-			setIsScrolled(true);
-			return;
-		}
-
-		const update = () => setIsScrolled(window.scrollY > 100);
-		update();
-
-		window.addEventListener("scroll", update, { passive: true });
-		return () => window.removeEventListener("scroll", update);
-	}, [isHomePage]);
 
 	return (
 		<header
 			className={cn(
 				"fixed top-0 left-0 z-50 w-full pr-(--removed-body-scroll-bar-size,0px)",
-				"transition-[background-color,backdrop-filter,border-color, padding] duration-300 ease-out",
-				isScrolled
-					? "bg-black/70 backdrop-blur-sm py-0"
-					: "bg-transparent py-2",
+				"transition-[background-color,backdrop-filter,border-color] duration-300 ease-out bg-black/70 backdrop-blur-sm",
 			)}
 		>
 			<div className="custom-container flex h-[72px] items-center justify-between gap-x-5">
