@@ -1,5 +1,5 @@
 import Hero, { HeroAnime } from "./Hero";
-import { getSeasons } from "@/business/api/getSeason";
+import { getSeasons } from "@/business/api/seasons/getSeason";
 import { DEFAULT_LIMITS } from "@/shared/constants/api";
 import { Anime } from "@/business/types/anime";
 

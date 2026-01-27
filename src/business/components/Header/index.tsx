@@ -11,7 +11,6 @@ import {
 import { cn } from "@/shared/utils/utils";
 import { BookOpen, Film, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
 import NavUser from "./components/NavUser";
 import Navigation from "./components/Navigation";
 

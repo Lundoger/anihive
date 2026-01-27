@@ -13,10 +13,10 @@ export type JikanApiErrorResponse = {
 };
 
 export interface PaginationData {
-	current_page: number;
+	current_page?: number;
 	has_next_page: boolean;
 	last_visible_page: number;
-	items: PaginationItems;
+	items?: PaginationItems;
 }
 
 export interface PaginationItems {
