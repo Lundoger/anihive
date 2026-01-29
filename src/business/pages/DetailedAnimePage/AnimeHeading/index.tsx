@@ -1,42 +1,13 @@
 import { Badge } from "@/shared/components/Badge";
 import { Button } from "@/shared/components/Button";
-import { StarIcon, Calendar } from "lucide-react";
-import { AppLink } from "@/shared/components/Link";
-import { toSnakeCase } from "@/shared/utils/formatter";
+import { StarIcon } from "lucide-react";
 import { memo } from "react";
 import AnimeBackgroundImage from "./components/AnimeBackgroundImage";
 import AnimePoster from "./components/AnimePoster";
 import StatusBadge from "./components/StatusBadge";
-
-interface ScheduleBadgeProps {
-	status?: string | null;
-	schedules?: string | null;
-}
-
-const ScheduleBadge = ({ status, schedules }: ScheduleBadgeProps) => {
-	if (
-		!status ||
-		!status.toLowerCase().includes("currently airing") ||
-		!schedules
-	) {
-		return null;
-	}
-
-	const formatBroadcastDay = (day?: string | null) => {
-		if (!day) return null;
-		return day.charAt(0).toUpperCase() + day.slice(1).toLowerCase();
-	};
-
-	return (
-		<Badge
-			variant="outline"
-			className="text-xs sm:text-sm px-2.5 py-0.5 font-medium border bg-purple-500/20 text-purple-700 border-purple-500/30"
-		>
-			<Calendar className="h-3 w-3 mr-1" />
-			{formatBroadcastDay(schedules)}
-		</Badge>
-	);
-};
+import ScheduleBadge from "./components/ScheduleBagde";
+import { Studio } from "@/business/types/anime";
+import StatsBadges from "./components/StatsBadges";
 
 interface AnimeTitleProps {
 	title: string;
@@ -45,7 +16,7 @@ interface AnimeTitleProps {
 	titleSynonyms?: string[];
 }
 
-const AnimeTitle = ({
+const AnimeTitle = memo(({
 	title,
 	titleEnglish,
 	titleJapanese,
@@ -69,56 +40,7 @@ const AnimeTitle = ({
 			</p>
 		</>
 	);
-};
-
-interface Studio {
-	mal_id: number;
-	name: string;
-}
-
-interface InfoTagsProps {
-	score?: number | null;
-	season?: string | null;
-	year?: number | null;
-	studios?: Studio[];
-}
-
-const InfoTags = ({ score, season, year, studios }: InfoTagsProps) => {
-	const formatSeason = (season?: string | null, year?: number | null) => {
-		if (!season) return null;
-		return `${season.charAt(0).toUpperCase() + season.slice(1)} ${year}`;
-	};
-
-	return (
-		<div className="flex flex-wrap justify-center sm:justify-start gap-y-2 gap-x-3 mt-3 mb-4">
-			{score && (
-				<div className="flex items-center bg-card/60 backdrop-blur-md border border-white/5 rounded-full px-3 py-1 text-xs">
-					<StarIcon className="h-3.5 w-3.5 mr-1.5 text-yellow-500" />
-					<span className="font-medium">{score}</span>
-				</div>
-			)}
-
-			{season && (
-				<AppLink
-					href={`/anime/season/${year}/${season}`}
-					className="flex items-center bg-card/60 backdrop-blur-md border border-white/5 rounded-full px-3 py-1 text-xs"
-				>
-					<span className="font-medium">{formatSeason(season, year)}</span>
-				</AppLink>
-			)}
-
-			{studios?.map((studio) => (
-				<AppLink
-					key={studio.mal_id}
-					href={`/producer/${studio.mal_id}/${toSnakeCase(studio.name)}`}
-					className="flex items-center bg-card/60 backdrop-blur-md border border-white/5 rounded-full px-3 py-1 text-xs"
-				>
-					<span>{studio.name}</span>
-				</AppLink>
-			))}
-		</div>
-	);
-};
+});
 
 interface StatCardProps {
 	label: string;
@@ -206,7 +128,7 @@ const StatsGrid = ({
 	);
 };
 
-interface AnimeHeroSectionProps {
+interface AnimeHeadingProps {
 	heroData: {
 		imageUrl?: string | null;
 		title: string;
@@ -227,7 +149,7 @@ interface AnimeHeroSectionProps {
 	};
 }
 
-export function AnimeHeroSection({ heroData }: AnimeHeroSectionProps) {
+export function AnimeHeading({ heroData }: AnimeHeadingProps) {
 	const {
 		imageUrl,
 		title,
@@ -274,7 +196,7 @@ export function AnimeHeroSection({ heroData }: AnimeHeroSectionProps) {
 								titleJapanese={titleJapanese}
 								titleSynonyms={titleSynonyms}
 							/>
-							<InfoTags
+							<StatsBadges
 								score={score}
 								season={season}
 								year={year}

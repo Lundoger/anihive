@@ -3,6 +3,7 @@ import { getDetailedAnime } from "@/business/api/anime/getDetailedAnime";
 import { getAnimeCharacters } from "@/business/api/anime/getAnimeCharacters";
 import { getEpisodes } from "@/business/api/anime/getEpisodes";
 import { notFound } from "next/navigation";
+import { AnimeHeading } from "@/business/pages/DetailedAnimePage/AnimeHeading";
 
 interface AnimePageProps {
 	params: Promise<{
@@ -40,20 +41,45 @@ export async function generateMetadata({
 export default async function AnimePage({ params }: AnimePageProps) {
 	const { malId, title } = await params;
 
-	const [animeData, charactersData, episodesData] = await Promise.allSettled([
+	const [animeResult, charactersResult, episodesResult] = await Promise.allSettled([
 		getDetailedAnime(Number(malId)),
 		getAnimeCharacters(Number(malId)),
 		getEpisodes(Number(malId)),
 	]);
 
+	const animeData = animeResult.status === "fulfilled" ? animeResult.value : null;
+	const charactersData =
+		charactersResult.status === "fulfilled" ? charactersResult.value : null;
+	const episodesData =
+		episodesResult.status === "fulfilled" ? episodesResult.value : null;
+
 	if (isNaN(Number(malId)) || !animeData) {
 		notFound();
 	}
 
+	const heroData = {
+		imageUrl: animeData.images?.webp?.large_image_url,
+		title: animeData.title,
+		titleEnglish: animeData.title_english,
+		titleJapanese: animeData.title_japanese,
+		titleSynonyms: animeData.title_synonyms,
+		type: animeData.type,
+		status: animeData.status,
+		score: animeData.score,
+		scoredBy: animeData.scored_by,
+		rank: animeData.rank,
+		popularity: animeData.popularity,
+		members: animeData.members,
+		season: animeData.season,
+		year: animeData.year,
+		studios: animeData.studios,
+		schedules: animeData.broadcast.day,
+	};
+
 	return (
-		<div>
-			<h1>{title}</h1>
+		<>
+			<AnimeHeading heroData={heroData} />
 			<p>{malId}</p>
-		</div>
+		</>
 	);
 }

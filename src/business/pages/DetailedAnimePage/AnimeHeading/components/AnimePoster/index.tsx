@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 import { Button } from "@/shared/components/Button";
 import { StarIcon } from "lucide-react";
