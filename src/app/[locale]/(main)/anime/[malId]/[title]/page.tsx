@@ -4,6 +4,7 @@ import { getAnimeCharacters } from "@/business/api/anime/getAnimeCharacters";
 import { getEpisodes } from "@/business/api/anime/getEpisodes";
 import { notFound } from "next/navigation";
 import { AnimeHeading } from "@/business/pages/DetailedAnimePage/AnimeHeading";
+import { AnimeDetailed } from "@/business/types/anime";
 
 interface AnimePageProps {
 	params: Promise<{
@@ -59,21 +60,27 @@ export default async function AnimePage({ params }: AnimePageProps) {
 
 	const heroData = {
 		imageUrl: animeData.images?.webp?.large_image_url,
-		title: animeData.title,
+		schedules: animeData.broadcast.day,
+		scoredBy: animeData.scored_by,
 		titleEnglish: animeData.title_english,
 		titleJapanese: animeData.title_japanese,
 		titleSynonyms: animeData.title_synonyms,
+		title: animeData.title,
 		type: animeData.type,
 		status: animeData.status,
 		score: animeData.score,
-		scoredBy: animeData.scored_by,
 		rank: animeData.rank,
 		popularity: animeData.popularity,
 		members: animeData.members,
 		season: animeData.season,
 		year: animeData.year,
 		studios: animeData.studios,
-		schedules: animeData.broadcast.day,
+	};
+
+	const sidebarData: AnimeDetailed & { titleJapanese: string; titleSynonyms: string[] } = {
+		titleJapanese: animeData.title_japanese,
+		titleSynonyms: animeData.title_synonyms,
+		...animeData,
 	};
 
 	return (
