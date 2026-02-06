@@ -1,3 +1,3 @@
 export default function AnimePageLoading() {
-	return <div>AnimePageLoading</div>;
+  return <div>AnimePageLoading</div>;
 }
