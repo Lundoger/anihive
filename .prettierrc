@@ -9,11 +9,13 @@
   ],
   "importOrder": [
     "<THIRD_PARTY_MODULES>",
-    "^~\\/app(\\/.*)?$",
-    "^~\\/modules(\\/.*)?$",
-    "^~\\/business(\\/.*)?$",
-    "^~\\/shared(\\/.*)?$",
+    "^@\\/app(\\/.*)?$",
+    "^@\\/modules(\\/.*)?$",
+    "^@\\/business(\\/.*)?$",
+    "^@\\/shared(\\/.*)?$",
     "^[./]"
   ],
+  "importOrderSeparation": true,
+  "importOrderParserPlugins": ["typescript", "jsx", "tsx", "decorators-legacy"],
   "importOrderSortSpecifiers": true
 }

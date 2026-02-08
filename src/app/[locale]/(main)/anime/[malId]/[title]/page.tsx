@@ -5,8 +5,9 @@ import { getEpisodes } from "@/business/api/anime/getEpisodes";
 import { notFound } from "next/navigation";
 import { AnimeHeading } from "@/business/pages/DetailedAnimePage/AnimeHeading";
 import { AnimeDetailed } from "@/business/types/anime";
+import { useMemo } from "react";
 
-interface AnimePageProps {
+export interface AnimePageProps {
 	params: Promise<{
 		malId: string;
 		title: string;
@@ -58,30 +59,34 @@ export default async function AnimePage({ params }: AnimePageProps) {
 		notFound();
 	}
 
-	const heroData = {
-		imageUrl: animeData.images?.webp?.large_image_url,
-		schedules: animeData.broadcast.day,
-		scoredBy: animeData.scored_by,
-		titleEnglish: animeData.title_english,
-		titleJapanese: animeData.title_japanese,
-		titleSynonyms: animeData.title_synonyms,
-		title: animeData.title,
-		type: animeData.type,
-		status: animeData.status,
-		score: animeData.score,
-		rank: animeData.rank,
-		popularity: animeData.popularity,
-		members: animeData.members,
-		season: animeData.season,
-		year: animeData.year,
-		studios: animeData.studios,
-	};
+	const heroData = useMemo(() => {
+		return {
+			imageUrl: animeData.images?.webp?.large_image_url,
+			schedules: animeData.broadcast.day,
+			scoredBy: animeData.scored_by,
+			titleEnglish: animeData.title_english,
+			titleJapanese: animeData.title_japanese,
+			titleSynonyms: animeData.title_synonyms,
+			title: animeData.title,
+			type: animeData.type,
+			status: animeData.status,
+			score: animeData.score,
+			rank: animeData.rank,
+			popularity: animeData.popularity,
+			members: animeData.members,
+			season: animeData.season,
+			year: animeData.year,
+			studios: animeData.studios,
+		}
+	}, [animeData]);
 
-	const sidebarData: AnimeDetailed & { titleJapanese: string; titleSynonyms: string[] } = {
-		titleJapanese: animeData.title_japanese,
-		titleSynonyms: animeData.title_synonyms,
-		...animeData,
-	};
+	const sidebarData = useMemo<AnimeDetailed & { titleJapanese: string; titleSynonyms: string[] }>(() => {
+		return {
+			titleJapanese: animeData.title_japanese,
+			titleSynonyms: animeData.title_synonyms,
+			...animeData,
+		}
+	}, [animeData]);
 
 	return (
 		<>
