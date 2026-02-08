@@ -1,3 +1,3 @@
 export default function AnimePageNotFound() {
-	return <div>AnimePageNotFound</div>;
+  return <div>AnimePageNotFound</div>;
 }
