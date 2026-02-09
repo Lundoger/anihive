@@ -62,36 +62,30 @@ export default async function AnimePage({ params }: AnimePageProps) {
     notFound();
   }
 
-  const heroData = useMemo(() => {
-    return {
-      imageUrl: animeData.images?.webp?.large_image_url,
-      schedules: animeData.broadcast.day,
-      scoredBy: animeData.scored_by,
-      titleEnglish: animeData.title_english,
-      titleJapanese: animeData.title_japanese,
-      titleSynonyms: animeData.title_synonyms,
-      title: animeData.title,
-      type: animeData.type,
-      status: animeData.status,
-      score: animeData.score,
-      rank: animeData.rank,
-      popularity: animeData.popularity,
-      members: animeData.members,
-      season: animeData.season,
-      year: animeData.year,
-      studios: animeData.studios,
-    };
-  }, [animeData]);
+  const heroData = {
+    imageUrl: animeData.images?.webp?.large_image_url,
+    schedules: animeData.broadcast.day,
+    scoredBy: animeData.scored_by,
+    titleEnglish: animeData.title_english,
+    titleJapanese: animeData.title_japanese,
+    titleSynonyms: animeData.title_synonyms,
+    title: animeData.title,
+    type: animeData.type,
+    status: animeData.status,
+    score: animeData.score,
+    rank: animeData.rank,
+    popularity: animeData.popularity,
+    members: animeData.members,
+    season: animeData.season,
+    year: animeData.year,
+    studios: animeData.studios,
+  };
 
-  const sidebarData = useMemo<
-    AnimeDetailed & { titleJapanese: string; titleSynonyms: string[] }
-  >(() => {
-    return {
-      titleJapanese: animeData.title_japanese,
-      titleSynonyms: animeData.title_synonyms,
-      ...animeData,
-    };
-  }, [animeData]);
+  const sidebarData = {
+    titleJapanese: animeData.title_japanese,
+    titleSynonyms: animeData.title_synonyms,
+    ...animeData,
+  };
 
   return (
     <>

@@ -1,9 +1,15 @@
 "use client";
 
+import { usePathname, useRouter } from "@/i18n/navigation";
+import { Key, LogOut, Settings, UserRound } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { toast } from "sonner";
+
 import { useAuthStore } from "@/business/stores/auth";
 import { buildAvatarUrl } from "@/business/utils/avatar";
 import { getBrowserClient } from "@/business/utils/supabase/client";
-import { usePathname, useRouter } from "@/i18n/navigation";
+
 import {
   Avatar,
   AvatarFallback,
@@ -21,10 +27,6 @@ import {
 import { AppLink } from "@/shared/components/Link";
 import { Skeleton } from "@/shared/components/Skeleton";
 import { cn } from "@/shared/utils/utils";
-import { Key, LogOut, Settings, UserRound } from "lucide-react";
-import { useTranslations } from "next-intl";
-import { useMemo, useRef, useTransition } from "react";
-import { toast } from "sonner";
 
 export default function NavUser() {
   const t = useTranslations("main.header.navUser");
@@ -49,10 +51,20 @@ export default function NavUser() {
 
   const lastInteraction = useRef<"pointer" | "keyboard">("pointer");
   const [isPending, startTransition] = useTransition();
+  const [staleFallback, setStaleFallback] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
   const isSettingsPage =
     pathname === "/settings" || pathname.startsWith("/settings/");
+
+  useEffect(() => {
+    if (initialized) {
+      setStaleFallback(false);
+      return;
+    }
+    const t = setTimeout(() => setStaleFallback(true), 12_000);
+    return () => clearTimeout(t);
+  }, [initialized]);
 
   const handleSignOut = () => {
     startTransition(async () => {
@@ -66,9 +78,24 @@ export default function NavUser() {
     });
   };
 
+  const showStaleFallback = !initialized && staleFallback;
+
   return (
     <>
-      {initialized && !isPending ? (
+      {showStaleFallback ? (
+        <Button
+          variant="transparent"
+          className="rounded-lg p-1 hover:bg-transparent"
+          onClick={handleSignOut}
+          disabled={isPending}
+        >
+          <Avatar className="size-10 rounded-lg">
+            <AvatarFallback className="rounded-lg uppercase">
+              <UserRound className="size-4" />
+            </AvatarFallback>
+          </Avatar>
+        </Button>
+      ) : initialized && !isPending ? (
         <>
           {Boolean(user) && Boolean(profile) ? (
             <DropdownMenu>

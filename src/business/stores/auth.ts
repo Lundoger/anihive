@@ -68,6 +68,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       user: null,
       profile: null,
       profileError: null,
+      initialized: true,
     });
 
     toast.success("Signed out successfully");

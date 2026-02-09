@@ -18,38 +18,42 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const lastUserIdRef = useRef<string | null>(null);
   const bootstrappedRef = useRef(false);
 
-  const fetchProfile = async (userId: string): Promise<boolean> => {
-    const myReq = ++reqId.current;
-
+  const fetchProfile = async (
+    userId: string,
+    requestId: number,
+  ): Promise<void> => {
     setProfileError(null);
 
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("id, username, avatar, avatar_updated_at")
-      .eq("id", userId)
-      .maybeSingle<Profile>();
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("id, username, avatar, avatar_updated_at")
+        .eq("id", userId)
+        .maybeSingle<Profile>();
 
-    if (myReq !== reqId.current) return false;
+      if (requestId !== reqId.current) return;
 
-    if (error) {
+      if (error) {
+        setProfile(null);
+        setProfileError(error.message);
+        return;
+      }
+
+      if (!data) {
+        setProfile(null);
+        return;
+      }
+
+      setProfile(data);
+    } catch (err) {
+      if (requestId !== reqId.current) return;
       setProfile(null);
-      setProfileError(error.message);
-      return true;
+      setProfileError(err instanceof Error ? err.message : "Failed to load profile");
     }
-
-    if (!data) {
-      setProfile(null);
-      return true;
-    }
-
-    setProfile(data);
-    return true;
   };
 
   useEffect(() => {
     void (async () => {
-      // Don't mark the app "initialized" until we have attempted to load the profile
-      // at least once after bootstrapping the auth session.
       if (!bootstrappedRef.current) return;
 
       const userId = session?.user?.id ?? null;
@@ -74,9 +78,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       setInitialized(false);
       lastUserIdRef.current = userId;
-      const applied = await fetchProfile(userId);
-      // Only flip initialized back to true if this request wasn't superseded.
-      if (applied) setInitialized(true);
+      const myReq = ++reqId.current;
+
+      try {
+        await fetchProfile(userId, myReq);
+      } finally {
+        // Always mark initialized when this run is still current (not superseded).
+        if (myReq === reqId.current) {
+          setInitialized(true);
+        }
+      }
     })();
   }, [session, setInitialized, setProfile, setProfileError]);
 
@@ -84,18 +95,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     let alive = true;
 
     const bootstrap = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (!alive) return;
+      try {
+        const { data } = await supabase.auth.getSession();
+        if (!alive) return;
 
-      const nextSession = data.session ?? null;
-      bootstrappedRef.current = true;
-      setSession(nextSession);
+        const nextSession = data.session ?? null;
+        bootstrappedRef.current = true;
+        setSession(nextSession);
 
-      // If the user is not authenticated, `setSession(null)` may not trigger a rerender
-      // (e.g. initial store state is already null). Ensure we still mark the app initialized.
-      if (!nextSession?.user?.id) {
-        lastUserIdRef.current = null;
-        reqId.current++;
+        if (!nextSession?.user?.id) {
+          lastUserIdRef.current = null;
+          reqId.current++;
+          setProfile(null);
+          setProfileError(null);
+          setInitialized(true);
+        }
+      } catch {
+        if (!alive) return;
+        bootstrappedRef.current = true;
+        setSession(null);
         setProfile(null);
         setProfileError(null);
         setInitialized(true);
@@ -105,19 +123,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     bootstrap();
 
     const { data: sub } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      async (_event, session) => {
         if (!alive) return;
+        try {
+          bootstrappedRef.current = true;
+          const nextSession = session ?? null;
+          setSession(nextSession);
 
-        bootstrappedRef.current = true;
-        const nextSession = session ?? null;
-        setSession(nextSession);
-
-        // Same edge case as bootstrap: keep guests initialized even if session stays null.
-        if (!nextSession?.user?.id) {
-          lastUserIdRef.current = null;
-          reqId.current++;
-          setProfile(null);
-          setProfileError(null);
+          if (!nextSession?.user?.id) {
+            lastUserIdRef.current = null;
+            reqId.current++;
+            setProfile(null);
+            setProfileError(null);
+            setInitialized(true);
+          }
+        } catch {
+          if (!alive) return;
           setInitialized(true);
         }
       },
