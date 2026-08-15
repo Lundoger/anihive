@@ -1,9 +1,10 @@
 "use client";
 
-import { Button } from "@/shared/components/Button";
-import { cn } from "@/shared/utils/utils";
 import { Eye, EyeOff } from "lucide-react";
 import * as React from "react";
+
+import { Button } from "@/shared/components/Button";
+import { cn } from "@/shared/lib/classnames";
 
 type InputProps = React.ComponentPropsWithoutRef<"input"> & {
   prefixIcon?: React.ReactNode;

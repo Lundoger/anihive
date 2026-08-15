@@ -1,7 +1,8 @@
-import { AppLink } from "@/shared/components/Link";
-import { cn } from "@/shared/utils/utils";
 import { cva } from "class-variance-authority";
 import { memo } from "react";
+
+import { AppLink } from "@/shared/components/Link";
+import { cn } from "@/shared/lib/classnames";
 
 type LogoProps = {
   variant?: "default" | "transparent";

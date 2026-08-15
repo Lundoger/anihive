@@ -1,5 +1,3 @@
-import { AuthProvider } from "@/business/components/AuthProvider";
-import { TopLoader } from "@/business/components/TopLoader";
 import { routing } from "@/i18n/routing";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
@@ -9,6 +7,11 @@ import { setRequestLocale } from "next-intl/server";
 import { Inter } from "next/font/google";
 import { redirect } from "next/navigation";
 import { Toaster } from "sonner";
+
+import { AuthProvider } from "@/app/providers/AuthProvider";
+
+import { TopLoader } from "@/widgets/TopLoader";
+
 import "./globals.css";
 
 const inter = Inter({

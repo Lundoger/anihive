@@ -10,8 +10,10 @@
   "importOrder": [
     "<THIRD_PARTY_MODULES>",
     "^@\\/app(\\/.*)?$",
-    "^@\\/modules(\\/.*)?$",
-    "^@\\/business(\\/.*)?$",
+    "^@\\/_pages(\\/.*)?$",
+    "^@\\/widgets(\\/.*)?$",
+    "^@\\/features(\\/.*)?$",
+    "^@\\/entities(\\/.*)?$",
     "^@\\/shared(\\/.*)?$",
     "^[./]"
   ],

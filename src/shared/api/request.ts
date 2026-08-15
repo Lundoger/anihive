@@ -1,5 +1,8 @@
+import { notFound } from "next/navigation";
+
+import { CACHE_CONFIG, JIKAN_API, RATE_LIMIT } from "@/shared/api/config";
 import { getSfwParam } from "@/shared/api/cookies";
-import { CACHE_CONFIG, JIKAN_API, RATE_LIMIT } from "@/shared/constants/api";
+import { toFetchError } from "@/shared/api/helpers";
 import {
   ApiResponse,
   CacheConfig,
@@ -8,8 +11,6 @@ import {
   JikanApiErrorResponse,
   PaginationData,
 } from "@/shared/types/api";
-import { toFetchError } from "@/shared/utils/utils";
-import { notFound } from "next/navigation";
 
 const delay = (ms: number): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve, ms));

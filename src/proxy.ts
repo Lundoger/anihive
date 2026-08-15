@@ -1,7 +1,12 @@
-import { updateSession } from "@/business/utils/supabase/proxy";
-import { AUTH_ONLY_PAGES, PROTECTED_PAGES } from "@/shared/constants/api";
 import createMiddleware from "next-intl/middleware";
 import { type NextRequest, NextResponse } from "next/server";
+
+import { updateSession } from "@/shared/api/supabase/proxy";
+import {
+  NON_AUTH_ONLY_PAGES,
+  PROTECTED_PAGES,
+} from "@/shared/config/routesLists";
+
 import { routing } from "./i18n/routing";
 
 const handleI18nRouting = createMiddleware(routing);
@@ -13,7 +18,7 @@ function copyCookies(from: NextResponse, to: NextResponse) {
 }
 
 export async function proxy(request: NextRequest) {
-  let response = handleI18nRouting(request);
+  const response = handleI18nRouting(request);
 
   const { user } = await updateSession(request, response);
 
@@ -28,7 +33,7 @@ export async function proxy(request: NextRequest) {
   const pathnameNoLocale =
     "/" + (hasLocale ? rest : [maybeLocale, ...rest]).filter(Boolean).join("/");
 
-  const isAuthOnlyPage = AUTH_ONLY_PAGES.includes(pathnameNoLocale);
+  const isAuthOnlyPage = NON_AUTH_ONLY_PAGES.includes(pathnameNoLocale);
   const isProtectedPage = PROTECTED_PAGES.includes(pathnameNoLocale);
 
   // Authenticated users shouldn't access guest-only auth pages.

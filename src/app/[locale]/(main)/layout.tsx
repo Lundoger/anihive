@@ -1,7 +1,8 @@
-import Footer from "@/business/components/Footer";
-import Header from "@/business/components/Header";
-import MobileMenu from "@/business/components/MobileMenu";
 import { setRequestLocale } from "next-intl/server";
+
+import Footer from "@/widgets/Footer";
+import Header from "@/widgets/Header";
+import MobileMenu from "@/widgets/MobileMenu";
 
 type Props = {
   children: React.ReactNode;

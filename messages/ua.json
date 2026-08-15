@@ -245,7 +245,12 @@
       "navUser": {
         "logout": "Вийти",
         "settings": "Налаштування",
-        "resetPassword": "Скинути пароль"
+        "resetPassword": "Скинути пароль",
+        "retryProfile": "Спробувати завантажити профіль ще раз",
+        "toast": {
+          "signOutFailed": "Не вдалося вийти",
+          "signOutSuccess": "Ви успішно вийшли"
+        }
       }
     },
     "footer": {

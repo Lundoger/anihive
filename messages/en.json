@@ -245,7 +245,12 @@
       "navUser": {
         "logout": "Logout",
         "settings": "Settings",
-        "resetPassword": "Reset password"
+        "resetPassword": "Reset password",
+        "retryProfile": "Retry loading profile",
+        "toast": {
+          "signOutFailed": "Sign out failed",
+          "signOutSuccess": "Signed out successfully"
+        }
       }
     },
     "footer": {
