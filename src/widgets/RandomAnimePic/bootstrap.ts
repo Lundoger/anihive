@@ -1,36 +1,38 @@
 export type AuthBackgroundOptions = {
   selector: string;
+  previewSelector: string;
   count: number;
-  quality: number;
-  widths: number[];
-  fallbackWidth: number;
-  sizes: string;
   minViewportWidth: number;
 };
 
 export const AUTH_BACKGROUND: AuthBackgroundOptions = {
   selector: "img[data-auth-bg]",
+  previewSelector: "[data-auth-bg-preview]",
   count: 25,
-  quality: 75,
-  widths: [640, 750, 828, 1080, 1200, 1920, 2048],
-  fallbackWidth: 1080,
-  sizes: "100vh",
   minViewportWidth: 992,
 };
 
-export function pickAuthBackground(options: AuthBackgroundOptions) {
+export function pickAuthBackground(
+  options: AuthBackgroundOptions,
+  previews: string[],
+) {
   const img = document.querySelector<HTMLImageElement>(options.selector);
-  if (!img || img.getAttribute("srcset")) return;
+  if (!img || img.getAttribute("src")) return;
 
   const apply = () => {
     const index = Math.floor(Math.random() * options.count) + 1;
-    const file = `/img/${String(index).padStart(2, "0")}.webp`;
-    const url = (width: number) =>
-      `/_next/image?url=${encodeURIComponent(file)}&w=${width}&q=${options.quality}`;
 
-    img.sizes = options.sizes;
-    img.srcset = options.widths.map((w) => `${url(w)} ${w}w`).join(", ");
-    img.src = url(options.fallbackWidth);
+    // Costs no request — the preview is a ~110 byte data URI already in the
+    // HTML, so the pane has colour on the very first frame.
+    const preview = previews[index - 1];
+    if (preview) {
+      const layer = document.querySelector<HTMLElement>(
+        options.previewSelector,
+      );
+      if (layer) layer.style.backgroundImage = `url("${preview}")`;
+    }
+
+    img.src = `/img/${String(index).padStart(2, "0")}.webp`;
 
     const reveal = () => img.setAttribute("data-loaded", "true");
     if (img.complete) reveal();

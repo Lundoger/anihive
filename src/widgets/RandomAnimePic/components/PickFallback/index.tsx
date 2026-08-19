@@ -6,7 +6,7 @@ import { AUTH_BACKGROUND, pickAuthBackground } from "../../bootstrap";
 
 export function PickFallback() {
   useEffect(() => {
-    pickAuthBackground(AUTH_BACKGROUND);
+    pickAuthBackground(AUTH_BACKGROUND, []);
   }, []);
 
   return null;

@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 
-import { LangSwitch } from "@/widgets/LangSwitch";
 import RandomAnimePic from "@/widgets/RandomAnimePic";
+
+import { LangSwitch } from "@/features/LangSwitch";
 
 type Props = {
   children: ReactNode;

@@ -3,11 +3,8 @@ import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
   images: {
-    // Order matters — the first entry the browser accepts wins. With webp first
-    // avif was never served, since every avif-capable browser also accepts webp.
-    formats: ["image/avif", "image/webp"],
-    // Only 75 (default) and 100 (Hero carousel) are used; every extra value is
-    // another cache entry someone can make the optimizer produce.
+    formats: ["image/webp"],
+    // Only 75 (default) and 100 (Hero carousel) are used; every extra value is another cache entry someone can make the optimizer produce.
     qualities: [75, 100],
     // deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     // imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
@@ -66,10 +63,6 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        // Files in `public` are served with `max-age=0`, and the optimized
-        // response takes the larger of that and `minimumCacheTTL`. These are
-        // fixed art assets, so they get the long one — replacing a picture
-        // means giving it a new filename.
         source: "/img/:path*",
         headers: [
           {
