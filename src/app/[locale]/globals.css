@@ -236,3 +236,13 @@ input[data-slot="input"]:-webkit-autofill:active {
   caret-color: var(--color-white);
   box-shadow: 0 0 0px 1000px var(--color-black) inset;
 }
+
+input[data-slot="input"]:autofill::first-line {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  color: var(--color-white);
+  -webkit-text-fill-color: var(--color-white);
+}

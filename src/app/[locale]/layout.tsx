@@ -10,7 +10,7 @@ import { Toaster } from "sonner";
 
 import { AuthProvider } from "@/app/providers/AuthProvider";
 
-import { TopLoader } from "@/widgets/TopLoader";
+import { TopLoader } from "@/shared/ui/TopLoader";
 
 import "./globals.css";
 

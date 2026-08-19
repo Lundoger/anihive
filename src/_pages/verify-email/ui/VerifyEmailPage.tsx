@@ -1,10 +1,10 @@
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 
-import { VerifyEmailForm } from "@/features/VerifyEmailForm";
+import { AuthPageShell } from "@/shared/ui/AuthPageShell";
+import { AppLink } from "@/shared/ui/Link";
 
-import { AuthPageShell } from "@/shared/components/AuthPageShell";
-import { AppLink } from "@/shared/components/Link";
+import { VerifyEmailForm } from "./VerifyEmailForm";
 
 export async function VerifyEmailPage() {
   const t = await getTranslations("verifyEmail");

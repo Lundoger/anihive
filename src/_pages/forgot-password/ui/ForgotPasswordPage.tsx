@@ -1,9 +1,9 @@
 import { getTranslations } from "next-intl/server";
 
-import { ForgotPasswordForm } from "@/features/ForgotPasswordForm";
+import { AuthPageShell } from "@/shared/ui/AuthPageShell";
+import { AppLink } from "@/shared/ui/Link";
 
-import { AuthPageShell } from "@/shared/components/AuthPageShell";
-import { AppLink } from "@/shared/components/Link";
+import { ForgotPasswordForm } from "./ForgotPasswordForm";
 
 export async function ForgotPasswordPage() {
   const t = await getTranslations("forgotPassword");

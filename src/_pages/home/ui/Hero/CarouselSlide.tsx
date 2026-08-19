@@ -1,11 +1,11 @@
 import Image from "next/image";
 import { useMemo } from "react";
 
-import { Badge } from "@/shared/components/Badge";
-import { CarouselItem } from "@/shared/components/Carousel";
-import { AppLink } from "@/shared/components/Link";
 import { toSnakeCase } from "@/shared/lib/text";
 import { getYouTubeThumbnail } from "@/shared/lib/youtube";
+import { Badge } from "@/shared/ui/Badge";
+import { CarouselItem } from "@/shared/ui/Carousel";
+import { AppLink } from "@/shared/ui/Link";
 
 import { HeroAnime } from "../../model/types";
 

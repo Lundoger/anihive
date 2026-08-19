@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
 
-import RandomAnimePic from "@/widgets/RandomAnimePic";
+import { LangSwitch } from "@/features/lang-switch";
 
-import { LangSwitch } from "@/features/LangSwitch";
+import { AUTH_BACKDROP } from "@/shared/config/authBackdrop";
+import { RandomBackdrop } from "@/shared/ui/RandomBackdrop";
 
 type Props = {
   children: ReactNode;
@@ -12,7 +13,7 @@ export default async function AuthLayout({ children }: Props) {
   return (
     <main className="flex h-screen min-h-[750px] overflow-hidden">
       <div className="lgd:block relative hidden size-full basis-1/2">
-        <RandomAnimePic />
+        <RandomBackdrop {...AUTH_BACKDROP} className="opacity-70" />
       </div>
       <div className="lgd:basis-1/2 relative size-full basis-full">
         <div className="relative flex h-full w-full basis-full px-3 pt-10 pb-3">

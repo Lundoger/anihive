@@ -1,10 +1,10 @@
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 
-import { ResetPasswordForm } from "@/features/ResetPasswordForm";
+import { AuthPageShell } from "@/shared/ui/AuthPageShell";
+import { AppLink } from "@/shared/ui/Link";
 
-import { AuthPageShell } from "@/shared/components/AuthPageShell";
-import { AppLink } from "@/shared/components/Link";
+import { ResetPasswordForm } from "./ResetPasswordForm";
 
 export async function ResetPasswordPage() {
   const t = await getTranslations("resetPassword");

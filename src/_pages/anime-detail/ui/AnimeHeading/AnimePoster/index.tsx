@@ -2,7 +2,7 @@ import { StarIcon } from "lucide-react";
 import Image from "next/image";
 import { memo } from "react";
 
-import { Button } from "@/shared/components/Button";
+import { Button } from "@/shared/ui/Button";
 
 interface AnimePosterProps {
   imageUrl?: string | null;

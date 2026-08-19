@@ -1,8 +1,8 @@
 import { StarIcon } from "lucide-react";
 
-import { AppLink } from "@/shared/components/Link";
 import { toSnakeCase } from "@/shared/lib/text";
 import { Studio } from "@/shared/types/anime";
+import { AppLink } from "@/shared/ui/Link";
 
 interface StatsBadgesProps {
   score?: number | null;

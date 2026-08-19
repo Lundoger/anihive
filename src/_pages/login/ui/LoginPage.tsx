@@ -1,9 +1,9 @@
 import { getTranslations } from "next-intl/server";
 
-import { LoginForm } from "@/features/LoginForm";
+import { AuthPageShell } from "@/shared/ui/AuthPageShell";
+import { AppLink } from "@/shared/ui/Link";
 
-import { AuthPageShell } from "@/shared/components/AuthPageShell";
-import { AppLink } from "@/shared/components/Link";
+import { LoginForm } from "./LoginForm";
 
 export async function LoginPage() {
   const t = await getTranslations("login");

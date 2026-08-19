@@ -8,22 +8,20 @@ import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { useSessionStore } from "@/entities/session";
-
-import { getBrowserClient } from "@/shared/api/supabase/client";
-import { Button } from "@/shared/components/Button";
-import { Field, FieldError, FieldGroup } from "@/shared/components/Field";
-import { Input } from "@/shared/components/Input";
 import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@/shared/components/InputOTP";
-import { Spinner } from "@/shared/components/Spinner";
+  confirmEmailChange,
+  requestEmailChange,
+  useSessionStore,
+} from "@/entities/session";
+
+import type { Translator } from "@/shared/types/i18n";
+import { Button } from "@/shared/ui/Button";
+import { Field, FieldError, FieldGroup } from "@/shared/ui/Field";
+import { Input } from "@/shared/ui/Input";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/shared/ui/InputOTP";
+import { Spinner } from "@/shared/ui/Spinner";
 
 import SettingsBlock from "../SettingsBlock";
-
-type Translator = ReturnType<typeof useTranslations>;
 
 function createEmailSchema(t: Translator) {
   return z.object({
@@ -42,7 +40,6 @@ export default function EmailSettingsBlock() {
   const schema = useMemo(() => createEmailSchema(t), [t]);
 
   const user = useSessionStore((s) => s.user);
-  const supabase = getBrowserClient();
 
   const [isSendingToken, setIsSendingToken] = useState(false);
 
@@ -72,10 +69,10 @@ export default function EmailSettingsBlock() {
 
     setIsSendingToken(true);
     try {
-      const { error } = await supabase.auth.updateUser({ email: newEmail });
+      const { error } = await requestEmailChange(newEmail);
 
       if (error) {
-        toast.error(error.message);
+        toast.error(error);
         return;
       }
 
@@ -89,14 +86,13 @@ export default function EmailSettingsBlock() {
   async function onSubmit(values: EmailValues) {
     const newEmail = values.email.trim().toLowerCase();
 
-    const { data, error } = await supabase.auth.verifyOtp({
+    const { error } = await confirmEmailChange({
       email: newEmail,
       token: values.token,
-      type: "email_change",
     });
 
     if (error) {
-      toast.error(error.message);
+      toast.error(error);
       return;
     }
 

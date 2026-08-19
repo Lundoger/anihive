@@ -7,18 +7,16 @@ import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { useProfileStore } from "@/entities/profile";
+import { updateUsername, useProfileStore } from "@/entities/profile";
 import { useSessionStore } from "@/entities/session";
 
-import { getBrowserClient } from "@/shared/api/supabase/client";
-import { Button } from "@/shared/components/Button";
-import { Field, FieldError, FieldGroup } from "@/shared/components/Field";
-import { Input } from "@/shared/components/Input";
-import { Spinner } from "@/shared/components/Spinner";
+import type { Translator } from "@/shared/types/i18n";
+import { Button } from "@/shared/ui/Button";
+import { Field, FieldError, FieldGroup } from "@/shared/ui/Field";
+import { Input } from "@/shared/ui/Input";
+import { Spinner } from "@/shared/ui/Spinner";
 
 import SettingsBlock from "../SettingsBlock";
-
-type Translator = ReturnType<typeof useTranslations>;
 
 function createNicknameSchema(t: Translator) {
   return z.object({
@@ -40,8 +38,6 @@ export default function NicknameSettingsBlock() {
   const user = useSessionStore((s) => s.user);
   const profile = useProfileStore((s) => s.profile);
   const setProfile = useProfileStore((s) => s.setProfile);
-
-  const supabase = getBrowserClient();
 
   const form = useForm<NicknameValues>({
     resolver: zodResolver(schema),
@@ -66,19 +62,17 @@ export default function NicknameSettingsBlock() {
       return;
     }
 
-    const { data, error } = await supabase
-      .from("profiles")
-      .update({ username: next })
-      .eq("id", user.id)
-      .select("*")
-      .single();
+    const { profile: updated, error } = await updateUsername({
+      userId: user.id,
+      username: next,
+    });
 
     if (error) {
-      toast.error(error.message);
+      toast.error(error);
       return;
     }
 
-    setProfile(data);
+    setProfile(updated);
     toast.success(t("nickname.form.toast.success"));
   }
 

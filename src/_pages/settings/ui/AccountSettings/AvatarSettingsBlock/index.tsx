@@ -8,23 +8,22 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { useShallow } from "zustand/react/shallow";
 
-import { buildAvatarUrl, useProfileStore } from "@/entities/profile";
+import {
+  buildAvatarUrl,
+  removeAvatar,
+  uploadAvatar,
+  useProfileStore,
+} from "@/entities/profile";
 import { useSessionStore } from "@/entities/session";
 
-import { getBrowserClient } from "@/shared/api/supabase/client";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/shared/components/Avatar";
-import { Button } from "@/shared/components/Button";
-import { Field, FieldError } from "@/shared/components/Field";
-import { Skeleton } from "@/shared/components/Skeleton";
-import { Spinner } from "@/shared/components/Spinner";
+import type { Translator } from "@/shared/types/i18n";
+import { Avatar, AvatarFallback, AvatarImage } from "@/shared/ui/Avatar";
+import { Button } from "@/shared/ui/Button";
+import { Field, FieldError } from "@/shared/ui/Field";
+import { Skeleton } from "@/shared/ui/Skeleton";
+import { Spinner } from "@/shared/ui/Spinner";
 
 import SettingsBlock from "../SettingsBlock";
-
-type Translator = ReturnType<typeof useTranslations>;
 
 function createAvatarSchema(t: Translator) {
   const maxSizeBytes = 5 * 1024 * 1024;
@@ -63,7 +62,6 @@ export default function AvatarSettingsBlock() {
       })),
     );
   const setProfile = useProfileStore((s) => s.setProfile);
-  const supabase = getBrowserClient();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const form = useForm<AvatarValues>({
@@ -111,34 +109,19 @@ export default function AvatarSettingsBlock() {
     if (!avatarPath) return;
 
     startTransition(async () => {
-      try {
-        const { error: removeError } = await supabase.storage
-          .from("avatars")
-          .remove([avatarPath]);
+      const { profile, error } = await removeAvatar({
+        userId,
+        path: avatarPath,
+      });
 
-        if (removeError) {
-          toast.error(removeError.message);
-          return;
-        }
-
-        const { data: updatedProfile, error: profileError } = await supabase
-          .from("profiles")
-          .update({ avatar: null })
-          .eq("id", userId)
-          .select("*")
-          .single();
-
-        if (profileError) {
-          toast.error(profileError.message);
-          return;
-        }
-
-        clearSelectedFile();
-        setProfile(updatedProfile);
-        toast.success(t("form.toast.successRemove"));
-      } catch (e: any) {
-        toast.error(e?.message ?? t("form.toast.failedRemove"));
+      if (error) {
+        toast.error(error);
+        return;
       }
+
+      clearSelectedFile();
+      setProfile(profile);
+      toast.success(t("form.toast.successRemove"));
     });
   }
 
@@ -148,54 +131,19 @@ export default function AvatarSettingsBlock() {
       return;
     }
 
-    try {
-      const file = values.file;
-      const ext = file.name.split(".").pop()?.toLowerCase() || "png";
+    const { profile, error } = await uploadAvatar({
+      userId,
+      file: values.file,
+    });
 
-      await supabase.storage
-        .from("avatars")
-        .remove([
-          `${userId}/avatar.png`,
-          `${userId}/avatar.jpg`,
-          `${userId}/avatar.jpeg`,
-          `${userId}/avatar.webp`,
-        ]);
-
-      const path = `${userId}/avatar.${ext}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from("avatars")
-        .upload(path, file, {
-          upsert: true,
-          contentType: file.type,
-          cacheControl: "3600",
-        });
-
-      if (uploadError) {
-        toast.error(uploadError.message);
-        return;
-      }
-
-      const now = new Date().toISOString();
-      const { data: updatedProfile, error: profileError } = await supabase
-        .from("profiles")
-        .update({ avatar: path, avatar_updated_at: now })
-        .eq("id", userId)
-        .select("*")
-        .single();
-
-      if (profileError) {
-        toast.error(profileError.message);
-        return;
-      }
-
-      setProfile(updatedProfile);
-
-      toast.success(t("form.toast.successUpdate"));
-      clearSelectedFile();
-    } catch (e: any) {
-      toast.error(e?.message ?? t("form.toast.uploadFailed"));
+    if (error) {
+      toast.error(error);
+      return;
     }
+
+    setProfile(profile);
+    toast.success(t("form.toast.successUpdate"));
+    clearSelectedFile();
   }
 
   const isSubmitting = form.formState.isSubmitting;

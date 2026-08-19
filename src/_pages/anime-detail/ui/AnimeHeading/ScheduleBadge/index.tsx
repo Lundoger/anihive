@@ -1,6 +1,6 @@
 import { Calendar } from "lucide-react";
 
-import { Badge } from "@/shared/components/Badge";
+import { Badge } from "@/shared/ui/Badge";
 
 interface ScheduleBadgeProps {
   status?: string | null;

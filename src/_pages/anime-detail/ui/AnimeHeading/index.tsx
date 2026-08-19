@@ -1,8 +1,8 @@
 import { StarIcon } from "lucide-react";
 import { memo } from "react";
 
-import { Badge } from "@/shared/components/Badge";
-import { Button } from "@/shared/components/Button";
+import { Badge } from "@/shared/ui/Badge";
+import { Button } from "@/shared/ui/Button";
 
 import { AnimeHeroData } from "../../model/heroData";
 import AnimeBackgroundImage from "./AnimeBackgroundImage";

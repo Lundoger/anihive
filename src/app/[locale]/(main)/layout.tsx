@@ -1,8 +1,8 @@
 import { setRequestLocale } from "next-intl/server";
 
-import Footer from "@/widgets/Footer";
-import Header from "@/widgets/Header";
-import MobileMenu from "@/widgets/MobileMenu";
+import { Footer } from "@/widgets/footer";
+import { Header } from "@/widgets/header";
+import { MobileMenu } from "@/widgets/mobile-menu";
 
 type Props = {
   children: React.ReactNode;

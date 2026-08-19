@@ -1,12 +1,7 @@
 import { Globe, UserRound } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/shared/components/Tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/Tabs";
 
 import AccountSettings from "../AccountSettings";
 

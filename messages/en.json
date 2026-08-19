@@ -228,6 +228,12 @@
       }
     }
   },
+  "logout": {
+    "toast": {
+      "failed": "Sign out failed",
+      "success": "Signed out successfully"
+    }
+  },
   "main": {
     "header": {
       "navigation": {
@@ -246,11 +252,7 @@
         "logout": "Logout",
         "settings": "Settings",
         "resetPassword": "Reset password",
-        "retryProfile": "Retry loading profile",
-        "toast": {
-          "signOutFailed": "Sign out failed",
-          "signOutSuccess": "Signed out successfully"
-        }
+        "retryProfile": "Retry loading profile"
       }
     },
     "footer": {

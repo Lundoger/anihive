@@ -4,13 +4,13 @@ import Autoplay from "embla-carousel-autoplay";
 import Fade from "embla-carousel-fade";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { Button } from "@/shared/components/Button";
+import { cn } from "@/shared/lib/classnames";
+import { Button } from "@/shared/ui/Button";
 import {
   Carousel,
   type CarouselApi,
   CarouselContent,
-} from "@/shared/components/Carousel";
-import { cn } from "@/shared/lib/classnames";
+} from "@/shared/ui/Carousel";
 
 import { HeroAnime } from "../../model/types";
 import CarouselSlide from "./CarouselSlide";

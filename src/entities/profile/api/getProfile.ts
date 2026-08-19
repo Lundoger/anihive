@@ -1,8 +1,7 @@
 import { getBrowserClient } from "@/shared/api/supabase/client";
 
 import type { Profile } from "../model/types";
-
-const PROFILE_COLUMNS = "id, username, created_at, avatar, avatar_updated_at";
+import { PROFILE_COLUMNS } from "./columns";
 
 /**
  * Reads one profile row.

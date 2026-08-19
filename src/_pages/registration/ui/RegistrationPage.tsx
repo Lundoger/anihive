@@ -1,9 +1,9 @@
 import { getTranslations } from "next-intl/server";
 
-import { RegistrationForm } from "@/features/RegistrationForm";
+import { AuthPageShell } from "@/shared/ui/AuthPageShell";
+import { AppLink } from "@/shared/ui/Link";
 
-import { AuthPageShell } from "@/shared/components/AuthPageShell";
-import { AppLink } from "@/shared/components/Link";
+import { RegistrationForm } from "./RegistrationForm";
 
 export async function RegistrationPage() {
   const t = await getTranslations("registration");

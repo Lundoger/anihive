@@ -228,6 +228,12 @@
       }
     }
   },
+  "logout": {
+    "toast": {
+      "failed": "Не вдалося вийти",
+      "success": "Ви успішно вийшли"
+    }
+  },
   "main": {
     "header": {
       "navigation": {
@@ -246,11 +252,7 @@
         "logout": "Вийти",
         "settings": "Налаштування",
         "resetPassword": "Скинути пароль",
-        "retryProfile": "Спробувати завантажити профіль ще раз",
-        "toast": {
-          "signOutFailed": "Не вдалося вийти",
-          "signOutSuccess": "Ви успішно вийшли"
-        }
+        "retryProfile": "Спробувати завантажити профіль ще раз"
       }
     },
     "footer": {

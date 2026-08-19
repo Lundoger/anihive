@@ -1,6 +1,6 @@
 import { memo } from "react";
 
-import { Badge } from "@/shared/components/Badge";
+import { Badge } from "@/shared/ui/Badge";
 
 interface StatusBadgeProps {
   status?: string | null;

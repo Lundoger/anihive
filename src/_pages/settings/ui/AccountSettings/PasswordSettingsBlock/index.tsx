@@ -7,17 +7,19 @@ import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { useSessionStore } from "@/entities/session";
+import {
+  reauthenticate,
+  updatePassword,
+  useSessionStore,
+} from "@/entities/session";
 
-import { getBrowserClient } from "@/shared/api/supabase/client";
-import { Button } from "@/shared/components/Button";
-import { Field, FieldError, FieldGroup } from "@/shared/components/Field";
-import { Input } from "@/shared/components/Input";
-import { Spinner } from "@/shared/components/Spinner";
+import type { Translator } from "@/shared/types/i18n";
+import { Button } from "@/shared/ui/Button";
+import { Field, FieldError, FieldGroup } from "@/shared/ui/Field";
+import { Input } from "@/shared/ui/Input";
+import { Spinner } from "@/shared/ui/Spinner";
 
 import SettingsBlock from "../SettingsBlock";
-
-type Translator = ReturnType<typeof useTranslations>;
 
 function createPasswordSchema(t: Translator) {
   return z
@@ -44,12 +46,11 @@ function createPasswordSchema(t: Translator) {
 
 type PasswordValues = z.infer<ReturnType<typeof createPasswordSchema>>;
 
-export default function EmailSettingsBlock() {
+export default function PasswordSettingsBlock() {
   const t = useTranslations("settings.tabs.content.account.password");
   const schema = useMemo(() => createPasswordSchema(t), [t]);
 
   const user = useSessionStore((s) => s.user);
-  const supabase = getBrowserClient();
 
   const form = useForm<PasswordValues>({
     resolver: zodResolver(schema),
@@ -68,7 +69,7 @@ export default function EmailSettingsBlock() {
       return;
     }
 
-    const { error: reauthError } = await supabase.auth.signInWithPassword({
+    const { error: reauthError } = await reauthenticate({
       email: user.email,
       password: values.password,
     });
@@ -78,12 +79,10 @@ export default function EmailSettingsBlock() {
       return;
     }
 
-    const { error: updateError } = await supabase.auth.updateUser({
-      password: values.newPassword,
-    });
+    const { error: updateError } = await updatePassword(values.newPassword);
 
     if (updateError) {
-      toast.error(updateError.message);
+      toast.error(updateError);
       return;
     }
 
