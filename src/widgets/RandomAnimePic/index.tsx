@@ -1,61 +1,22 @@
-"use client";
+import { AUTH_BACKGROUND, pickAuthBackground } from "./bootstrap";
+import { PickFallback } from "./components/PickFallback";
 
-import Image from "next/image";
-import { useLayoutEffect, useState } from "react";
-
-import { cn } from "@/shared/lib/classnames";
-
-const images = Array.from({ length: 25 }, (_, index) => {
-  const number = String(index + 1).padStart(2, "0");
-  return `/img/${number}.jpg`;
-});
-
-function pickRandom() {
-  return images[Math.floor(Math.random() * images.length)];
-}
+const bootstrapScript = `(${pickAuthBackground.toString()})(${JSON.stringify(AUTH_BACKGROUND)})`;
 
 export default function RandomAnimePic() {
-  const [src, setSrc] = useState<string | null>(null);
-  const [loaded, setLoaded] = useState(false);
-
-  useLayoutEffect(() => {
-    const next = pickRandom();
-    setLoaded(false);
-    setSrc(next);
-  }, []);
-
-  if (!src) return null;
-
   return (
-    <Image
-      src={src}
-      alt="Auth Image"
-      fill
-      sizes="100%"
-      quality={75}
-      onLoad={() => setLoaded(true)}
-      className={cn(
-        "object-cover transition-opacity duration-700 ease-out",
-        loaded ? "opacity-70" : "opacity-0",
-      )}
-    />
+    <>
+      {/* eslint-disable-next-line @next/next/no-img-element -- next/image would
+          need the URL at render time, but the pick has to happen on the client;
+          the srcset it would build is assembled in ./bootstrap instead. */}
+      <img
+        data-auth-bg=""
+        alt=""
+        suppressHydrationWarning
+        className="absolute inset-0 size-full object-cover opacity-0 transition-opacity duration-700 ease-out data-[loaded=true]:opacity-70"
+      />
+      <script dangerouslySetInnerHTML={{ __html: bootstrapScript }} />
+      <PickFallback />
+    </>
   );
 }
-
-// server image
-// export default function RandomAnimePic() {
-//   const randomImage = images[Math.floor(Math.random() * images.length)];
-
-//   return (
-//     <Image
-//       src={randomImage}
-//       alt="Auth Image"
-//       fill
-//       sizes="100%"
-//       quality={75}
-//       priority
-//       fetchPriority="high"
-//       className="object-cover opacity-40"
-//     />
-//   );
-// }
