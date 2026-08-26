@@ -19,7 +19,7 @@ export async function Footer() {
                 variant="transparent"
               />
               <p className="text-3xl font-bold">
-                Ani<span className="text-primary-accent-light">Hive</span>
+                Ani<span className="text-primary">Hive</span>
               </p>
             </div>
             <p className="max-w-[550px] opacity-50">{t("description")}</p>

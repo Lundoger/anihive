@@ -64,7 +64,7 @@ export default function CarouselSlide({
       <div className="relative z-10 grid h-full grid-cols-1 md:grid-cols-3">
         <div className="z-20 flex flex-col gap-6 p-3 md:col-span-2 md:flex-row md:items-end md:p-8">
           <div className="hidden h-72 w-48 shrink-0 md:block">
-            <div className="relative h-full w-full overflow-hidden rounded-lg shadow-[0_0_20px_rgba(0,0,0,0.3)]">
+            <div className="relative h-full w-full overflow-hidden rounded-lg shadow-lg">
               {imageUrl && (
                 <Image
                   src={imageUrl}
@@ -82,7 +82,7 @@ export default function CarouselSlide({
               <div className="mb-3">
                 <Badge
                   variant="secondary"
-                  className="bg-amber-400/90 text-black hover:bg-amber-400"
+                  className="bg-warning text-background hover:bg-warning/90"
                 >
                   {animeStatus}
                 </Badge>

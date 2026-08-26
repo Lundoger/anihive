@@ -1,0 +1,189 @@
+<title>OAuth API Shapes</title>
+<link rel="stylesheet" href="../assets/lesson.css" />
+
+<p class="kicker">Reference · anihive teaching workspace</p>
+<h1>Формы данных: что вызываешь и что получаешь</h1>
+<p class="subtitle">Точные типы и конкретные значения для двух функций, на которых держится весь OAuth-флоу.
+Всё проверено по <code>node_modules</code> этого проекта, версия <code>@supabase/auth-js</code> 2.87.1.</p>
+
+<h2><span class="num">1</span> <code>signInWithOAuth</code></h2>
+
+<h3>Что принимает</h3>
+
+<p class="filename">@supabase/auth-js/dist/module/lib/types.d.ts:476</p>
+<pre><code>type SignInWithOAuthCredentials = {
+  provider: Provider;              // 'google' | 'discord' | 'github' | …
+  options?: {
+    redirectTo?: string;           // куда Supabase вернёт браузер (шаг 4)
+    scopes?: string;               // через пробел: 'email profile'
+    queryParams?: { [key: string]: string };
+    skipBrowserRedirect?: boolean; // не уводить страницу самому
+  };
+};</code></pre>
+
+<h3>Что возвращает</h3>
+
+<p class="filename">@supabase/auth-js/dist/module/lib/types.d.ts:135</p>
+<pre><code>type OAuthResponse =
+  | { data: { provider: Provider; url: string }; error: null }
+  | { data: { provider: Provider; url: null  }; error: AuthError };</code></pre>
+
+<p><strong>Никакой сессии здесь нет и быть не может.</strong> Сессия появится только на шаге 5, после обмена
+кода. Всё, что отдаёт эта функция, — адрес, по которому надо уйти.</p>
+
+<h3>Что она делает внутри (важно: ни одного сетевого запроса)</h3>
+
+<p class="filename">GoTrueClient.js:1837 — _handleProviderSignIn</p>
+<pre><code>async _handleProviderSignIn(provider, options) {
+    const url = await this._getUrlForProvider(`${this.url}/authorize`, provider, {
+        redirectTo: options.redirectTo,
+        scopes: options.scopes,
+        queryParams: options.queryParams,
+    });
+    // try to open on the browser
+    if (isBrowser() && !options.skipBrowserRedirect) {
+        window.location.assign(url);
+    }
+    return { data: { provider, url }, error: null };
+}</code></pre>
+
+<p>Четыре шага, все локальные:</p>
+<ol>
+  <li>сгенерировать <code>code_verifier</code> и записать его в storage (у нас — в cookie);</li>
+  <li>посчитать <code>code_challenge</code>;</li>
+  <li><em>склеить строку</em> URL на <code>/auth/v1/authorize</code> — никакого fetch;</li>
+  <li>если это браузер и не сказано обратное — <code>window.location.assign(url)</code>.</li>
+</ol>
+
+<div class="callout key">
+  <span class="label">Отсюда сразу два следствия</span>
+  <p><strong>a)</strong> На сервере <code>isBrowser()</code> ложно, значит редиректа не будет — функция вернёт
+  <code>data.url</code> и замолчит. Если ты его не используешь, <em>не произойдёт ничего</em>, кроме
+  постановки cookie с верификатором.<br />
+  <strong>b)</strong> Запись <code>flow_state</code> в базе создаётся не здесь, а когда браузер реально
+  придёт на <code>/authorize</code>. До навигации на сервере Supabase не знает о попытке входа.</p>
+</div>
+
+<h3>Значения на практике</h3>
+
+<pre><code>// вызов
+const result = await getBrowserClient().auth.signInWithOAuth({
+  provider: "google",
+  options: { redirectTo: "http://localhost:3000/auth/callback?next=%2Fsettings" },
+});
+
+// result, если всё хорошо (но эту строку ты почти никогда не увидишь:
+// страница уже уходит на Google)
+{
+  data: {
+    provider: "google",
+    url: "https://abcdefgh.supabase.co/auth/v1/authorize"
+       + "?provider=google"
+       + "&code_challenge=E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM"
+       + "&code_challenge_method=s256"
+       + "&redirect_to=http%3A%2F%2Flocalhost%3A3000%2Fauth%2Fcallback%3Fnext%3D%252Fsettings"
+  },
+  error: null
+}
+
+// result, если провайдер выключен в дашборде
+{
+  data: { provider: "google", url: null },
+  error: AuthError { message: "Unsupported provider: provider is not enabled", status: 400 }
+}</code></pre>
+
+<p class="side">Обрати внимание на двойное кодирование <code>next</code>: сначала он внутри своего
+<code>redirectTo</code>, потом весь <code>redirectTo</code> кодируется как query-параметр. Собирай URL через
+<code>URL</code> и <code>URLSearchParams</code>, а не конкатенацией строк.</p>
+
+<h2><span class="num">2</span> <code>exchangeCodeForSession</code></h2>
+
+<pre><code>exchangeCodeForSession(authCode: string): Promise&lt;AuthTokenResponse&gt;
+
+// то есть, в развёрнутом виде:
+| { data: { user: User; session: Session }; error: null }
+| { data: { user: null; session: null };    error: AuthError }</code></pre>
+
+<p>Что происходит внутри (<code>GoTrueClient.js:764</code>):</p>
+
+<pre><code>const storageItem = await getItemAsync(this.storage, `${this.storageKey}-code-verifier`);
+const [codeVerifier, redirectType] = (storageItem ?? '').split('/');
+
+await _request(this.fetch, 'POST', `${this.url}/token?grant_type=pkce`, {
+  body: { auth_code: authCode, code_verifier: codeVerifier },
+});
+
+await removeItemAsync(this.storage, `${this.storageKey}-code-verifier`);  // одноразовый
+await this._saveSession(data.session);                                    // пишет cookie
+await this._notifyAllSubscribers('SIGNED_IN', data.session);</code></pre>
+
+<p>Ключевое: <strong>верификатор берётся из storage, а не из аргумента</strong>. Ты передаёшь только
+<code>code</code> — вторую половину пары клиент находит сам. Именно поэтому обмен обязан идти клиентом,
+у которого есть доступ к тем же cookie, что и у клиента, начавшего вход.</p>
+
+<h3>Форма <code>Session</code> — что реально приходит</h3>
+
+<pre><code>{
+  access_token: "eyJhbGciOi…",        // JWT Supabase, ~1 час, это его читает RLS
+  refresh_token: "v1.MRq…",           // одноразовый, меняется при каждом refresh
+  expires_in: 3600,
+  expires_at: 1774020000,
+  token_type: "bearer",
+
+  provider_token: "ya29.a0Af…",       // ← токен GOOGLE, только сразу после входа
+  provider_refresh_token: null,       // ← Google даёт только при access_type=offline
+
+  user: {
+    id: "8f14e45f-ea3d-4b1e-9c7a-2b0d5c1a9f33",
+    email: "bohdan@example.com",
+    app_metadata:  { provider: "google", providers: ["email", "google"] },
+    user_metadata: { full_name: "Bohdan", avatar_url: "https://lh3.googleusercontent.com/…",
+                     email_verified: true, sub: "1179271…" },
+    identities: [ /* по одной записи на провайдера */ ],
+  },
+}</code></pre>
+
+<div class="callout trap">
+  <span class="label">Ловушка на будущее</span>
+  <p><code>provider_token</code> Supabase <strong>не хранит</strong>. Он есть в объекте сессии сразу после
+  обмена и исчезает при следующем refresh. Нужен доступ к Google API от имени пользователя — сохраняй его
+  сам в этот момент. Не нужен — просто игнорируй; для «войти и узнать, кто это» он не требуется.</p>
+</div>
+
+<h3>Что не так с <code>user_metadata</code></h3>
+
+<p><code>user_metadata</code> заполняется из данных провайдера и <em>перезаписывается пользователем</em>
+через <code>updateUser({ data })</code> — то есть это <strong>не доверенный</strong> источник. Для проверок
+прав используй <code>app_metadata</code> (его меняет только сервер) или свою таблицу
+<code>profiles</code>, как ты уже и делаешь.</p>
+
+<h2><span class="num">3</span> Как это ложится на файлы anihive</h2>
+
+<table>
+  <tr><th style="width: 38%">Файл</th><th>Ответственность</th></tr>
+  <tr>
+    <td><code>features/oauth/index.ts</code></td>
+    <td>Только публичный API слайса: <code>export { … }</code>. Никакой логики — как в <code>features/logout/index.ts</code></td>
+  </tr>
+  <tr>
+    <td><code>features/oauth/model/signInWithOAuth.ts</code></td>
+    <td>Собрать <code>redirectTo</code>, вызвать браузерный клиент, вернуть <code>{ error }</code></td>
+  </tr>
+  <tr>
+    <td><code>features/oauth/ui/OAuthButtons.tsx</code></td>
+    <td>Кнопки, <code>useTransition</code>, тосты, i18n-строки</td>
+  </tr>
+  <tr>
+    <td><code>app/auth/callback/route.ts</code></td>
+    <td>Прочитать <code>code</code>, обменять, отредиректить. Единственное место, где нужен серверный клиент</td>
+  </tr>
+</table>
+
+<div class="lesson-nav">
+  <strong>Рядом</strong>
+  <ul>
+    <li><a href="glossary.html">Глоссарий</a></li>
+    <li><a href="oauth-debug-cheatsheet.html">Шпаргалка по отладке</a></li>
+    <li><a href="../lessons/0001-google-oauth-happy-path.html">Урок 1 — Танец редиректов</a></li>
+  </ul>
+</div>

@@ -19,7 +19,7 @@ const ScheduleBadge = ({ status, schedules }: ScheduleBadgeProps) => {
   return (
     <Badge
       variant="outline"
-      className="border border-purple-500/30 bg-purple-500/20 px-2.5 py-0.5 text-xs font-medium text-purple-700 capitalize sm:text-sm"
+      className="border-info/30 bg-info/15 text-info border px-2.5 py-0.5 text-xs font-medium capitalize sm:text-sm"
     >
       <Calendar className="mr-1 h-3 w-3" />
       {schedules}

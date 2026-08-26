@@ -44,16 +44,13 @@ export default async function RootLayout({ children, params }: Props) {
   const messages = await getMessages();
 
   return (
-    <html lang={locale}>
-      <body
-        className={`${inter.variable} antialiased`}
-        suppressHydrationWarning
-      >
+    <html lang={locale} className={inter.variable}>
+      <body className="antialiased" suppressHydrationWarning>
         <TopLoader />
         <NextIntlClientProvider messages={messages}>
           <AuthProvider>
             <div className="wrapper">{children}</div>
-            <Toaster richColors position="bottom-right" />
+            <Toaster theme="dark" richColors position="bottom-right" />
           </AuthProvider>
         </NextIntlClientProvider>
       </body>

@@ -81,7 +81,13 @@ export function ForgotPasswordForm() {
         )}
       />
 
-      <Button type="submit" className="w-full" size="lg" disabled={isPending}>
+      <Button
+        type="submit"
+        variant="primary"
+        size="lg"
+        className="w-full"
+        disabled={isPending}
+      >
         {isPending ? <Spinner /> : t("send")}
       </Button>
     </form>

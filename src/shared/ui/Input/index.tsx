@@ -90,9 +90,9 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         placeholder={placeholder ?? " "}
         disabled={disabled}
         className={cn(
-          "border-gray basic-transition flex h-14 w-full rounded-md border bg-black px-3 py-2 text-base font-medium shadow-xs group-hover/input-wrapper:border-white hover:border-white",
+          "border-border basic-transition bg-background flex h-14 w-full rounded-md border px-3 py-2 text-base font-medium shadow-xs group-hover/input-wrapper:border-white hover:border-white",
           "ring-offset-background placeholder:text-muted-foreground file:border-0 file:bg-transparent file:text-base file:font-medium",
-          "focus-visible:border-primary-accent-light focus-visible:outline-none",
+          "focus-visible:border-primary focus-visible:outline-none",
           "disabled:cursor-not-allowed disabled:opacity-50",
           prefixIcon ? "pl-11" : "pl-3",
           showPasswordToggle ? "pr-14" : "pr-3",
@@ -109,7 +109,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         {prefixIcon ? (
           <span
             data-slot="input-prefix"
-            className="text-gray pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 [&_svg]:size-5"
+            className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 [&_svg]:size-5"
             aria-hidden
           >
             {prefixIcon}
@@ -118,13 +118,13 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
 
         {showPasswordToggle ? (
           <Button
-            variant="transparent"
-            size="icon"
+            variant="ghost"
+            size="bare"
             type="button"
             aria-label={isPasswordVisible ? "Hide password" : "Show password"}
             className={cn(
-              "text-gray absolute top-1/2 right-0 aspect-[1/1.2] h-full w-fit -translate-y-1/2 cursor-pointer",
-              "hover:bg-transparent hover:text-white focus-visible:bg-transparent focus-visible:text-white",
+              "text-muted-foreground absolute top-1/2 right-0 aspect-[1/1.2] h-full w-fit -translate-y-1/2 cursor-pointer",
+              "hover:text-foreground focus-visible:text-foreground hover:bg-transparent focus-visible:bg-transparent",
               "disabled:pointer-events-none disabled:opacity-50",
             )}
             onPointerDown={(e) => {

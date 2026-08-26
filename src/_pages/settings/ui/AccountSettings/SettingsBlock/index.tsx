@@ -23,7 +23,7 @@ const Description = memo(
 
     if (parts.length <= 1) {
       return (
-        <p className="text-gray text-xs font-medium">
+        <p className="text-muted-foreground text-xs font-medium">
           {description.trim().endsWith(".")
             ? description.trim()
             : `${description.trim()}.`}
@@ -34,7 +34,7 @@ const Description = memo(
     return (
       <>
         {parts.map((part, idx) => (
-          <p key={idx} className="text-gray text-xs font-medium">
+          <p key={idx} className="text-muted-foreground text-xs font-medium">
             {part}.
           </p>
         ))}
@@ -54,7 +54,7 @@ export default function SettingsBlock({
   return (
     <div
       className={cn(
-        "bg-light-black xs:p-4 rounded-xl p-2",
+        "bg-surface-alt xs:p-4 rounded-xl p-2",
         "flex flex-col gap-3",
         className,
       )}

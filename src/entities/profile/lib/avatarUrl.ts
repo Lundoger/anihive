@@ -1,9 +1,5 @@
 import { getBrowserClient } from "@/shared/api/supabase/client";
 
-/**
- * Public URL for a stored avatar, cache-busted by the row's `avatar_updated_at`
- * so a replaced file is not served from the old cache entry.
- */
 export function buildAvatarUrl(
   avatarPath: string | null | undefined,
   avatarUpdatedAt?: string | null,

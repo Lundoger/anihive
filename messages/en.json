@@ -1,11 +1,19 @@
 {
+  "auth": {
+    "or": "or",
+    "cookies": "We use cookies to make the site more comfortable for you. By continuing to view, you agree to the use of cookies",
+    "signInWith": "Sign in with {provider}",
+    "links": {
+      "login": "Already have an account? Login",
+      "register": "Don't have an account? Register",
+      "forgotPassword": "Password recovery",
+      "resendCode": "Send the code again"
+    }
+  },
   "login": {
     "title": "Login to your account",
     "description": "Enter your email and password to login to your account.",
-    "socialDescription": "You can also login with your social accounts",
-    "register": "Don't have an account? Register",
-    "forgotPassword": "Password recovery",
-    "cookies": "We use cookies to make the site more comfortable for you. By continuing to view, you agree to the use of cookies",
+    "subDescription": "You can also login with your social accounts",
     "form": {
       "email": "Email",
       "password": "Password",
@@ -24,10 +32,7 @@
   "registration": {
     "title": "Create an account",
     "description": "Enter your email, username and password to create an account.",
-    "socialDescription": "You can also create an account with your social accounts",
-    "register": "Already have an account? Login",
-    "forgotPassword": "Reset password",
-    "cookies": "We use cookies to make the site more comfortable for you. By continuing to view, you agree to the use of cookies",
+    "subDescription": "You can also create an account with your social accounts",
     "form": {
       "email": "Email",
       "password": "Password",
@@ -55,10 +60,7 @@
   "verifyEmail": {
     "title": "Verify your email",
     "description": "Enter the code from the email to verify your account.",
-    "socialDescription": "Check your inbox and spam folder",
-    "login": "Already have an account? Login",
-    "forgotPassword": "Password recovery",
-    "cookies": "We use cookies to make the site more comfortable for you. By continuing to view, you agree to the use of cookies",
+    "subDescription": "Check your inbox and spam folder",
     "form": {
       "token": "Verification code",
       "verify": "Verify",
@@ -78,8 +80,6 @@
     "title": "Password recovery",
     "description": "You can create a new password for your account.",
     "subDescription": "Enter your email, on which you registered your account, we will send you a letter with further instructions",
-    "login": "Already have an account? Login",
-    "cookies": "We use cookies to make the site more comfortable for you. By continuing to view, you agree to the use of cookies",
     "form": {
       "email": "Email",
       "send": "Send recovery email",
@@ -96,9 +96,6 @@
     "title": "Reset your password",
     "description": "You can create a new password for your account.",
     "subDescription": "Check your email and find the letter with the code to reset your password",
-    "login": "Already have an account? Login",
-    "forgotPassword": "Send the code again",
-    "cookies": "We use cookies to make the site more comfortable for you. By continuing to view, you agree to the use of cookies",
     "form": {
       "token": "Code from the letter",
       "newPassword": "New password",

@@ -16,7 +16,7 @@ const SectionDescription = memo(
     if (parts.length <= 1) {
       const normalized = text.trim();
       return (
-        <p className="text-gray text-base font-medium">
+        <p className="text-muted-foreground text-base font-medium">
           {normalized.endsWith(".") ? normalized : `${normalized}.`}
         </p>
       );
@@ -25,7 +25,10 @@ const SectionDescription = memo(
     return (
       <>
         {parts.map((part, idx) => (
-          <p key={`${idx}-${part}`} className="text-gray text-base font-medium">
+          <p
+            key={`${idx}-${part}`}
+            className="text-muted-foreground text-base font-medium"
+          >
             {part}.
           </p>
         ))}

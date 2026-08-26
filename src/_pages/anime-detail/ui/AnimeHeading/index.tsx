@@ -81,7 +81,7 @@ const ScoreCard = ({ score, scoredBy }: ScoreCardProps) => {
       </div>
       <div className="flex items-center gap-1 text-lg font-bold sm:text-xl">
         {score}
-        <StarIcon className="h-4 w-4 text-yellow-500" />
+        <StarIcon className="text-warning h-4 w-4" />
       </div>
       {scoredBy && (
         <div className="text-muted-foreground/60 mt-0.5 text-center text-xs">
@@ -193,7 +193,7 @@ export function AnimeHeading({ heroData }: AnimeHeadingProps) {
               />
 
               <div className="mt-4 flex sm:hidden">
-                <Button className="w-full">
+                <Button variant="primary" size="md" className="w-full">
                   <StarIcon className="mr-2 h-4 w-4" />
                   Add To List
                 </Button>

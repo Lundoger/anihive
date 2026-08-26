@@ -116,7 +116,7 @@ export default function NicknameSettingsBlock() {
           type="submit"
           size="lg"
           variant="secondary"
-          className="min-h-12 basis-1/6 rounded-xl text-sm sm:w-fit"
+          className="basis-1/6 sm:w-fit"
           disabled={isSubmitting}
           ripple
         >

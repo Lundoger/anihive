@@ -1,0 +1,626 @@
+<title>Танец редиректов</title>
+<link rel="stylesheet" href="../assets/lesson.css" />
+
+<body style="background-color: #000">
+  <p class="kicker">Урок 1 · anihive · Google OAuth</p>
+  <h1>Танец редиректов: от клика до cookie</h1>
+  <p class="subtitle">
+    Пять прыжков, один секрет в cookie и три ловушки, которые ждут именно в
+    твоём проекте. К концу урока «Войти через Google» работает по-настоящему.
+  </p>
+
+  <p>
+    Твой <code>LoginPage</code> уже врёт пользователю. В
+    <code>messages/en.json</code> лежит строка
+    <code>login.socialDescription</code> — «You can also login with your social
+    accounts» — и она рендерится на странице. Кнопок нет. Закроем разрыв, но не
+    копипастой: сначала модель того, что происходит, потому что отлаживать ты
+    будешь именно её, а не код.
+  </p>
+
+  <h2>
+    <span class="num">1</span> Чем OAuth-вход структурно отличается от
+    <code>signInWithPassword</code>
+  </h2>
+
+  <p class="side">
+    Именно поэтому обмен кода живёт в route handler, а не в server action:
+    server action вызывается твоим кодом, а сюда браузер приходит сам, обычной
+    GET-навигацией с чужого домена.
+  </p>
+
+  <p>
+    Ты уже написал <code>serverSignIn</code>. Там всё под твоим контролем: форма
+    → server action → один <code>fetch</code> в Supabase → cookie. Один процесс,
+    одно ожидание промиса, ошибка возвращается как значение.
+  </p>
+
+  <p>
+    OAuth ломает эту модель в одном месте, и всё остальное — следствия.
+    <strong
+      >Пароль пользователя тебе показывать нельзя, поэтому браузер уходит на
+      чужой домен и возвращается сам.</strong
+    >
+    Нет промиса, который можно «подождать»: есть цепочка HTTP-редиректов, и твоё
+    приложение получает управление лишь дважды — когда отправляет человека и
+    когда принимает его назад. Всё, что нужно пронести между этими моментами,
+    обязано лежать <em>где-то</em> — не в памяти JS, потому что страница за это
+    время умрёт.
+  </p>
+
+  <div class="callout key">
+    <span class="label">Главная мысль</span>
+    <p>
+      OAuth — это не «способ проверить пароль». Это протокол выдачи
+      <em>одноразового талона</em> третьей стороной, плюс задача «донести секрет
+      через смерть страницы». Все ошибки — либо про неправильно
+      зарегистрированный адрес возврата, либо про потерянный секрет.
+    </p>
+  </div>
+
+  <h2><span class="num">2</span> Пять прыжков</h2>
+
+  <p>
+    Ниже — реальный путь для anihive в dev. <code>&lt;ref&gt;</code> — project
+    ref из твоего <code>NEXT_PUBLIC_SUPABASE_URL</code>. Обрати внимание, что
+    <strong>Google-код и Supabase-код — это два разных кода</strong>, и до
+    твоего приложения доезжает только второй.
+  </p>
+
+  <ol class="hops">
+    <li>
+      <span class="who">Браузер · твой код</span>
+      <span class="what"
+        >Клик по кнопке. <code>signInWithOAuth</code> генерирует
+        <code>code_verifier</code>, считает
+        <code>code_challenge = base64url(sha256(verifier))</code>,
+        <strong>кладёт verifier в cookie</strong> и уводит страницу через
+        <code>window.location.assign(url)</code>.</span
+      >
+      <span class="wire"
+        >GET
+        https://&lt;ref&gt;.supabase.co/auth/v1/authorize?provider=google&amp;code_challenge=…&amp;code_challenge_method=s256&amp;redirect_to=http://localhost:3000/auth/callback</span
+      >
+    </li>
+    <li>
+      <span class="who">Supabase <code>/authorize</code></span>
+      <span class="what"
+        >Создаёт запись <code>flow_state</code>: твой challenge, провайдер и
+        <code>redirect_to</code> как referrer. Отвечает 302 на Google,
+        подставляя <em>свой</em> <code>client_id</code> и <em>свой</em> адрес
+        возврата. Id записи flow_state едет как <code>state</code>.</span
+      >
+      <span class="wire"
+        >302 →
+        https://accounts.google.com/o/oauth2/auth?client_id=…&amp;redirect_uri=https://&lt;ref&gt;.supabase.co/auth/v1/callback&amp;state=…&amp;scope=email
+        profile</span
+      >
+    </li>
+    <li>
+      <span class="who">Google</span>
+      <span class="what"
+        >Логин и экран согласия — единственный шаг, где участвует человек.
+        Дальше 302 назад, строго на тот адрес, который зарегистрирован в Google
+        Cloud.</span
+      >
+      <span class="wire"
+        >302 →
+        https://&lt;ref&gt;.supabase.co/auth/v1/callback?code=&lt;google_code&gt;&amp;state=…</span
+      >
+    </li>
+    <li>
+      <span class="who">Supabase <code>/callback</code></span>
+      <span class="what"
+        >Обменивает google_code на токены Google (уже своим client secret),
+        проверяет подпись <code>id_token</code>, находит или создаёт запись в
+        <code>auth.users</code> и <code>auth.identities</code>, выпускает
+        <strong>свой</strong> одноразовый код и отдаёт его на тот
+        <code>redirect_to</code>, который запомнил на шаге 2.</span
+      >
+      <span class="wire"
+        >302 →
+        http://localhost:3000/auth/callback?code=&lt;supabase_auth_code&gt;</span
+      >
+    </li>
+    <li>
+      <span class="who">Браузер → твой route handler</span>
+      <span class="what"
+        ><code>exchangeCodeForSession(code)</code>. Клиент достаёт
+        <code>code_verifier</code> из cookie, отправляет пару «код +
+        верификатор», получает сессию и
+        <strong>пишет cookie сессии в ответ</strong>. Ты отвечаешь редиректом на
+        нужную страницу.</span
+      >
+      <span class="wire"
+        >POST https://&lt;ref&gt;.supabase.co/auth/v1/token?grant_type=pkce → {
+        auth_code, code_verifier }</span
+      >
+    </li>
+  </ol>
+
+  <p class="cite">
+    Шаги 1 и 5 проверены по исходнику в твоём <code>node_modules</code>:
+    <code>@supabase/auth-js/dist/main/GoTrueClient.js</code> —
+    <code>signInWithOAuth</code> (~стр. 487),
+    <code>_handleProviderSignIn</code> (~1837),
+    <code>_exchangeCodeForSession</code> (~764). Шаги 2 и 4 — по Go-исходнику
+    сервера:
+    <a
+      href="https://github.com/supabase/auth/blob/master/internal/api/external.go"
+      ><code>internal/api/external.go</code></a
+    >.
+  </p>
+
+  <div class="callout">
+    <span class="label">Побочный вывод, который стоит денег на отладке</span>
+    <p>
+      PKCE здесь <strong>два</strong>. Внешний (шаги 2–4, между Supabase и
+      Google) Supabase ведёт сам, его верификатор хранится в таблице
+      <code>oauth_client_state</code> на сервере. Внутренний (шаги 1 и 5, между
+      твоим браузером и Supabase) — твоя ответственность, его верификатор лежит
+      в cookie. Когда ловишь <code>invalid flow state</code> или
+      <code>code verifier should be non-empty</code> — речь всегда про
+      внутренний.
+    </p>
+  </div>
+
+  <h2>
+    <span class="num">3</span> Почему верификатор в cookie, а не в localStorage
+  </h2>
+
+  <p class="side">
+    Проверь сам:
+    <code
+      >grep -n "flowType"
+      node_modules/@supabase/ssr/dist/main/createBrowserClient.js</code
+    >
+  </p>
+
+  <p>
+    Обмен кода (шаг 5) делает <em>сервер</em>. Значит, серверу нужен доступ к
+    верификатору, который сгенерировал <em>браузер</em>. localStorage сервер не
+    видит — cookie видит. Поэтому <code>@supabase/ssr</code> подменяет storage у
+    auth-клиента на cookie-хранилище, и в его исходнике есть отдельный костыль
+    ровно под этот случай:
+  </p>
+
+  <p class="filename">node_modules/@supabase/ssr/dist/main/cookies.js:263</p>
+  <pre><code>// We don't have an `onAuthStateChange` event that can let us know that
+// the PKCE code verifier is being set. Therefore, if we see it being
+// set, we need to apply the storage (call `setAll` so the cookie is
+// set properly).
+if (key.endsWith("-code-verifier")) { … }</code></pre>
+
+  <p>Отсюда два факта, которые полезно помнить наизусть:</p>
+
+  <ul>
+    <li>
+      <code>createBrowserClient</code> и <code>createServerClient</code> из
+      <code>@supabase/ssr</code> жёстко задают <code>flowType: "pkce"</code> —
+      не опция, а константа в коде библиотеки. Ты уже используешь PKCE, просто
+      до сих пор он был не нужен.
+    </li>
+    <li>
+      Cookie называется <code>sb-&lt;ref&gt;-auth-token-code-verifier</code>.
+      Она появляется в момент клика и исчезает после успешного обмена. Это твой
+      главный диагностический признак в DevTools → Application → Cookies.
+    </li>
+  </ul>
+
+  <details class="recall">
+    <summary>
+      Прежде чем читать дальше: почему одноразовый <code>code</code> в адресной
+      строке — это нормально?
+    </summary>
+    <p>
+      Потому что кода недостаточно. Он бесполезен без
+      <code>code_verifier</code>, который никогда не путешествовал по URL: он
+      лежит в cookie на <code>localhost:3000</code> и уходит на сервер один раз,
+      в теле POST-запроса. Перехватчик URL получает половину пары. Ровно это и
+      есть смысл PKCE — и причина, по которой implicit flow (токены прямо в URL)
+      объявлен устаревшим.
+    </p>
+  </details>
+
+  <h2><span class="num">4</span> Три ловушки конкретно в anihive</h2>
+
+  <h3>Ловушка 1: два разных «callback URL», которые все путают</h3>
+
+  <table>
+    <tr>
+      <th>Где настраивается</th>
+      <th>Что вписать</th>
+      <th>Кто это читает</th>
+    </tr>
+    <tr>
+      <td>Google Cloud → Authorized redirect URIs</td>
+      <td><code>https://&lt;ref&gt;.supabase.co/auth/v1/callback</code></td>
+      <td>
+        Google на шаге 3. Сверяет побайтово →
+        <code>redirect_uri_mismatch</code>.
+      </td>
+    </tr>
+    <tr>
+      <td>Supabase → Auth → URL Configuration → Redirect URLs</td>
+      <td><code>http://localhost:3000/**</code> и прод-домен</td>
+      <td>
+        Supabase на шаге 4, чтобы решить, доверять ли твоему
+        <code>redirectTo</code>.
+      </td>
+    </tr>
+    <tr>
+      <td>Твой код, <code>options.redirectTo</code></td>
+      <td><code>${origin}/auth/callback</code></td>
+      <td>Supabase на шаге 2 (запоминает) и шаге 4 (редиректит).</td>
+    </tr>
+  </table>
+
+  <p>
+    Google про <code>localhost:3000</code> вообще не знает и знать не должен — с
+    его точки зрения клиент один: твой Supabase-проект. Если
+    <code>redirectTo</code> не проходит allow list, Supabase молча отправит
+    человека на <strong>Site URL</strong>. Симптом: «почему с прода меня
+    выкинуло на localhost».
+  </p>
+
+  <h3>Ловушка 2: <code>src/proxy.ts</code> съест твой callback</h3>
+
+  <p class="side">
+    Проверено по исходнику
+    <code>next-intl/dist/esm/development/middleware/middleware.js</code>: у
+    пользователя с локалью <code>en</code> будет <em>rewrite</em> на
+    <code>/en/auth/callback</code>, у пользователя с <code>ua</code> —
+    <em>redirect</em> на <code>/ua/auth/callback</code>. Обе ветки заканчиваются
+    404.
+  </p>
+
+  <p>
+    Твой matcher исключает <code>api</code>, <code>_next/*</code>,
+    <code>favicon.ico</code>, <code>img</code>, <code>.well-known</code>. Путь
+    <code>/auth/callback</code> под исключения не попадает — значит, до route
+    handler'а первым доберётся <code>handleI18nRouting</code>. При
+    <code>localePrefix: "as-needed"</code> next-intl перепишет непрефиксованный
+    путь в <code>/en/auth/callback</code>, а такого роута у тебя нет: файл будет
+    лежать вне сегмента <code>[locale]</code>. Итог — 404 вместо входа, причём
+    код от Supabase уже сгорел (он одноразовый), и повтор ничего не даст.
+  </p>
+
+  <p>Варианты решения — выбери и обоснуй в ревью:</p>
+  <ol>
+    <li>
+      <strong>Исключить <code>auth</code> из matcher.</strong> Один callback-URL
+      на все локали, короткий allow list. Минус: <code>updateSession</code> на
+      этом пути не работает — но там он и не нужен, route handler сам себе
+      клиент.
+    </li>
+    <li>
+      <strong>Положить route внутрь <code>[locale]</code>.</strong> Локаль
+      сохраняется бесплатно, но адресов возврата становится столько, сколько
+      локалей, и все нужно держать в allow list.
+    </li>
+  </ol>
+
+  <h3>Ловушка 3: после OAuth <code>syncSessionFromServer()</code> не нужен</h3>
+
+  <p>
+    В <code>LoginForm</code> ты вызываешь <code>syncSessionFromServer()</code>,
+    и комментарий в коде объясняет почему: server action меняет cookie на
+    сервере, браузерный клиент об этом не узнаёт. В OAuth-флоу возврат из route
+    handler'а — это <em>полная навигация документа</em>. Приложение поднимается
+    заново, <code>useSessionSync</code> при монтировании делает
+    <code>getSession()</code> и читает свежую cookie. Ручная синхронизация здесь
+    — лишний код.
+    <em
+      >Понять, почему в одном случае нужна, а в другом нет, — и есть цель этого
+      пункта.</em
+    >
+  </p>
+
+  <h2><span class="num">5</span> Задание</h2>
+
+  <p>
+    Пишешь ты, я ревьюю. Контракты ниже обязательны — они держат стиль твоего
+    проекта; тела функций намеренно не даю.
+  </p>
+
+  <div class="task">
+    <h3>A. Дашборд Supabase (2 минуты)</h3>
+    <ul class="check" data-check>
+      <li>
+        Authentication → Sign In / Providers → Google: <em>enabled</em>,
+        вставлены Client ID и Client Secret.
+      </li>
+      <li>
+        Authentication → URL Configuration → Redirect URLs содержит
+        <code>http://localhost:3000/**</code>.
+      </li>
+      <li>Site URL указывает на прод-домен (не на localhost).</li>
+      <li>
+        В Google Cloud среди Authorized redirect URIs есть
+        <code>https://&lt;ref&gt;.supabase.co/auth/v1/callback</code>.
+      </li>
+    </ul>
+  </div>
+
+  <div class="task">
+    <h3>B. Фича входа — <code>src/features/oauth-sign-in/</code></h3>
+    <p>
+      Слайс по правилам FSD, как <code>src/features/logout</code>: публичный API
+      только через <code>index.ts</code>.
+    </p>
+
+    <p class="filename">src/features/oauth-sign-in/model/signInWithOAuth.ts</p>
+    <pre><code>import type { Provider } from "@supabase/supabase-js";
+
+// Браузерный клиент, не server action: window.location.assign
+// должен произойти на клиенте, и verifier обязан лечь в cookie
+// именно там.
+export async function signInWithOAuth(
+  provider: Provider,
+  next?: string,
+): Promise&lt;{ error: string | null }&gt;</code></pre>
+
+    <ul>
+      <li>
+        Использовать <code>getBrowserClient()</code> из
+        <code>@/shared/api/supabase/client</code>.
+      </li>
+      <li>
+        <code>redirectTo</code> собирать от
+        <code>window.location.origin</code> — тогда dev и прод работают без
+        правок и без новых env-переменных.
+      </li>
+      <li>
+        <code>next</code> прокинуть query-параметром: пригодится, чтобы вернуть
+        человека туда, откуда он ушёл.
+      </li>
+      <li>
+        Вернуть <code>{ error: error?.message ?? null }</code> — тот же
+        контракт, что во всём <code>authClient.ts</code>. При успехе функция
+        фактически не возвращает управление: страница уже уходит.
+      </li>
+    </ul>
+
+    <p class="filename">src/features/oauth-sign-in/ui/OAuthButtons.tsx</p>
+    <ul>
+      <li>
+        <code>"use client"</code>, <code>useTransition</code>,
+        <code>Button</code> и <code>Spinner</code> из
+        <code>@/shared/ui/*</code> — как в <code>LoginForm</code>.
+      </li>
+      <li>
+        Ошибку показывать через <code>toast.error</code> с описанием, как ты это
+        делаешь в форме логина.
+      </li>
+      <li>
+        Строку кнопки добавить в <code>messages/en.json</code> и
+        <code>messages/ua.json</code> (например
+        <code>login.form.continueWithGoogle</code>) и читать через
+        <code>useTranslations</code>. Хардкод текста в JSX я на ревью не
+        пропущу.
+      </li>
+      <li>
+        Свёрстано так, чтобы позже добавился Discord
+        <em>без изменения структуры</em> — второй провайдер будет твоим
+        экзаменом.
+      </li>
+    </ul>
+
+    <p>
+      Вставить в <code>src/_pages/login/ui/LoginPage.tsx</code> — рядом с
+      <code>&lt;LoginForm /&gt;</code>, ведь
+      <code>socialDescription</code> обещает соцсети именно здесь.
+    </p>
+  </div>
+
+  <div class="task">
+    <h3>C. Route handler — <code>src/app/auth/callback/route.ts</code></h3>
+    <pre><code>export async function GET(request: NextRequest): Promise&lt;Response&gt;</code></pre>
+    <ul>
+      <li>
+        Прочитать <code>code</code> из
+        <code>request.nextUrl.searchParams</code>.
+      </li>
+      <li>
+        Клиент брать серверный — <code>createClient()</code> из
+        <code>@/shared/api/supabase/server</code> (в route handler
+        <code>cookies().set()</code> работает, в отличие от Server Component).
+      </li>
+      <li>
+        <code>await supabase.auth.exchangeCodeForSession(code)</code>, затем
+        редирект.
+      </li>
+      <li>
+        <strong>Провалидировать <code>next</code>:</strong> принимать только
+        значения, начинающиеся с <code>/</code>. Иначе твой callback становится
+        open redirect — злоумышленник шлёт жертве ссылку с
+        <code>next=https://evil.example</code>. Это не паранойя, это причина, по
+        которой проверка есть в примере самого Supabase.
+      </li>
+      <li>
+        Обработать три случая: нет <code>code</code>; <code>error</code> в query
+        (человек нажал «Отмена» на экране Google — придёт
+        <code>error=access_denied</code>); ошибка обмена. Все три должны
+        привести на <code>/login</code> с понятным сообщением, а не на белый
+        экран.
+      </li>
+    </ul>
+  </div>
+
+  <div class="task">
+    <h3>D. Одна строка в <code>src/proxy.ts</code></h3>
+    <p>
+      Исключить <code>auth</code> из <code>config.matcher</code>. Регулярка там
+      уже нетривиальная — правь аккуратно и проверь, что <code>/login</code>,
+      <code>/ua/login</code> и <code>/settings</code> продолжают работать:
+      guard-логика живёт в том же middleware.
+    </p>
+
+    <div class="accept">
+      <strong>Критерии приёмки — прогони все шесть:</strong>
+      <ul class="check" data-check>
+        <li>
+          Клик по кнопке ведёт на экран Google, возврат приземляется на
+          <code>/</code> уже залогиненным.
+        </li>
+        <li>
+          После входа в DevTools → Cookies есть
+          <code>sb-&lt;ref&gt;-auth-token</code> (возможно, чанками
+          <code>.0</code>/<code>.1</code>), а <code>…-code-verifier</code>
+          <em>исчезла</em>.
+        </li>
+        <li>
+          Hard reload (Ctrl+Shift+R) сессию не теряет;
+          <code>/settings</code> открывается.
+        </li>
+        <li>
+          Заход на <code>/login</code> залогиненным редиректит на
+          <code>/</code> — старое правило <code>NON_AUTH_ONLY_PAGES</code> не
+          сломано.
+        </li>
+        <li>
+          Нажать «Отмена» на экране Google → попадаешь на <code>/login</code> с
+          сообщением, без 404 и без падения.
+        </li>
+        <li><code>pnpm typecheck</code> и <code>pnpm lint</code> чистые.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2><span class="num">6</span> Проверь себя</h2>
+
+  <div class="quiz" data-quiz>
+    <p class="q">
+      Какой URL вписывается в Google Cloud как Authorized redirect URI?
+    </p>
+    <div class="opts">
+      <button data-correct>
+        https://&lt;ref&gt;.supabase.co/auth/v1/callback
+      </button>
+      <button>https://anihive.app/auth/callback</button>
+      <button>https://anihive.app/api/auth/callback</button>
+      <button>https://&lt;ref&gt;.supabase.co/auth/callback</button>
+    </div>
+    <p class="why" hidden>
+      Google возвращает браузер <em>в Supabase</em>, а не в твоё приложение:
+      OAuth-клиент, зарегистрированный в Google Cloud, — это Supabase-проект.
+      Твой собственный <code>/auth/callback</code> получает уже второй,
+      супабейсовский код, и живёт в другом списке — в Redirect URLs самого
+      Supabase.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <p class="q">
+      Где хранится <code>code_verifier</code> между кликом и обменом кода?
+    </p>
+    <div class="opts">
+      <button data-correct>
+        В cookie браузера, поставленной библиотекой ssr
+      </button>
+      <button>В localStorage браузера, как в обычном supabase-js</button>
+      <button>В таблице flow_state на сервере Supabase</button>
+      <button>В параметре state внутри ссылки на Google</button>
+    </div>
+    <p class="why" hidden>
+      Обмен делает сервер, а localStorage серверу не виден — поэтому
+      <code>@supabase/ssr</code> подменяет storage на cookie и специально
+      обрабатывает ключ
+      <code>-code-verifier</code> (<code>cookies.js:263</code>). В
+      <code>flow_state</code> лежит <em>challenge</em>, а не verifier: сервер
+      обязан хранить только необратимый хеш, иначе PKCE не имел бы смысла.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <p class="q">Почему обмен кода делает route handler, а не server action?</p>
+    <div class="opts">
+      <button data-correct>
+        Браузер приходит GET-навигацией, а не вызовом action
+      </button>
+      <button>Server action не умеет читать cookie входящего запроса</button>
+      <button>Server action не может записать cookie в ответ клиенту</button>
+      <button>Только route handler получает доступ к query-параметрам</button>
+    </div>
+    <p class="why" hidden>
+      Server action вызывает твой код; сюда же браузер приезжает сам по 302 от
+      Supabase — принять такую навигацию может route handler или страница.
+      Читать и писать cookie server action умеет (<code>serverSignIn</code>
+      ровно это и делает), а query-параметры видит любой серверный код — дело
+      исключительно в том, <em>кто инициирует</em> запрос.
+    </p>
+  </div>
+
+  <div class="quiz" data-quiz>
+    <p class="q">
+      Что сломает <code>/auth/callback</code> именно в этом проекте?
+    </p>
+    <div class="opts">
+      <button data-correct>proxy.ts перепишет путь в /en/auth/callback</button>
+      <button>proxy.ts удалит cookie с кодом верификатора</button>
+      <button>next-intl потеряет query-параметр code при рерайте</button>
+      <button>route handler не увидит cookie, поставленной ранее</button>
+    </div>
+    <p class="why" hidden>
+      <code>localePrefix: "as-needed"</code> заставляет next-intl переписывать
+      непрефиксованные пути в <code>/en/…</code>, а роута
+      <code>/en/auth/callback</code> нет — 404, и одноразовый код сгорает
+      впустую. Query-параметры при рерайте сохраняются, cookie никто не удаляет;
+      проблема ровно в подмене пути, поэтому <code>auth</code> нужно исключить
+      из matcher.
+    </p>
+  </div>
+
+  <h2><span class="num">7</span> Что читать</h2>
+
+  <p>
+    <strong>Первоисточник к этому уроку:</strong>
+    <a href="https://datatracker.ietf.org/doc/html/rfc7636">RFC 7636 — PKCE</a>,
+    разделы 1 («Introduction», там описана атака, от которой всё лечится) и
+    4.1–4.6 (протокол целиком). Двадцать страниц, читаются за двадцать минут, и
+    после них ошибки флоу перестают быть магией. Если предпочитаешь прикладной
+    текст —
+    <a href="https://supabase.com/docs/guides/auth/server-side/nextjs"
+      >Supabase: Server-Side Auth with Next.js</a
+    >, но спека даёт понимание, а гайд — только рецепт.
+  </p>
+
+  <div class="ask">
+    <strong>Спрашивай.</strong> Я твой преподаватель на этом курсе: если
+    непонятен любой шаг, формулировка задания или ошибка в консоли — спроси до
+    того, как начнёшь гадать. Когда напишешь код, скажи «готово, ревьюй» —
+    разберу построчно и объясню, где расходимся и почему.
+  </div>
+
+  <div class="lesson-nav">
+    <strong>Дальше и рядом</strong>
+    <ul>
+      <li>
+        <a href="../reference/glossary.html">Глоссарий</a> — все термины урока в
+        одном месте
+      </li>
+      <li>
+        <a href="../reference/oauth-debug-cheatsheet.html"
+          >Шпаргалка по отладке</a
+        >
+        — открыть, когда что-то не работает: симптом → причина → лечение
+      </li>
+      <li>
+        Урок 2 (после ревью) —
+        <em>что Supabase делает под капотом при обмене кода</em>:
+        <code>flow_state</code>, <code>auth.identities</code>,
+        <code>provider_token</code>, устройство JWT и refresh-цикла
+      </li>
+      <li>
+        Урок 3 — Discord <em>самостоятельно</em>, плюс что будет, если один
+        email придёт и паролем, и через Google
+      </li>
+      <li>
+        <a href="../MISSION.md">MISSION.md</a> ·
+        <a href="../RESOURCES.md">RESOURCES.md</a>
+      </li>
+    </ul>
+  </div>
+</body>
+
+<script src="../assets/quiz.js"></script>

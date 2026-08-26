@@ -28,7 +28,7 @@ export function Header() {
         <Logo
           className={cn(
             !isHomePage &&
-              "border-light-black/80 bg-light-black/80 hover:bg-light-black/80 hover:border-light-black/80 border",
+              "border-surface-alt/80 bg-surface-alt/80 hover:bg-surface-alt/80 hover:border-surface-alt/80 border",
           )}
         />
         <Navigation />
@@ -36,7 +36,12 @@ export function Header() {
           <div className="flex items-center gap-2">
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="transparent" ripple>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label={t("randomAnime")}
+                  ripple
+                >
                   <Film className="size-4.5" />
                 </Button>
               </TooltipTrigger>
@@ -46,7 +51,12 @@ export function Header() {
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="transparent" ripple>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label={t("randomManga")}
+                  ripple
+                >
                   <BookOpen className="size-4.5" />
                 </Button>
               </TooltipTrigger>
@@ -56,7 +66,12 @@ export function Header() {
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="transparent" ripple>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label={t("search")}
+                  ripple
+                >
                   <Search className="size-4.5" />
                 </Button>
               </TooltipTrigger>

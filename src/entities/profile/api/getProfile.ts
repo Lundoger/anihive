@@ -3,12 +3,6 @@ import { getBrowserClient } from "@/shared/api/supabase/client";
 import type { Profile } from "../model/types";
 import { PROFILE_COLUMNS } from "./columns";
 
-/**
- * Reads one profile row.
- *
- * A missing row is not a failure: it comes back as `{ profile: null, error: null }`
- * so callers can tell "this user has no profile yet" apart from "the read broke".
- */
 export async function getProfile(
   userId: string,
 ): Promise<{ profile: Profile | null; error: string | null }> {

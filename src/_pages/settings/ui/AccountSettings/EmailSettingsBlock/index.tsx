@@ -173,7 +173,7 @@ export default function EmailSettingsBlock() {
             type="button"
             size="lg"
             variant="secondary"
-            className="min-h-12 w-full min-w-[220px] rounded-xl text-sm sm:w-fit"
+            className="w-full min-w-[220px] sm:w-fit"
             disabled={isSendingToken}
             onClick={handleSendToken}
             ripple
@@ -184,7 +184,7 @@ export default function EmailSettingsBlock() {
             type="submit"
             size="lg"
             variant="secondary"
-            className="min-h-12 w-full min-w-[220px] rounded-xl text-sm sm:w-fit"
+            className="w-full min-w-[220px] sm:w-fit"
             disabled={isSubmitting}
             ripple
           >

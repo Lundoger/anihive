@@ -7,13 +7,13 @@ import { cn } from "@/shared/lib/classnames";
 const linkVariants = cva("basic-transition inline-flex items-center relative", {
   variants: {
     variant: {
-      default: "desc hover:text-primary-accent-light",
+      default: "desc hover:text-primary",
       secondary:
         "isolate overflow-hidden px-[2px] opacity-50 before:pointer-events-none before:content-[''] before:absolute before:inset-0 before:-z-10 before:bg-white/10 before:origin-bottom before:scale-y-0 before:transform-gpu before:transition-transform before:duration-200 before:ease-linear hover:before:scale-y-100",
       underline:
         "pb-[2px] after:pointer-events-none after:content-[''] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[1px] after:bg-white after:origin-left after:scale-x-0 after:transform-gpu after:transition-transform after:duration-200 after:ease-linear hover:after:scale-x-100",
       transparent: "",
-      nav: "text-sm font-medium hover:text-primary-accent-light",
+      nav: "text-sm font-medium hover:text-primary",
     },
   },
   defaultVariants: {

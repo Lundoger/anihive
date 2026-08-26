@@ -200,7 +200,7 @@ export default function AvatarSettingsBlock() {
                     type="button"
                     variant="secondary"
                     size="lg"
-                    className="h-12 w-full rounded-xl text-sm sm:w-fit"
+                    className="w-full sm:w-fit"
                     onClick={openFilePicker}
                     ripple
                   >
@@ -210,7 +210,7 @@ export default function AvatarSettingsBlock() {
                     type="button"
                     variant="secondary"
                     size="lg"
-                    className="h-12 w-full rounded-xl text-sm sm:w-fit"
+                    className="w-full sm:w-fit"
                     onClick={deleteAvatar}
                     disabled={!avatarPath}
                     ripple
@@ -232,7 +232,7 @@ export default function AvatarSettingsBlock() {
             type="submit"
             size="lg"
             variant="secondary"
-            className="relative h-12 w-full min-w-[220px] rounded-xl text-sm sm:w-fit"
+            className="relative w-full min-w-[220px] sm:w-fit"
             disabled={isSubmitting || !file}
             ripple
             aria-busy={isSubmitting || isPending}

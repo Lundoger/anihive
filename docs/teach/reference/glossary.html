@@ -1,0 +1,197 @@
+<title>OAuth Glossary</title>
+<link rel="stylesheet" href="../assets/lesson.css" />
+
+<p class="kicker">Reference · anihive teaching workspace</p>
+<h1>Глоссарий: OAuth, PKCE, Supabase Auth</h1>
+<p class="subtitle">Одна страница, к которой возвращаешься. Термины употребляются во всех уроках именно в этом
+значении — если в уроке слово звучит иначе, ошибка в уроке.</p>
+
+<h2><span class="num">1</span> Роли и участники</h2>
+
+<table>
+  <tr>
+    <th style="width: 32%">Термин</th>
+    <th>Значение</th>
+  </tr>
+  <tr>
+    <td><strong>Resource Owner</strong></td>
+    <td>Человек. Тот, кто владеет аккаунтом у провайдера и даёт согласие. В anihive — пользователь, который жмёт «Войти через Google».</td>
+  </tr>
+  <tr>
+    <td><strong>Client</strong></td>
+    <td>Приложение, которое хочет узнать, кто этот человек. Внимание: в связке с Supabase <em>client — это сам Supabase</em>, а не anihive. Google знает Supabase, про anihive он не слышал.</td>
+  </tr>
+  <tr>
+    <td><strong>Authorization Server</strong></td>
+    <td>Тот, кто аутентифицирует человека и выдаёт код/токены. Google (<code>accounts.google.com</code>) на внешнем слое; <em>сам Supabase</em> (<code>/auth/v1</code>) на внутреннем слое — он тоже authorization server для твоего приложения.</td>
+  </tr>
+  <tr>
+    <td><strong>Provider</strong></td>
+    <td>Слово Supabase для внешнего authorization server: <code>google</code>, <code>discord</code>, <code>github</code>. Значение <code>Provider</code> — это union-тип в <code>@supabase/supabase-js</code>.</td>
+  </tr>
+  <tr>
+    <td><strong>GoTrue</strong></td>
+    <td>Историческое (и до сих пор живое в коде) имя auth-сервера Supabase. Go-сервис в репозитории <code>supabase/auth</code>. Отсюда класс <code>GoTrueClient</code> внутри <code>@supabase/auth-js</code>.</td>
+  </tr>
+</table>
+
+<h2><span class="num">2</span> Механика OAuth 2.0 и PKCE</h2>
+
+<table>
+  <tr>
+    <th style="width: 32%">Термин</th>
+    <th>Значение</th>
+  </tr>
+  <tr>
+    <td><strong>Authorization Code</strong><br /><code>code</code></td>
+    <td>Одноразовый короткоживущий талон в query-параметре redirect-а. Сам по себе не даёт доступа: его нужно обменять на токены. Ходит через адресную строку — то есть через историю браузера, логи прокси и Referer. Поэтому и нужен PKCE.</td>
+  </tr>
+  <tr>
+    <td><strong>Authorization Code Grant</strong></td>
+    <td>Флоу «редирект → code → обмен на токены». Единственный рекомендованный для веба вариант (<a href="https://datatracker.ietf.org/doc/html/rfc9700">RFC 9700</a>).</td>
+  </tr>
+  <tr>
+    <td><strong>Implicit Flow</strong></td>
+    <td>Устаревший флоу: токены приходят прямо в URL-фрагменте (<code>#access_token=…</code>). Фрагмент не уходит на сервер — поэтому SSR его в принципе не видит. Запрещён современными best practices; в Supabase остаётся как <code>flowType: 'implicit'</code>.</td>
+  </tr>
+  <tr>
+    <td><strong>PKCE</strong><br /><small>Proof Key for Code Exchange</small></td>
+    <td>Читается «пикси». Доказательство, что код обменивает тот же, кто его запросил. Без секрета клиента: он заменён на одноразовую пару verifier/challenge (<a href="https://datatracker.ietf.org/doc/html/rfc7636">RFC 7636</a>).</td>
+  </tr>
+  <tr>
+    <td><strong>code_verifier</strong></td>
+    <td>Случайная строка (43–128 символов), которую <em>генерирует и хранит у себя инициатор входа</em>. Отправляется только один раз — в момент обмена кода. Украденный <code>code</code> без верификатора бесполезен.</td>
+  </tr>
+  <tr>
+    <td><strong>code_challenge</strong></td>
+    <td><code>base64url(sha256(code_verifier))</code> без padding. Уходит открыто в ссылке на authorization server. Из него нельзя восстановить verifier — вся суть.</td>
+  </tr>
+  <tr>
+    <td><strong>code_challenge_method</strong></td>
+    <td><code>S256</code> — нормальный вариант. <code>plain</code> — fallback, если в среде нет SHA-256 (в браузере не случается). Проверку смотри в <a href="https://github.com/supabase/auth/blob/master/internal/security/pkce.go"><code>internal/security/pkce.go</code></a>.</td>
+  </tr>
+  <tr>
+    <td><strong>state</strong></td>
+    <td>Непрозрачное значение, которое authorization server возвращает как есть. Защита от CSRF и способ «запомнить контекст». В Supabase роль <code>state</code> играет id записи <code>flow_state</code>.</td>
+  </tr>
+  <tr>
+    <td><strong>redirect_uri</strong></td>
+    <td>Куда authorization server отправит браузер с кодом. Должен быть <em>заранее зарегистрирован</em> и сверяется побайтово. Отсюда <code>redirect_uri_mismatch</code>.</td>
+  </tr>
+  <tr>
+    <td><strong>scope</strong></td>
+    <td>Запрашиваемый объём доступа (<code>email</code>, <code>profile</code>, <code>guilds</code>…). Больше scope — страшнее экран согласия и хуже конверсия. Проси минимум.</td>
+  </tr>
+  <tr>
+    <td><strong>Consent screen</strong></td>
+    <td>Экран «приложение X хочет доступ к…». Показывается человеку, а не твоему коду; выглядит как <em>Supabase-проект</em>, потому что client — Supabase (см. выше).</td>
+  </tr>
+</table>
+
+<h2><span class="num">3</span> OpenID Connect: слой identity</h2>
+
+<table>
+  <tr>
+    <th style="width: 32%">Термин</th>
+    <th>Значение</th>
+  </tr>
+  <tr>
+    <td><strong>OIDC</strong></td>
+    <td>Тонкий слой поверх OAuth 2.0, который добавляет <em>«кто это»</em> к <em>«что можно»</em>. Google его реализует, Discord — нет. Поэтому Google отдаёт <code>id_token</code>, а данные Discord Supabase дочитывает отдельным запросом к его API.</td>
+  </tr>
+  <tr>
+    <td><strong>id_token</strong></td>
+    <td>Подписанный JWT о личности: <code>sub</code>, <code>email</code>, <code>email_verified</code>, <code>aud</code>, <code>exp</code>. Проверяется по публичным ключам провайдера. Не путать с access token — id_token отвечает «кто», а не «что можно».</td>
+  </tr>
+  <tr>
+    <td><strong>nonce</strong></td>
+    <td>Одноразовое значение, вшиваемое в <code>id_token</code> для защиты от replay. Не то же, что <code>state</code>: <code>state</code> защищает редирект, <code>nonce</code> — сам токен.</td>
+  </tr>
+  <tr>
+    <td><strong>sub</strong></td>
+    <td>Стабильный идентификатор человека у провайдера. Именно он ложится в <code>auth.identities.provider_id</code> — <em>email меняется, <code>sub</code> нет</em>. Матчить пользователя по email — ошибка проектирования.</td>
+  </tr>
+</table>
+
+<h2><span class="num">4</span> Термины Supabase Auth</h2>
+
+<table>
+  <tr>
+    <th style="width: 32%">Термин</th>
+    <th>Значение</th>
+  </tr>
+  <tr>
+    <td><strong>Session</strong></td>
+    <td>Пара «access_token (JWT, ~1 час) + refresh_token (долгий, одноразовый)» плюс объект user. В SSR-режиме лежит в cookie, не в localStorage.</td>
+  </tr>
+  <tr>
+    <td><strong>Access token / JWT</strong></td>
+    <td>Подписанный Supabase токен, который читает Postgres в RLS-политиках (<code>auth.uid()</code>). Это <em>твой</em> токен, не токен Google.</td>
+  </tr>
+  <tr>
+    <td><strong>provider_token</strong> / <strong>provider_refresh_token</strong></td>
+    <td>Токены <em>Google/Discord</em>, приходящие в объекте session один раз после входа. Нужны только чтобы ходить в API провайдера. Supabase их не хранит — не сохранишь сам, потеряешь.</td>
+  </tr>
+  <tr>
+    <td><strong>flow_state</strong></td>
+    <td>Строка в таблице <code>auth.flow_state</code>: <code>code_challenge</code>, провайдер, referrer, срок жизни. Живёт между «начали вход» и «обменяли код». Истекла или уже использована — получаешь <code>invalid flow state</code>.</td>
+  </tr>
+  <tr>
+    <td><strong>identity</strong></td>
+    <td>Строка в <code>auth.identities</code>: связка «пользователь ↔ провайдер ↔ <code>sub</code>». У одного <code>auth.users</code> может быть несколько identity: пароль, Google, Discord.</td>
+  </tr>
+  <tr>
+    <td><strong>Identity linking</strong></td>
+    <td>Присоединение ещё одного провайдера к существующему пользователю. Автоматически — только если email у провайдера подтверждён и совпадает (и включено в настройках). Иначе — вручную через <code>linkIdentity</code>.</td>
+  </tr>
+  <tr>
+    <td><strong>Site URL</strong></td>
+    <td>Настройка проекта: куда редиректить, если <code>redirectTo</code> не передан <em>или не прошёл allow list</em>. Классический симптом опечатки: тебя выкидывает на <code>localhost:3000</code> с прода.</td>
+  </tr>
+  <tr>
+    <td><strong>Redirect allow list</strong></td>
+    <td>Список разрешённых <code>redirectTo</code> в настройках проекта (поддерживает <code>*</code>). Не путать с authorized redirect URI в Google Cloud — это <em>разные</em> списки на разных слоях.</td>
+  </tr>
+  <tr>
+    <td><strong>storageKey</strong></td>
+    <td>Префикс ключей auth-клиента: <code>sb-&lt;project-ref&gt;-auth-token</code>. Отсюда имена cookie, включая <code>…-auth-token-code-verifier</code> и чанки <code>….0</code>, <code>….1</code>.</td>
+  </tr>
+  <tr>
+    <td><strong>Cookie chunking</strong></td>
+    <td>Сессия больше ~3.6 КБ режется <code>@supabase/ssr</code> на несколько cookie с суффиксами <code>.0</code>, <code>.1</code>. Вручную такие cookie не читать — только через клиент.</td>
+  </tr>
+</table>
+
+<h2><span class="num">5</span> Термины этого проекта</h2>
+
+<table>
+  <tr>
+    <th style="width: 32%">Термин</th>
+    <th>Значение</th>
+  </tr>
+  <tr>
+    <td><strong><code>src/proxy.ts</code></strong></td>
+    <td>Middleware в терминах Next.js 16. Делает две вещи: обновляет сессию (<code>updateSession</code>) и охраняет роуты по <code>PROTECTED_PAGES</code> / <code>NON_AUTH_ONLY_PAGES</code>.</td>
+  </tr>
+  <tr>
+    <td><strong>browser / server / proxy client</strong></td>
+    <td>Три фабрики в <code>src/shared/api/supabase/</code>. Разные способы добраться до cookie: <code>document.cookie</code>, <code>cookies()</code> из <code>next/headers</code>, объекты <code>NextRequest</code>/<code>NextResponse</code>.</td>
+  </tr>
+  <tr>
+    <td><strong><code>{ error: string | null }</code></strong></td>
+    <td>Контракт всех auth-функций в проекте: наружу отдаётся строка, а не объект ошибки Supabase. Новый OAuth-код обязан его соблюдать.</td>
+  </tr>
+</table>
+
+<div class="ask">
+  <strong>Не хватает термина?</strong> Спроси — глоссарий дополняется по ходу курса, это его нормальный жизненный цикл.
+</div>
+
+<div class="lesson-nav">
+  <strong>Навигация</strong>
+  <ul>
+    <li><a href="../MISSION.md">MISSION.md</a> — зачем мы это учим</li>
+    <li><a href="../lessons/0001-google-oauth-happy-path.html">Урок 1 — Танец редиректов</a></li>
+    <li><a href="../RESOURCES.md">RESOURCES.md</a> — первоисточники</li>
+  </ul>
+</div>

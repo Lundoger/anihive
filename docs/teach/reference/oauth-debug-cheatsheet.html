@@ -1,0 +1,141 @@
+<title>OAuth Debug Cheatsheet</title>
+<link rel="stylesheet" href="../assets/lesson.css" />
+
+<p class="kicker">Reference · anihive teaching workspace</p>
+<h1>Шпаргалка: отладка OAuth в Supabase</h1>
+<p class="subtitle">Одна страница на случай «не работает». Диагностика по симптому, а не по гаданию.
+Печатать и держать рядом.</p>
+
+<h2><span class="num">1</span> Флоу в одну строку</h2>
+
+<pre><code>клик → /auth/v1/authorize (flow_state + challenge)
+     → accounts.google.com (человек)
+     → /auth/v1/callback (Supabase: google code → tokens → user + identity)
+     → твой /auth/callback?code=… (exchangeCodeForSession: code + verifier из cookie)
+     → cookie сессии → редирект</code></pre>
+
+<p><strong>Правило локализации бага:</strong> смотри, <em>на каком домене</em> остановился браузер.
+Застрял на <code>accounts.google.com</code> — виновата настройка Google Cloud. На
+<code>&lt;ref&gt;.supabase.co</code> — настройки провайдера или allow list в Supabase. На
+<code>localhost</code> — твой код.</p>
+
+<h2><span class="num">2</span> Четыре адреса, которые нельзя путать</h2>
+
+<table>
+  <tr><th style="width: 26%">Что</th><th>Значение для anihive</th></tr>
+  <tr><td>Google Cloud → Authorized redirect URI</td><td><code>https://&lt;ref&gt;.supabase.co/auth/v1/callback</code></td></tr>
+  <tr><td>Google Cloud → Authorized JavaScript origin</td><td>Не нужен для этого флоу (нужен только для One Tap / клиентского SDK Google)</td></tr>
+  <tr><td>Supabase → Redirect URLs (allow list)</td><td><code>http://localhost:3000/**</code> + <code>https://&lt;прод-домен&gt;/**</code></td></tr>
+  <tr><td>Supabase → Site URL</td><td>Прод-домен. Это fallback: сюда улетают все <code>redirectTo</code>, не прошедшие allow list</td></tr>
+  <tr><td>Твой код → <code>options.redirectTo</code></td><td><code>${window.location.origin}/auth/callback</code></td></tr>
+</table>
+
+<h2><span class="num">3</span> Симптом → причина → лечение</h2>
+
+<table>
+  <tr><th style="width: 30%">Симптом</th><th>Причина</th><th>Лечение</th></tr>
+  <tr>
+    <td>Google показывает ошибку про несовпадение redirect URI (<code>redirect_uri_mismatch</code>)</td>
+    <td>Google сверяет адрес побайтово. Лишний слэш, <code>http</code> вместо <code>https</code>, другой project ref</td>
+    <td>Скопировать URL из Supabase → Providers → Google и вставить в Google Cloud без правок</td>
+  </tr>
+  <tr>
+    <td>Google говорит про неверный клиент (<code>invalid_client</code>)</td>
+    <td>Client ID / Secret в настройках провайдера Supabase не от того OAuth-клиента</td>
+    <td>Перевыпустить secret и вставить заново; проверить, что клиент типа «Web application»</td>
+  </tr>
+  <tr>
+    <td>Вернулся с <code>?error=access_denied</code></td>
+    <td>Человек нажал «Отмена» на экране согласия. Это <em>не баг</em></td>
+    <td>Обработать в route handler: редирект на <code>/login</code> с нейтральным сообщением</td>
+  </tr>
+  <tr>
+    <td>Ошибка про пустой code verifier (текст обычно содержит <code>code verifier</code> и <code>non-empty</code>)</td>
+    <td>Код есть, cookie <code>…-code-verifier</code> нет: флоу начат в другом браузере/инкогнито, cookie почищена, либо обмен идёт из контекста без доступа к тем же cookie</td>
+    <td>Начать вход заново в том же окне; проверить в DevTools, что cookie появляется сразу после клика</td>
+  </tr>
+  <tr>
+    <td>Ошибка про flow state (<code>invalid flow state</code> / expired)</td>
+    <td>Запись <code>auth.flow_state</code> уже использована или истекла. Классика: перезагрузка страницы callback, повторный обмен того же кода, кнопка «назад»</td>
+    <td>Не переиспользовать код; после успеха всегда редиректить (чтобы reload не попал повторно на обмен)</td>
+  </tr>
+  <tr>
+    <td>С прода выкидывает на <code>localhost:3000</code></td>
+    <td><code>redirectTo</code> не прошёл allow list → сработал Site URL</td>
+    <td>Добавить прод-домен в Redirect URLs; поменять Site URL на прод</td>
+  </tr>
+  <tr>
+    <td>404 на своём <code>/auth/callback</code></td>
+    <td>next-intl в <code>src/proxy.ts</code> переписал/отредиректил путь на локализованный</td>
+    <td>Исключить <code>auth</code> из <code>config.matcher</code> (см. урок 1, ловушка 2)</td>
+  </tr>
+  <tr>
+    <td>Обмен прошёл, но UI считает, что гость</td>
+    <td>Cookie поставлена, но клиентский стор её не прочитал</td>
+    <td>Убедиться, что возврат — полная навигация (не <code>router.push</code> внутри SPA); <code>useSessionSync</code> читает сессию при монтировании</td>
+  </tr>
+  <tr>
+    <td>Сессия исчезает через час</td>
+    <td>Refresh не происходит: middleware не обновляет сессию на этом пути</td>
+    <td>Проверить, что <code>updateSession</code> вызывается для обычных страниц (исключение из matcher — только для <code>/auth</code>)</td>
+  </tr>
+  <tr>
+    <td>Вошёл через Google — попал в <em>другой</em> аккаунт, чем с паролем</td>
+    <td>Identity linking не сработал: email у провайдера не подтверждён или отключено связывание</td>
+    <td>Тема урока 3. Быстрая проверка — запрос к <code>auth.identities</code> ниже</td>
+  </tr>
+</table>
+
+<h2><span class="num">4</span> Инструменты</h2>
+
+<h3>DevTools</h3>
+<ul>
+  <li><strong>Network → Preserve log</strong> — обязательно. Без него цепочка 302 исчезнет при навигации, и
+  ты не увидишь, где именно всё сломалось.</li>
+  <li><strong>Application → Cookies → localhost:3000</strong>. Ожидаемая картина: после клика появляется
+  <code>sb-&lt;ref&gt;-auth-token-code-verifier</code>; после обмена она исчезает, а появляется
+  <code>sb-&lt;ref&gt;-auth-token</code> (иногда чанками <code>.0</code>, <code>.1</code>).</li>
+  <li>Полный сброс состояния перед тестом: Application → Storage → <em>Clear site data</em>. Дешевле, чем
+  отлаживать призрачную сессию.</li>
+</ul>
+
+<h3>SQL в Supabase Studio</h3>
+<pre><code>-- кто вошёл и чем
+select u.id, u.email, u.last_sign_in_at, i.provider, i.provider_id
+from auth.users u
+join auth.identities i on i.user_id = u.id
+order by u.created_at desc
+limit 10;
+
+-- незавершённые попытки входа (диагностика flow state)
+select id, provider_type, authentication_method, created_at
+from auth.flow_state
+order by created_at desc
+limit 10;</code></pre>
+
+<h3>Логи</h3>
+<ul>
+  <li>Supabase Dashboard → Logs → <strong>Auth Logs</strong>: там видно отказ на стороне GoTrue с настоящей
+  причиной, а не обобщённое сообщение, которое доехало до браузера.</li>
+</ul>
+
+<h2><span class="num">5</span> Что проверить перед тем, как спрашивать</h2>
+
+<ul class="check" data-check>
+  <li>Флоу начат и завершён в одном окне, без инкогнито и без смены браузера.</li>
+  <li>Cookie <code>…-code-verifier</code> реально появлялась после клика.</li>
+  <li>Код обменивается ровно один раз (в консоли нет двух запросов <code>grant_type=pkce</code>).</li>
+  <li>Оба списка адресов (Google Cloud и Supabase) содержат нужные URL — они разные.</li>
+  <li>Auth Logs в дашборде прочитаны: там точная причина.</li>
+</ul>
+
+<div class="lesson-nav">
+  <strong>Рядом</strong>
+  <ul>
+    <li><a href="glossary.html">Глоссарий</a></li>
+    <li><a href="../lessons/0001-google-oauth-happy-path.html">Урок 1 — Танец редиректов</a></li>
+    <li><a href="../RESOURCES.md">RESOURCES.md</a></li>
+  </ul>
+</div>
+
+<script src="../assets/quiz.js"></script>

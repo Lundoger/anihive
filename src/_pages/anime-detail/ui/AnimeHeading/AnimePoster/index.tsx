@@ -11,7 +11,7 @@ interface AnimePosterProps {
 
 const AnimePoster = memo(({ imageUrl, title }: AnimePosterProps) => (
   <div className="flex flex-col items-center gap-2">
-    <div className="bg-card -mt-14 h-45 w-32.5 shrink-0 transform overflow-hidden rounded-lg shadow-[0_0_25px_rgba(0,0,0,0.3)] ring-2 ring-white/10 transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(0,0,0,0.4)] sm:-mt-18 sm:mb-0 sm:h-52.5 sm:w-37.5 md:-mt-24 lg:h-62.5 lg:w-45">
+    <div className="bg-card ring-border -mt-14 h-45 w-32.5 shrink-0 transform overflow-hidden rounded-lg shadow-lg ring-2 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl sm:-mt-18 sm:mb-0 sm:h-52.5 sm:w-37.5 md:-mt-24 lg:h-62.5 lg:w-45">
       {imageUrl && (
         <Image
           src={imageUrl}

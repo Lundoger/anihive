@@ -87,6 +87,7 @@ export default function Hero({ data }: HeroProps) {
                 <Button
                   key={i}
                   variant="ghost"
+                  size="bare"
                   onClick={() => goToSlide(i)}
                   className={cn(
                     "h-2 w-2 rounded-full p-0 transition-all",

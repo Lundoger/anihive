@@ -115,13 +115,13 @@ function FieldLabel({
     <Label
       data-slot="field-label"
       className={cn(
-        "text-gray basic-transition pointer-events-none absolute top-1/2 z-10 inline-block w-fit! -translate-y-1/2 bg-black px-1 text-base duration-100",
+        "text-muted-foreground basic-transition bg-background pointer-events-none absolute top-1/2 z-10 inline-block w-fit! -translate-y-1/2 px-1 text-base duration-100",
         "left-3 group-has-data-[slot=input-prefix]/field:left-10",
-        "group-focus-within/field:text-primary-accent-light group-focus-within/field:top-0 group-focus-within/field:left-2! group-focus-within/field:-translate-y-1/2 group-focus-within/field:text-sm group-focus-within/field:font-normal",
+        "group-focus-within/field:text-primary group-focus-within/field:top-0 group-focus-within/field:left-2! group-focus-within/field:-translate-y-1/2 group-focus-within/field:text-sm group-focus-within/field:font-normal",
         "leading-none group-has-[[data-slot=input]:is(:not(:placeholder-shown),:-webkit-autofill,:autofill)]/field:top-0 group-has-[[data-slot=input]:is(:not(:placeholder-shown),:-webkit-autofill,:autofill)]/field:left-2 group-has-[[data-slot=input]:is(:not(:placeholder-shown),:-webkit-autofill,:autofill)]/field:-translate-y-1/2 group-has-[[data-slot=input]:is(:not(:placeholder-shown),:-webkit-autofill,:autofill)]/field:text-sm group-has-[[data-slot=input]:is(:not(:placeholder-shown),:-webkit-autofill,:autofill)]/field:font-normal",
         "group/field-label peer/field-label flex w-fit gap-2 group-data-[disabled=true]/field:opacity-50",
         "has-[>[data-slot=field]]:flex-col has-[>[data-slot=field]]:rounded-md has-[>[data-slot=field]]:border *:data-[slot=field]:p-4",
-        "has-data-[state=checked]:bg-primary/5 has-data-[state=checked]:border-primary dark:has-data-[state=checked]:bg-primary/10",
+        "has-data-[state=checked]:bg-primary/5 has-data-[state=checked]:border-primary",
         className,
       )}
       {...props}

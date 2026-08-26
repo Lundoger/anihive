@@ -173,7 +173,13 @@ export function ResetPasswordForm() {
       </FieldGroup>
 
       <div className="flex w-full max-w-[400px] flex-col gap-3">
-        <Button type="submit" className="w-full" size="lg" disabled={isPending}>
+        <Button
+          type="submit"
+          variant="primary"
+          size="lg"
+          className="w-full"
+          disabled={isPending}
+        >
           {isPending ? <Spinner /> : t("reset")}
         </Button>
       </div>

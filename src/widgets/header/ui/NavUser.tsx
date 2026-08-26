@@ -57,7 +57,8 @@ export function NavUser() {
     <>
       {isSessionPending ? (
         <Button
-          variant="transparent"
+          variant="ghost"
+          size="bare"
           className="rounded-lg p-1 hover:bg-transparent"
         >
           <Skeleton className="size-10 rounded-lg" />
@@ -72,7 +73,8 @@ export function NavUser() {
         </AppLink>
       ) : profileStatus === "error" ? (
         <Button
-          variant="transparent"
+          variant="ghost"
+          size="bare"
           className="rounded-lg p-1 hover:bg-transparent"
           onClick={retryProfile}
           title={t("retryProfile")}
@@ -86,7 +88,8 @@ export function NavUser() {
         </Button>
       ) : isProfilePending ? (
         <Button
-          variant="transparent"
+          variant="ghost"
+          size="bare"
           className="rounded-lg p-1 hover:bg-transparent"
         >
           <Skeleton className="size-10 rounded-lg" />
@@ -103,7 +106,11 @@ export function NavUser() {
               lastInteraction.current = "keyboard";
             }}
           >
-            <Button variant="transparent" className="relative rounded-lg p-1">
+            <Button
+              variant="ghost"
+              size="bare"
+              className="relative rounded-lg p-1"
+            >
               <ProfileAvatar {...avatar} />
             </Button>
           </DropdownMenuTrigger>
@@ -139,7 +146,7 @@ export function NavUser() {
                 className={cn(
                   "basic-transition capitalize",
                   isSettingsPage &&
-                    "bg-primary-accent-light/15 text-primary-accent pointer-events-none",
+                    "bg-primary/15 text-primary pointer-events-none",
                 )}
                 aria-current={isSettingsPage ? "page" : undefined}
                 asChild
@@ -147,10 +154,7 @@ export function NavUser() {
                 <AppLink href="/settings" variant="transparent">
                   <div className="flex items-center gap-2">
                     <Settings
-                      className={cn(
-                        "size-4",
-                        isSettingsPage && "text-primary-accent",
-                      )}
+                      className={cn("size-4", isSettingsPage && "text-primary")}
                     />
                     {t("settings")}
                   </div>

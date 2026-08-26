@@ -10,7 +10,7 @@ export default async function SettingTabs() {
 
   return (
     <Tabs defaultValue="account" className="gap-5 md:flex-row">
-      <TabsList className="lgd:basis-1/4 bg-light-black h-fit w-full basis-full flex-col gap-1 *:data-[slot=tabs-trigger]:w-full md:basis-1/3 md:bg-transparent">
+      <TabsList className="lgd:basis-1/4 bg-surface-alt h-fit w-full basis-full flex-col gap-1 *:data-[slot=tabs-trigger]:w-full md:basis-1/3 md:bg-transparent">
         <TabsTrigger value="account">
           <UserRound className="size-5" />
           <span>{t("triggers.account")}</span>
@@ -20,7 +20,7 @@ export default async function SettingTabs() {
           <span>{t("triggers.site")}</span>
         </TabsTrigger>
       </TabsList>
-      <div className="bg-light-black hidden w-px md:block" />
+      <div className="bg-surface-alt hidden w-px md:block" />
       <TabsContent
         value="account"
         className="lgd:basis-3/4 basis-full md:basis-2/3"

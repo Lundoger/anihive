@@ -55,7 +55,5 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   // Exclude Next internals + static assets + ".well-known" (e.g. Chrome DevTools automatic workspaces probe)
-  matcher: [
-    "/((?!\\.well-known)(?!.*\\/\\.well-known)(?!api|_next/static|_next/image|favicon.ico|img).*)",
-  ],
+  matcher: ["/((?!api|_next|_vercel|auth/|.*\\..*).*)"],
 };

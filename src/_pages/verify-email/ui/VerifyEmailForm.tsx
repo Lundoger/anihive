@@ -130,7 +130,13 @@ export function VerifyEmailForm() {
       </FieldGroup>
 
       <div className="flex w-full max-w-[400px] flex-col gap-3">
-        <Button type="submit" className="w-full" size="lg" disabled={isPending}>
+        <Button
+          type="submit"
+          variant="primary"
+          size="lg"
+          className="w-full"
+          disabled={isPending}
+        >
           {isPending ? <Spinner /> : t("verify")}
         </Button>
         <Button

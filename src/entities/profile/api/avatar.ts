@@ -5,11 +5,6 @@ import { PROFILE_COLUMNS } from "./columns";
 
 const BUCKET = "avatars";
 
-/**
- * Every extension a stored avatar can have. Uploading a new one has to sweep
- * all of them, otherwise a png left over from before would keep occupying the
- * slot next to a freshly uploaded jpg.
- */
 const AVATAR_EXTENSIONS = ["png", "jpg", "jpeg", "webp"];
 
 type AvatarResult = { profile: Profile | null; error: string | null };
@@ -21,7 +16,6 @@ function failed(err: unknown, fallback: string): AvatarResult {
   };
 }
 
-/** Stores the file and points the profile row at it. */
 export async function uploadAvatar({
   userId,
   file,
@@ -63,7 +57,6 @@ export async function uploadAvatar({
   }
 }
 
-/** Drops the stored file and clears the reference on the profile row. */
 export async function removeAvatar({
   userId,
   path,

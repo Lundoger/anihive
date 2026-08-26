@@ -10,11 +10,11 @@ const StatusBadge = memo(({ status }: StatusBadgeProps) => {
   const getStatusColor = (status?: string | null) => {
     switch (status?.toLowerCase()) {
       case "finished airing":
-        return "bg-green-500/20 text-green-700 border-green-500/30";
+        return "bg-success/15 text-success border-success/30";
       case "currently airing":
-        return "bg-blue-500/20 text-blue-700 border-blue-500/30";
+        return "bg-info/15 text-info border-info/30";
       case "not yet aired":
-        return "bg-yellow-500/20 text-yellow-700 border-yellow-500/30";
+        return "bg-warning/15 text-warning border-warning/30";
       default:
         return "bg-muted/20 text-muted-foreground border-muted/30";
     }
